@@ -1,9 +1,9 @@
 # DbM Framework
 
-DbM Framework PHP MVC Simple CMS, Version 2.1
- Application tested on: PHP 7.4
- All code copyright Design by Malina (DbM)
- Web: www.dbm.org.pl
+DbM Framework PHP MVC Simple CMS, Version 2.1  
+Application tested on: PHP 7.4  
+All code copyright Design by Malina (DbM)  
+Web: www.dbm.org.pl  
 
 # Język polski (PL - Polish language)
 
