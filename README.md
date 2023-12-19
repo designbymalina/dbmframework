@@ -39,15 +39,15 @@ Następnie w katalogu głównym oraz katalogu /public/ dla plików .htaccess ust
 - data/contents/ dane w plikach tekstowych, nadaj plikom prawa do zapisu
 - data/message/ szablon, pliki do wysyłania wiadomości e-mail
 
-### Database (baza danych nie jest wymagana do uruchomienia skryptu)
+### Database (baza danych nie jest wymagana do uruchomienia aplikacji)
 
 - _Documents/Database/dbm_cms.sql
 
 Jeśli chcesz użyć bazy danych importuj ją na serwer i skonfiguruj połączenie w pliku config.php.
 
-Dane logowania użytkowników przykładowej bazy danych
-Login: archie@mail.com lub Malina, Hasło: Admin123, Rola: ADMIN
-Login: john@mail.com i/lub lucy@mail.com, Hasło: Test123, Rola: USER
+Dane logowania użytkowników przykładowej bazy danych  
+Login: archie@mail.com lub Malina, Hasło: Admin123, Rola: ADMIN  
+Login: john@mail.com i/lub lucy@mail.com, Hasło: Test123, Rola: USER  
 
 ### Composer
 
