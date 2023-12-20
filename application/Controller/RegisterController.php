@@ -20,7 +20,7 @@ class RegisterController extends FrameworkClass
 
     public function __construct()
     {
-        $this->controllerModel = $this->model('registerModel');
+        $this->controllerModel = $this->model('RegisterModel');
 
         $translation = new TranslationClass();
         $this->translation = $translation;

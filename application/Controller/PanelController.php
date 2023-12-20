@@ -41,7 +41,7 @@ class PanelController extends FrameworkClass
             $this->redirect("index");
         }
 
-        $this->controllerModel = $this->model('panelModel');
+        $this->controllerModel = $this->model('PanelModel');
 
         $translation = new TranslationClass();
         $this->translation = $translation;

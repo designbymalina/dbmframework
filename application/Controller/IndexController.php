@@ -23,7 +23,7 @@ class IndexController extends FrameworkClass
      */
     public function __construct()
     {
-        $this->blogModel = $this->model('blogModel'); // TODO! Zmienic sposob ladowania ClassModel ?!
+        $this->blogModel = $this->model('BlogModel'); // TODO! Zmienic sposob ladowania ClassModel ?!
 
         $translation = new TranslationClass();
         $this->translation = $translation;

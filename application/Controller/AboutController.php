@@ -17,7 +17,7 @@ class AboutController extends FrameworkClass
 
     public function __construct()
     {
-        $this->pageModel = $this->model('pageModel');
+        $this->pageModel = $this->model('PageModel');
     }
 
     public function index()

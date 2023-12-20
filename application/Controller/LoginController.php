@@ -19,7 +19,7 @@ class LoginController extends FrameworkClass
 
     public function __construct()
     {
-        $this->controllerModel = $this->model('loginModel');
+        $this->controllerModel = $this->model('LoginModel');
 
         $translation = new TranslationClass();
         $this->translation = $translation;

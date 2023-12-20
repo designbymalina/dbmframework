@@ -10,29 +10,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Dbm\Classes\FrameworkClass;
-use Dbm\Classes\TranslationClass;
 
 class HomeController extends FrameworkClass
 {
-    private $trans;
-
-    public function __construct()
-    {
-        $translation = new TranslationClass();
-        $this->trans = $translation->Translation();
-
-    }
-
     public function index()
     {
-        // Translation
-        //$translation = new TranslationClass();
-        //$trans = $translation->Translation();
-
-        $data = array(
-            'page_content' => "",
-        );
-
-        $this->view("index/home.html.php", $data);
+        $this->view("index/home.html.php");
     }
 }

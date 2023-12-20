@@ -23,7 +23,7 @@ class AccountController extends FrameworkClass
             $this->redirect("login");
         }
 
-        $this->controllerModel = $this->model('userModel');
+        $this->controllerModel = $this->model('UserModel');
 
         $translation = new TranslationClass();
         $this->translation = $translation;

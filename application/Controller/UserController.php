@@ -17,7 +17,7 @@ class UserController extends FrameworkClass
 
     public function __construct()
     {
-        $this->controllerModel = $this->model('userModel');
+        $this->controllerModel = $this->model('UserModel');
     }
 
     public function index()

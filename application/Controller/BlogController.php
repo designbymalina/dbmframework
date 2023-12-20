@@ -19,7 +19,7 @@ class BlogController extends FrameworkClass
 
     public function __construct()
     {
-        $this->blogModel = $this->model('blogModel');
+        $this->blogModel = $this->model('BlogModel');
 
         $translation = new TranslationClass();
         $this->translation = $translation;
