@@ -42,7 +42,7 @@ class ExceptionClass extends Exception
                     header('Location: errors/error-500.html');
                     break;
                 default:
-                    header("Location: index.html");
+                    header("Location: home.html");
             }
         }
     }

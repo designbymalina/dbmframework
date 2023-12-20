@@ -24,7 +24,7 @@
 							<th scope="row"><?php echo $i; ?></th>
 							<td>
 								<div class="dbm-css-tooltip">
-									<span class="text-break"><?php echo '{{url}}public/images/blog/category/photo/' . $image; ?></span>
+									<span class="text-break"><?php echo '{{url}}images/blog/category/photo/' . $image; ?></span>
 									<div class="tooltip-body">
 										<img src="<?php echo path('images/blog/category/thumb/' . $image); ?>" class="img-fluid" alt="Insert to content">
 									</div>
@@ -112,7 +112,7 @@
 							$('#formAlert').html('').append('<div class="alert alert-' + alert['status'] + ' px-2 py-1">' + alert['message'] + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 
 							if (alert['data'] !== undefined) {
-								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>{{url}}public/images/blog/category/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?php echo APP_PATH; ?>public/images/blog/category/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
+								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>{{url}}images/blog/category/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?php echo APP_PATH; ?>public/images/blog/category/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
 								$(".custom-file-label").html('');
 							}
 						} else {

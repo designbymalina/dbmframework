@@ -24,14 +24,14 @@
 							<th scope="row"><?php echo $i; ?></th>
 							<td>
 								<div class="dbm-css-tooltip">
-									<span class="text-break"><?php echo '{{url}}public/images/page/photo/' . $image; ?></span>
+									<span class="text-break"><?php echo '{{url}}images/page/photo/' . $image; ?></span>
 									<div class="tooltip-body">
 										<img src="<?php echo path('images/page/thumb/' . $image); ?>" class="img-fluid" alt="Insert to content">
 									</div>
 								</div>
 							</td>
 							<td class="text-right">
-								<button class="btn btn-primary btn-sm setImage" title="Insert" data-text="<?php echo '{{url}}public/images/page/photo/' . $image; ?>"><i class="fas fa-link"></i></button>
+								<button class="btn btn-primary btn-sm setImage" title="Insert" data-text="<?php echo '{{url}}images/page/photo/' . $image; ?>"><i class="fas fa-link"></i></button>
 								<button class="btn btn-danger btn-sm ml-md-1 deleteImage" title="Delete" data-fid="<?php echo $i; ?>" data-file="<?php echo $image; ?>"><i class="fas fa-trash-alt"></i></button>
 							</td>
 						</tr>
@@ -111,7 +111,7 @@
 							$('#formAlert').html('').append('<div class="alert alert-' + alert['status'] + ' px-2 py-1">' + alert['message'] + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 
 							if (alert['data'] !== undefined) {
-								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>{{url}}public/images/page/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?php echo APP_PATH; ?>public/images/page/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
+								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>{{url}}images/page/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?php echo APP_PATH; ?>public/images/page/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
 								$(".custom-file-label").html('');
 							}
 						} else {
