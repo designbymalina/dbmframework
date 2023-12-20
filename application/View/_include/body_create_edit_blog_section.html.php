@@ -26,7 +26,7 @@
 								<div class="dbm-css-tooltip">
 									<span class="text-break"><?php echo '{{url}}public/images/blog/category/photo/' . $image; ?></span>
 									<div class="tooltip-body">
-										<img src="<?php echo APP_PATH . 'public/images/blog/category/thumb/' . $image; ?>" class="img-fluid" alt="Insert to content">
+										<img src="<?php echo path('images/blog/category/thumb/' . $image); ?>" class="img-fluid" alt="Insert to content">
 									</div>
 								</div>
 							</td>

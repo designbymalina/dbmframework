@@ -7,7 +7,7 @@
 	<meta name="author" content="Design by Malina">
     <meta name="robots" content="noindex,nofollow">
 	<title><?php Dbm\Classes\TemplateClass::trans('meta.title', $data); ?></title>
-	<link href="<?php echo path('images/favicon.ico'); ?>" rel="icon">
+	<link href="<?php echo path('images/favicon.png'); ?>" rel="icon">
 	<!-- Stylesheets -->
 	<link href="<?php echo path('admin/vendor/fontawesome-free/css/all.min.css'); ?>"  type="text/css" rel="stylesheet">
     <link href="<?php echo path('admin/css/sb-admin-2.min.css'); ?>" rel="stylesheet">

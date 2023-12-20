@@ -6,7 +6,7 @@
                 <div class="feature col">
                     <h2><?php Dbm\Classes\TemplateClass::trans('index.content_landingpage_header'); ?></h2>
                     <p><?php Dbm\Classes\TemplateClass::trans('index.content_landingpage_description'); ?></p>
-                    <p class="p-3 bg-info bg-opacity-10 border border-info rounded rounded-3">Zapoznaj się z instrukcją w pliku README.md i skonfiguruj poprawnie aplikacje.</p>
+                    <p class="p-3 bg-info bg-opacity-10 border border-info rounded rounded-3">Zapoznaj się z instrukcją w pliku README.md i skonfiguruj poprawnie aplikacje. Pamiętaj, aby w katalogu głównym oraz katalogu /public/ dla plików .htaccess ustawić prawidłową wartość argumentu RewriteBase. W przypadku instalacji frameworka na serwerze lokalnym (localhost) utwórz katalog np. dbmframework, w tym katalogu dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/. W przypadku instalacji na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu /public/ w katalogu /public/ dla .htaccess ustawić RewriteBase / po czym plik .htaccess w katalogu głównym aplikacji można usunąć.</p>
                     <ul>
                         <li>
                             <a href="home" class="fw-bold">Home</a> - home (index in HomeController)
@@ -29,12 +29,13 @@
                 <div class="feature col">
                     <h2><?php Dbm\Classes\TemplateClass::trans('index.content_blog_header'); ?></h2>
                     <p><?php Dbm\Classes\TemplateClass::trans('index.content_blog_description'); ?></p>
-                    <p class="p-3 bg-info bg-opacity-10 border border-info rounded rounded-3">W celu rejestracji, logowania użytkownika na konto oraz uruchomienia bardziej zaawansowanych funkcjonalności utwórz bazę danych. Przykładowa baza, którą możesz zaimportować dla stworzonego projektu - za pomocą narzędzia (phpMyAdmin) służącego do zarządzania bazą danych - znajduje się w dokumentacji w katalogu Database plik dbm_cms.sql.</p>
+                    <p class="p-3 bg-info bg-opacity-10 border border-info rounded rounded-3">W celu rejestracji, logowania użytkownika na konto oraz uruchomienia bardziej zaawansowanych funkcjonalności utwórz bazę danych. Przykładowa baza, którą możesz zaimportować dla stworzonego projektu znajduje się w katalogu _Documents/Database/ plik dbm_cms.sql. Do importu i zarządzania bazą danych możesz użyć narzędzia np. phpMyAdmin.<br>Dane logowania użytkowników przykładowej bazy danych<br>Login: archie@mail.com lub Malina, Hasło: Admin123, Rola: ADMIN<br>Login: john@mail.com i/lub lucy@mail.com, Hasło: Test123, Rola: USER</p>
+                    <h4>Moduły</h4>
                     <ul>
                         <li><a href="./" class="fw-bold">Blog / Portal</a></li>
                         <li><a href="panel" class="fw-bold">Demo Administration Panel</a></li>
                     </ul>
-                    <h3>Rozszerzenia</h3>
+                    <h4>Rozszerzenia</h4>
                     <ul>
                         <li><a href="#" class="fw-bold" target="_blank">System sprzedaży</a></li>
                         <li><a href="#" class="fw-bold" target="_blank">Skrypt płatności</a></li>

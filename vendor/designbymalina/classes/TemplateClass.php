@@ -112,10 +112,10 @@ class TemplateClass
 
             if ($module === 'panel') {
                 $html = '<span class="mr-2 d-none d-lg-inline text-gray-600 small">' . $name . '</span>';
-                $html .= '<img class="img-profile rounded-circle" src="' . APP_PATH . 'public/images/avatar/' . $avatar . '">' . "\n";
+                $html .= '<img class="img-profile rounded-circle" src="' . APP_PATH . 'images/avatar/' . $avatar . '">' . "\n";
             } else {
                 $html = '<span class="d-none d-lg-inline me-2">' . $login . '</span>';
-                $html .= '<img class="dbm-img-profile rounded-circle" src="' . APP_PATH . 'public/images/avatar/' . $avatar . '">' . "\n";
+                $html .= '<img class="dbm-img-profile rounded-circle" src="' . APP_PATH . 'images/avatar/' . $avatar . '">' . "\n";
             }
 
             echo $html;

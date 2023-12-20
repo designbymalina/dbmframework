@@ -8,7 +8,7 @@
     <meta name="keywords" content="<?php Dbm\Classes\TemplateClass::trans('meta.keywords', $data); ?>">
 	<meta name="description" content="<?php Dbm\Classes\TemplateClass::trans('meta.description', $data); ?>">
 	<title><?php Dbm\Classes\TemplateClass::trans('meta.title', $data); ?></title>
-	<link href="<?php echo path('images/favicon.ico'); ?>" rel="icon">
+	<link href="<?php echo path('images/favicon.png'); ?>" rel="icon">
 	<!-- Stylesheets -->
 	<link href="<?php echo path('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
 	<link href="<?php echo path('assets/css/font/bootstrap-icons.css'); ?>" rel="stylesheet">
