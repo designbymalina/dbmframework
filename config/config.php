@@ -4,8 +4,8 @@
 defined('BASE_DIRECTORY') or die('No direct script access.');
 
 // General settings, *ATTENTION! Configure files .htaccess in folder main and /public for RewriteBase
-define('APP_PATH', 'http://localhost/'); // Path to application (Example: https://domain.com/dbmframework/, option: / or directory_name/ for local)
-define('APP_ENV', "development"); // Application environments, by default "production" leave empty or change to "development"
+define('APP_PATH', 'http://localhost/dbmframework/'); // Path to application (Example: https://domain.com/dbmframework/, option: / or directory_name/ for local)
+define('APP_ENV', "production"); // Application environments, by default "production" (empty) or change to "development"
 define('APP_LANGUAGES', "PL|EN"); // Language default Polish: PL; add additional languages (PL|EN|DE|...) separated by a vertical line
 define('APP_EMAIL', "email@dbm.org.pl"); // E-mail of the owner (adminstrator)
 define('APP_NAME', "Design by Malina"); // Name of the owner (adminstrator)

@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # Rewrite Base; *ATTENTION Configure the path, example for domain /public/ or for directory /folder_name/public/
-RewriteBase /public/
+RewriteBase /dbmframework/public/
 
 ### Rules SEO Friendly (URL)
 RewriteRule ^([a-z]+)\.html$ $1 [L]
