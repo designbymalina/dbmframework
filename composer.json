@@ -1,14 +1,23 @@
 {
-    "type": "project",
-    "license": "proprietary",
+    "name": "dbmframework/dbmframework",
+    "type": "library",
+    "description": "The DbM Framework PHP MVC Simple CMS",
+    "keywords": ["dbmframework", "framework", "version cms"],
+    "homepage": "https://dbm.org.pl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arthur Malinowsky",
+            "email": "biuro@dbm.org.pl"
+        }
+    ],
     "require": {
         "php": "^7.3",
         "phpmailer/phpmailer": "^6.6"
     },
     "autoload": {
         "classmap": [
-            "vendor/designbymalina/",
-            "vendor/classes"
+            "library/dbmframework/"
         ],
         "psr-4": {
             "App\\": "application/"

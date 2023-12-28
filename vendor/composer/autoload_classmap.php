@@ -6,13 +6,12 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Classes\\Przelewy24\\Przelewy24Class' => $vendorDir . '/classes/Przelewy24/Przelewy24Class.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Dbm\\Classes\\DataFlatfileClass' => $vendorDir . '/designbymalina/classes/DataFlatfileClass.php',
-    'Dbm\\Classes\\DatabaseClass' => $vendorDir . '/designbymalina/classes/DatabaseClass.php',
-    'Dbm\\Classes\\ExceptionClass' => $vendorDir . '/designbymalina/classes/ExceptionClass.php',
-    'Dbm\\Classes\\FrameworkClass' => $vendorDir . '/designbymalina/classes/FrameworkClass.php',
-    'Dbm\\Classes\\RoutClass' => $vendorDir . '/designbymalina/classes/RoutClass.php',
-    'Dbm\\Classes\\TemplateClass' => $vendorDir . '/designbymalina/classes/TemplateClass.php',
-    'Dbm\\Classes\\TranslationClass' => $vendorDir . '/designbymalina/classes/TranslationClass.php',
+    'Dbm\\Classes\\DataFlatfileClass' => $baseDir . '/library/dbmframework/classes/DataFlatfileClass.php',
+    'Dbm\\Classes\\DatabaseClass' => $baseDir . '/library/dbmframework/classes/DatabaseClass.php',
+    'Dbm\\Classes\\ExceptionClass' => $baseDir . '/library/dbmframework/classes/ExceptionClass.php',
+    'Dbm\\Classes\\FrameworkClass' => $baseDir . '/library/dbmframework/classes/FrameworkClass.php',
+    'Dbm\\Classes\\RoutClass' => $baseDir . '/library/dbmframework/classes/RoutClass.php',
+    'Dbm\\Classes\\TemplateClass' => $baseDir . '/library/dbmframework/classes/TemplateClass.php',
+    'Dbm\\Classes\\TranslationClass' => $baseDir . '/library/dbmframework/classes/TranslationClass.php',
 );

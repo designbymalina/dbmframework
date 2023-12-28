@@ -29,15 +29,14 @@ class ComposerStaticInit7f6bfa5754964fd75ea2f8eb07df8aea
     );
 
     public static $classMap = array (
-        'Classes\\Przelewy24\\Przelewy24Class' => __DIR__ . '/..' . '/classes/Przelewy24/Przelewy24Class.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Dbm\\Classes\\DataFlatfileClass' => __DIR__ . '/..' . '/designbymalina/classes/DataFlatfileClass.php',
-        'Dbm\\Classes\\DatabaseClass' => __DIR__ . '/..' . '/designbymalina/classes/DatabaseClass.php',
-        'Dbm\\Classes\\ExceptionClass' => __DIR__ . '/..' . '/designbymalina/classes/ExceptionClass.php',
-        'Dbm\\Classes\\FrameworkClass' => __DIR__ . '/..' . '/designbymalina/classes/FrameworkClass.php',
-        'Dbm\\Classes\\RoutClass' => __DIR__ . '/..' . '/designbymalina/classes/RoutClass.php',
-        'Dbm\\Classes\\TemplateClass' => __DIR__ . '/..' . '/designbymalina/classes/TemplateClass.php',
-        'Dbm\\Classes\\TranslationClass' => __DIR__ . '/..' . '/designbymalina/classes/TranslationClass.php',
+        'Dbm\\Classes\\DataFlatfileClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/DataFlatfileClass.php',
+        'Dbm\\Classes\\DatabaseClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/DatabaseClass.php',
+        'Dbm\\Classes\\ExceptionClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/ExceptionClass.php',
+        'Dbm\\Classes\\FrameworkClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/FrameworkClass.php',
+        'Dbm\\Classes\\RoutClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/RoutClass.php',
+        'Dbm\\Classes\\TemplateClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/TemplateClass.php',
+        'Dbm\\Classes\\TranslationClass' => __DIR__ . '/../..' . '/library/dbmframework/classes/TranslationClass.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
