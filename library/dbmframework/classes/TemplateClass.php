@@ -22,7 +22,7 @@ class TemplateClass
     public static function trans(string $key, array $data = null, array $sprint = null): void
     {
         $translation = new TranslationClass();
-        $trans = $translation->Translation();
+        $trans = $translation->translation();
 
         if (!empty($data) && array_key_exists($key, $data)) {
             (!empty($sprint)) ? $value = vsprintf($data[$key], $sprint) : $value = $data[$key];

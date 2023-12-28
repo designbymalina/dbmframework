@@ -14,29 +14,8 @@ use Dbm\Classes\TranslationClass;
 
 class LoginModel extends DatabaseClass
 {
-    public const VALIDATION_LOGIN = 'loginNotFound';
-    public const VALIDATION_PASSWORD = 'passwordNotMatched';
-
-    public function userSigninCorrect(array $params, string $password): ?string
-    {
-        $query = "SELECT * FROM dbm_user WHERE (login=:login OR email=:email) AND verified=true LIMIT 1";
-
-        if ($this->queryExecute($query, $params)) {
-            if ($this->rowCount() > 0) {
-                $result = $this->fetchObject();
-
-                if (password_verify($password, $result->password)) {
-                    return $result->id;
-                } else {
-                    return self::VALIDATION_PASSWORD;
-                }
-            } else {
-                return self::VALIDATION_LOGIN;
-            }
-        } else {
-            return null;
-        }
-    }
+    private const VALIDATION_LOGIN = 'loginNotFound';
+    private const VALIDATION_PASSWORD = 'passwordNotMatched';
 
     public function validateLoginForm(string $login, string $password): array
     {
@@ -68,5 +47,26 @@ class LoginModel extends DatabaseClass
         }
 
         return $data;
+    }
+
+    private function userSigninCorrect(array $params, string $password): ?string
+    {
+        $query = "SELECT * FROM dbm_user WHERE (login=:login OR email=:email) AND verified=true LIMIT 1";
+
+        if ($this->queryExecute($query, $params)) {
+            if ($this->rowCount() > 0) {
+                $result = $this->fetchObject();
+
+                if (password_verify($password, $result->password)) {
+                    return (string) $result->id;
+                } else {
+                    return self::VALIDATION_PASSWORD;
+                }
+            } else {
+                return self::VALIDATION_LOGIN;
+            }
+        } else {
+            return null;
+        }
     }
 }

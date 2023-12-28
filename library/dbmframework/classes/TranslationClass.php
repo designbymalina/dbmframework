@@ -18,9 +18,9 @@ class TranslationClass
     private const PATH_TRANSLATION = '../translations/language.';
 
     /* Switch translation */
-    public function Translation(): array
+    public function translation(): array
     {
-        $language = $this->Language();
+        $language = $this->language();
         $pathTranslation = self::PATH_TRANSLATION . strtolower($language) . '.php';
 
         if (file_exists($pathTranslation)) {
@@ -33,7 +33,7 @@ class TranslationClass
     /* TODO! Method trans() can be used in template and another places (controller, model, service) */
     public function trans(string $key, array $data = null, array $sprint = null): string
     {
-        $trans = $this->Translation();
+        $trans = $this->translation();
 
         if (!empty($data) && array_key_exists($key, $data)) {
             (!empty($sprint)) ? $value = vsprintf($data[$key], $sprint) : $value = $data[$key];
@@ -47,7 +47,7 @@ class TranslationClass
     }
 
     /* Get language */
-    private function Language(): string
+    private function language(): string
     {
         $cookieName = 'DbmLanguage';
         $languageDefault = 'EN';

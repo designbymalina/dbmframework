@@ -172,22 +172,20 @@ class FrameworkClass
     }
 
     // User permissions
-    public function userPermissions(int $user): string
+    public function userPermissions(int $id): ?string
     {
-        $database = new DbmDatabase();
+        $database = new DbmDatabase(); // TODO! Jak zmienic, aby bylo OK?
 
-        $query = "SELECT roles FROM dbm_user WHERE id = ?";
+        $query = "SELECT roles FROM dbm_user WHERE id = ?"; // TODO! Jak to jest z :id lub znakiem zapytania, czy tak samo jest bezpieczne?
 
-        if ($database->queryExecute($query, [$user])) {
-            if ($database->rowCount() > 0) {
-                $data = $database->fetchObject();
+        $database->queryExecute($query, [$id]);
 
-                return $data->roles;
-            } else {
-                return 'dataNotFound';
-            }
-        } else {
-            return 'dataQueryError';
+        if ($database->rowCount() > 0) {
+            $data = $database->fetchObject();
+
+            return $data->roles;
         }
+
+        return null;
     }
 }
