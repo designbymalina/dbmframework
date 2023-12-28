@@ -108,8 +108,8 @@ class RegisterModel extends DatabaseClass
         if ($stmt->rowCount() > 0) {
             return true;
         }
-        
-        return false; 
+
+        return false;
     }
 
     private function checkEmail(string $email): bool
@@ -121,7 +121,7 @@ class RegisterModel extends DatabaseClass
         if ($stmt->rowCount() > 0) {
             return true;
         }
-        
-        return false; 
+
+        return false;
     }
 }

@@ -140,7 +140,7 @@ class PanelModel extends DatabaseClass
     {
         $query = "INSERT INTO dbm_article_sections (section_name, section_description, section_keywords, image_thumb)"
             . " VALUES (:name, :description, :keywords, :thumb)";
-            
+
         return $this->queryExecute($query, $data);
     }
 

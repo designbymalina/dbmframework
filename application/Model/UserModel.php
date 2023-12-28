@@ -24,7 +24,7 @@ class UserModel extends DatabaseClass
         if ($this->rowCount() > 0) {
             return $this->fetchObject();
         }
-        
+
         return null;
     }
 }

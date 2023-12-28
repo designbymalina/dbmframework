@@ -33,7 +33,7 @@ class AccountController extends FrameworkClass
     {
         $translation = $this->translation;
         $id = (int) $this->getSession('dbmUserId');
-        
+
         $userAccount = $this->controllerModel->userAccount($id);
 
         $data = [
