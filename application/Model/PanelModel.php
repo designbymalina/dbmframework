@@ -5,6 +5,8 @@
  * DbM: www.dbm.org.pl
  */
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Dbm\Classes\DatabaseClass;
@@ -82,7 +84,7 @@ class PanelModel extends DatabaseClass
         return (object) [];
     }
 
-    public function getLastId(): int
+    public function getLastId(): ?string
     {
         return $this->lastInsertId();
     }
