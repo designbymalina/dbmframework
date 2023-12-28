@@ -23,7 +23,7 @@ define('BASE_DIRECTORY', str_replace('public' . DS, '', realpath(dirname(__FILE_
 define('BASE_FILE', $file_basename);
 
 ### ERROR HANDLING, logging error handling ###
-require(BASE_DIRECTORY . 'vendor' . DS . 'designbymalina/methods/StartMethod.php');
+require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/StartMethod.php');
 
 function reportingErrorHandler($errLevel, $errMessage, $errFile, $errLine)
 {
@@ -54,7 +54,7 @@ require(BASE_DIRECTORY . 'config' . DS . 'config.php');
 require(BASE_DIRECTORY . 'config' . DS . 'constants.php');
 require(BASE_DIRECTORY . 'vendor' . DS . 'autoload.php');
 /* Template methods */
-require(BASE_DIRECTORY . 'vendor' . DS . 'designbymalina/methods/TemplateMethod.php');
+require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/TemplateMethod.php');
 
 ### RENDER PAGE ###
 use Dbm\Classes\RoutClass;

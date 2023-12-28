@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # Rewrite Base; *ATTENTION Configure the path, example for domain / or for directory /DbMFramework/
-RewriteBase /dbmframework/
+RewriteBase /__TESTY/DbMFrameworkGIT/
 
 # Rewrite Rules
 RewriteRule ^$ public/ [L]

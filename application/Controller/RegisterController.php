@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Dbm\Classes\FrameworkClass;
 use App\Service\MailerService;
+use Dbm\Classes\FrameworkClass;
 use Dbm\Classes\TranslationClass;
 
 class RegisterController extends FrameworkClass

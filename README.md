@@ -31,8 +31,7 @@ UWAGA! Wolna licencja ma tylko jedno ograniczenie. Jeśli chcesz skorzystać z f
 
 ## Instalacja i konfiguracja
 
-Pobierz DbM Framework i przenieś zawartość na serwer. Po skopiowaniu plików na wstępie przejdź do pliku config.php i uzupełnij wymagane dane konfiguracji.
-Następnie w katalogu głównym oraz katalogu /public/ dla plików .htaccess ustaw prawidłową wartość argumentu RewriteBase.  
+Pobierz DbM Framework i przenieś zawartość na serwer. Po skopiowaniu plików na wstępie przejdź do pliku config.php.dist i zmień nazwę na config.php, następnie uzupełnij wymagane dane konfiguracji. W kolejnym kroku w katalogu głównym oraz katalogu /public/ dla plików .htaccess ustaw prawidłową wartość argumentu RewriteBase.  
 W przypadku instalacji frameworka na serwerze lokalnym (localhost) utwórz katalog np. dbmframework, w tym katalogu dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/. W przypadku instalacji na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu /public/ w katalogu /public/ dla .htaccess ustawić RewriteBase / po czym plik .htaccess w katalogu głównym aplikacji można usunąć.
 
 ### Data FlatFile .txt (dane w plikach tekstowych)
