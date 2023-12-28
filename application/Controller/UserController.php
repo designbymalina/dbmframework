@@ -22,9 +22,9 @@ class UserController extends FrameworkClass
 
     public function index()
     {
-        $id = $this->requestData('id');
+        $id = (int) $this->requestData('id');
 
-        $userAccount = $this->controllerModel->userAccount([':id' => $id]);
+        $userAccount = $this->controllerModel->userAccount($id);
 
         $data = [
             'data.user' => $userAccount,

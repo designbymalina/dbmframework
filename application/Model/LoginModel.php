@@ -12,8 +12,8 @@ use Dbm\Classes\TranslationClass;
 
 class LoginModel extends DatabaseClass
 {
-    public const VALID_LOGIN = 'loginNotFound';
-    public const VALID_PASSWORD = 'passwordNotMatched';
+    public const VALIDATION_LOGIN = 'loginNotFound';
+    public const VALIDATION_PASSWORD = 'passwordNotMatched';
 
     public function userSigninCorrect(array $params, string $password): ?string
     {
@@ -26,10 +26,10 @@ class LoginModel extends DatabaseClass
                 if (password_verify($password, $result->password)) {
                     return $result->id;
                 } else {
-                    return self::VALID_PASSWORD;
+                    return self::VALIDATION_PASSWORD;
                 }
             } else {
-                return self::VALID_LOGIN;
+                return self::VALIDATION_LOGIN;
             }
         } else {
             return null;
@@ -54,9 +54,9 @@ class LoginModel extends DatabaseClass
             $correctUser = $this->userSigninCorrect($queryParams, $password);
 
             if (!empty($correctUser)) {
-                if ($correctUser == self::VALID_LOGIN) {
+                if ($correctUser == self::VALIDATION_LOGIN) {
                     $data['error_login'] = $translation->trans('login.message.login_incorrect');
-                } elseif ($correctUser == self::VALID_PASSWORD) {
+                } elseif ($correctUser == self::VALIDATION_PASSWORD) {
                     $data['error_password'] = $translation->trans('login.message.password_incorrect');
                 } else {
                     // INFO: $userKey name identical to the key in LoginController.php -> signinMethod()

@@ -16,64 +16,76 @@ use PDOException;
 use PDOStatement;
 use Dbm\Classes\ExceptionClass as DbmException;
 
-/*
- * TODO! Dbm Exception Class dla zapytan SQL -> patrz do queryExecute()
-*/
 class DatabaseClass
 {
+    /* ? private $dbHost = DB_HOST;
+    private $dbUser = DB_USER;
+    private $dbPass = DB_PASSWORD;
+    private $dbName = DB_DATABASE; */
     private $connect;
     private $result;
 
     public function __construct()
     {
         try {
-            $this->connect = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE, DB_USER, DB_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
-            $this->connect->exec("SET NAMES utf8");
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+            ];
 
-            return $this->connect;
+            $this->connect = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE, DB_USER, DB_PASSWORD, $options);
+
+            /* $this->connect = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE, DB_USER, DB_PASSWORD);
+            $this->connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connect->exec("SET NAMES utf8"); */
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->getCode());
         }
     }
 
-    public function querySql(string $sql, ?string $fetch = null): PDOStatement
+    public function querySql(string $query, ?string $fetch = null): PDOStatement
     {
-        if ($fetch == 'assoc') {
-            $stmt = $this->connect->query($sql, PDO::FETCH_ASSOC);
-        } else {
-            $stmt = $this->connect->query($sql);
-        }
-
-        if (!$stmt) {
-            throw new DbmException($this->connect->errorInfo()[2], $this->connect->errorInfo()[1]);
-        } else {
-            return $stmt;
+        try {
+            if ($fetch == 'assoc') {
+                return $this->connect->query($query, PDO::FETCH_ASSOC);
+            } else {
+                return $this->connect->query($query);
+            }
+        } catch (PDOException $exception) {
+            throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
     }
 
-    public function queryExecute(string $sql, ?array $params = []): bool
+    public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool
     {
         // TODO! Czy $this->result jest ok?
-        $this->result = $this->connect->prepare($sql);
-
-        if (empty($params)) {
-            return $this->result->execute();
-        } else {
-            $first = array_key_first($params);
-
-            if (is_string($first)) {
-                foreach ($params as $key => &$value) {
-                    $this->result->bindParam($key, $value);
-                }
-
+        try {
+            $this->result = $this->connect->prepare($query);
+    
+            if (empty($params)) {
                 return $this->result->execute();
+            } else {
+                $first = array_key_first($params);
+    
+                if (is_string($first)) {
+                    foreach ($params as $key => &$value) {
+                        is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
+
+                        if (!$reference) {
+                            $this->result->bindValue($key, $value, $type);
+                        } else {
+                            $this->result->bindParam($key, $value, $type);
+                        }
+                    }
+
+                    return $this->result->execute();
+                }
+    
+                return $this->result->execute($params);
             }
-
-            return $this->result->execute($params);
+        } catch (PDOException $exception) {
+            throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
-
-        // TODO! Jak wyswietlic blad w zapytaniu (SQL Exception)?
-        // $this->result->debugDumpParams();
     }
 
     public function rowCount(): int
@@ -109,13 +121,13 @@ class DatabaseClass
         return $this->result->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function errorInfo(): array
+    public function debugDumpParams(): ?string
     {
-        return $this->result->errorInfo();
+        return $this->result->debugDumpParams();
     }
 
     public function lastInsertId(): ?string
     {
         return $this->connect->lastInsertId();
-    }
+    }    
 }

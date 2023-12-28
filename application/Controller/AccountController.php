@@ -32,8 +32,9 @@ class AccountController extends FrameworkClass
     public function index()
     {
         $translation = $this->translation;
-        $id = $this->getSession('dbmUserId');
-        $userAccount = $this->controllerModel->userAccount([':id' => $id]);
+        $id = (int) $this->getSession('dbmUserId');
+        
+        $userAccount = $this->controllerModel->userAccount($id);
 
         $data = [
             'meta.title' => $translation->trans('account.title') . ' - ' . $translation->trans('website.name'),

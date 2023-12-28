@@ -13,9 +13,7 @@ use Dbm\Classes\DatabaseClass;
 use Dbm\Classes\TranslationClass;
 
 /*
- * TODO!
- *  1. __construct() -> translation itp.?
- *  2. Poprawic wyswietlanie bledow w ClassModel! Nie wyswietla szczegolowych informacji gdzie jest blad w zapytaniu (tylko ogolny blad)?
+ * TODO! __construct() -> translation itp.?
  */
 class RegisterModel extends DatabaseClass
 {
@@ -28,12 +26,41 @@ class RegisterModel extends DatabaseClass
             $userId = $this->lastInsertId();
             $query = "INSERT INTO dbm_user_details (user_id) VALUES ($userId)";
 
-            if ($this->queryExecute($query)) {
-                return true;
-            }
+            return $this->queryExecute($query);
         }
 
         return false;
+    }
+
+    public function verifiedAccountEmail(): array
+    {
+        $translation = new TranslationClass(); // TODO! Powtarza sie, zmien to?!
+
+        if (isset($_GET['token'])) {
+            $token = trim($_GET['token']);
+
+            $query = "SELECT token FROM dbm_user WHERE token = :token AND verified = false LIMIT 1";
+
+            if ($this->queryExecute($query, [':token' => $token])) {
+                if ($this->rowCount() > 0) {
+                    $query = "UPDATE dbm_user SET verified = true WHERE token = :token";
+
+                    if ($this->queryExecute($query, [':token' => $token])) {
+                        $message = ['type' => "messageSuccess", 'message' => $translation->trans('register.alert.account_verified')];
+                    } else {
+                        $message = ['type' => "messageDanger", 'message' => $translation->trans('alert.unexpected_error')];
+                    }
+                } else {
+                    $message = ['type' => "messageWarning", 'message' => $translation->trans('register.alert.token_expired')];
+                }
+            } else {
+                $message = ['type' => "messageDanger", 'message' => $translation->trans('alert.unexpected_error')];
+            }
+        } else {
+            $message = ['type' => "messageDanger", 'message' => $translation->trans('register.alert.no_token')];
+        }
+
+        return $message;
     }
 
     public function validateRegisterForm(string $login, string $email, string $password, string $confirmation): array
@@ -45,7 +72,7 @@ class RegisterModel extends DatabaseClass
             $data['error_login'] = $translation->trans('register.alert.login_required');
         } elseif (!preg_match("/^[a-z\d_]{2,30}$/i", $login)) {
             $data['error_login'] = $translation->trans('register.alert.login_pattern');
-        } elseif ($this->checkLogin([$login])) {
+        } elseif ($this->checkLogin($login)) {
             $data['error_login'] = $translation->trans('register.alert.login_exist');
         }
 
@@ -53,7 +80,7 @@ class RegisterModel extends DatabaseClass
             $data['error_email'] = $translation->trans('register.alert.email_required');
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $data['error_email'] = $translation->trans('register.alert.email_filter');
-        } elseif ($this->checkEmail([$email])) {
+        } elseif ($this->checkEmail($email)) {
             $data['error_email'] = $translation->trans('register.alert.email_exist');
         }
 
@@ -72,60 +99,29 @@ class RegisterModel extends DatabaseClass
         return $data;
     }
 
-    public function verifiedAccountEmail(): array
+    private function checkLogin(string $login): bool
     {
-        $translation = new TranslationClass(); // TODO! Powtarza sie, zmien to?!
+        $query = "SELECT login FROM dbm_user WHERE login = '$login' LIMIT 1";
 
-        if (isset($_GET['token'])) {
-            $token = trim($_GET['token']);
+        $stmt = $this->querySql($query);
 
-            $query = "SELECT token FROM dbm_user WHERE token='$token' AND verified=false LIMIT 1";
-
-            if ($this->queryExecute($query)) {
-                if ($this->rowCount() > 0) {
-                    $query = "UPDATE dbm_user SET verified=1 WHERE token='$token'";
-
-                    if ($this->queryExecute($query)) {
-                        $message = ['type' => "messageSuccess", 'message' => $translation->trans('register.alert.account_verified')];
-                    } else {
-                        $message = ['type' => "messageDanger", 'message' => $translation->trans('alert.unexpected_error')];
-                    }
-                } else {
-                    $message = ['type' => "messageWarning", 'message' => $translation->trans('register.alert.token_expired')];
-                }
-            } else {
-                $message = ['type' => "messageDanger", 'message' => $translation->trans('alert.unexpected_error')];
-            }
-        } else {
-            $message = ['type' => "messageDanger", 'message' => $translation->trans('register.alert.no_token')];
+        if ($stmt->rowCount() > 0) {
+            return true;
         }
-
-        return $message;
+        
+        return false; 
     }
 
-    private function checkLogin(array $data): bool
+    private function checkEmail(string $email): bool
     {
-        $query = "SELECT login FROM dbm_user WHERE login = ? LIMIT 1";
+        $query = "SELECT email FROM dbm_user WHERE email = '$email' LIMIT 1";
 
-        if ($this->queryExecute($query, $data)) {
-            if ($this->rowCount() > 0) {
-                return true;
-            }
+        $stmt = $this->querySql($query);
 
-            return false;
+        if ($stmt->rowCount() > 0) {
+            return true;
         }
-    }
-
-    private function checkEmail(array $data): bool
-    {
-        $query = "SELECT email FROM dbm_user WHERE email = ? LIMIT 1";
-
-        if ($this->queryExecute($query, $data)) {
-            if ($this->rowCount() > 0) {
-                return true;
-            }
-
-            return false;
-        }
+        
+        return false; 
     }
 }

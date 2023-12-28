@@ -13,9 +13,9 @@ class PanelModel extends DatabaseClass
 {
     public function getAllArticlesLimit(int $limit): array
     {
-        $query = "SELECT page_header FROM dbm_article ORDER BY created DESC LIMIT $limit";
+        $query = "SELECT page_header FROM dbm_article ORDER BY created DESC LIMIT :limit";
 
-        $this->queryExecute($query);
+        $this->queryExecute($query, [':limit' => $limit]);
 
         if ($this->rowCount() > 0) {
             return $this->fetchAllObject();
@@ -71,9 +71,9 @@ class PanelModel extends DatabaseClass
 
     public function getArticle(int $id): object
     {
-        $query = "SELECT * FROM dbm_article WHERE id = '$id'";
+        $query = "SELECT * FROM dbm_article WHERE id = :id";
 
-        $this->queryExecute($query);
+        $this->queryExecute($query, [':id' => $id]);
 
         if ($this->rowCount() > 0) {
             return $this->fetchObject();
@@ -92,11 +92,7 @@ class PanelModel extends DatabaseClass
         $query = "INSERT INTO dbm_article (user_id, section_id, meta_title, meta_description, meta_keywords, page_header, page_content, image_thumb)"
             ." VALUES (:uid, :sid, :title, :description, :keywords, :header, :content, :thumb)";
 
-        if ($this->queryExecute($query, $data)) {
-            return true;
-        }
-
-        return false;
+        return $this->queryExecute($query, $data);
     }
 
     public function updateArticle($data): bool
@@ -104,31 +100,23 @@ class PanelModel extends DatabaseClass
         $query = "UPDATE dbm_article"
             . " SET user_id=:uid, section_id=:sid, meta_title=:title, meta_description=:description, meta_keywords=:keywords"
             . ", page_header=:header, page_content=:content, image_thumb=:thumb, modified=:date"
-            . " WHERE id=:id";
+            . " WHERE id = :id";
 
-        if ($this->queryExecute($query, $data)) {
-            return true;
-        }
-
-        return false;
+        return $this->queryExecute($query, $data);
     }
 
     public function deleteArticle(int $id): bool
     {
-        $query = "DELETE FROM dbm_article WHERE id = '$id'";
+        $query = "DELETE FROM dbm_article WHERE id = :id";
 
-        if ($this->queryExecute($query)) {
-            return true;
-        }
-
-        return false;
+        return $this->queryExecute($query, [':id' => $id]);
     }
 
     public function getSection(int $id): object
     {
-        $query = "SELECT * FROM dbm_article_sections WHERE id = '$id'";
+        $query = "SELECT * FROM dbm_article_sections WHERE id = :id";
 
-        $this->queryExecute($query);
+        $this->queryExecute($query, [':id' => $id]);
 
         if ($this->rowCount() > 0) {
             return $this->fetchObject();
@@ -140,37 +128,25 @@ class PanelModel extends DatabaseClass
     public function updateSection($data): bool
     {
         $query = "UPDATE dbm_article_sections"
-            . " SET section_name=:name, section_description=:description, section_keywords=:keywords, image_thumb=:thumb"
-            . " WHERE id=:id";
+            . " SET section_name = :name, section_description = :description, section_keywords = :keywords, image_thumb = :thumb"
+            . " WHERE id = :id";
 
-        if ($this->queryExecute($query, $data)) {
-            return true;
-        }
-
-        return false;
+        return $this->queryExecute($query, $data);
     }
 
     public function insertSection(array $data): bool
     {
         $query = "INSERT INTO dbm_article_sections (section_name, section_description, section_keywords, image_thumb)"
             . " VALUES (:name, :description, :keywords, :thumb)";
-
-        if ($this->queryExecute($query, $data)) {
-            return true;
-        }
-
-        return false;
+            
+        return $this->queryExecute($query, $data);
     }
 
     public function deleteSection(int $id): bool
     {
-        $query = "DELETE FROM dbm_article_sections WHERE id = '$id'";
+        $query = "DELETE FROM dbm_article_sections WHERE id = :id";
 
-        if ($this->queryExecute($query)) {
-            return true;
-        }
-
-        return false;
+        return $this->queryExecute($query, [':id' => $id]);
     }
 
     public function arraySections(): array
