@@ -21,6 +21,13 @@ class FrameworkClass
     private const FILE_BASE = 'base.html.php';
     private const FILE_BASE_PANEL = 'base_panel.html.php';
     private const FILE_BASE_OFFER = 'base_offer.html.php';
+    
+    /*protected $database;
+
+    public function __construct(DbmDatabase $database)
+    {
+        $this->database = $database;
+    }*/
 
     // View Page Template
     public function view(string $fileName, array $data = []): void
@@ -78,21 +85,14 @@ class FrameworkClass
         if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'post') {
             if (array_key_exists($fieldName, $_POST)) {
                 return trim($_POST[$fieldName]);
+            } elseif (array_key_exists($fieldName, $_GET)) {
+                return trim($_GET[$fieldName]);
             }
         } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'get') {
             if (array_key_exists($fieldName, $_GET)) {
                 return trim($_GET[$fieldName]);
             }
         }
-    }
-
-    // Set data to database
-    public function setDataToDB($value)
-    {
-        $value = strip_tags($value);
-        $value = htmlspecialchars($value);
-
-        return $value;
     }
 
     // Set session
@@ -180,12 +180,12 @@ class FrameworkClass
 
         $database->queryExecute($query, [$id]);
 
-        if ($database->rowCount() > 0) {
-            $data = $database->fetchObject();
-
-            return $data->roles;
+        if ($database->rowCount() == 0) {
+            return null;
         }
 
-        return null;
+        $data = $database->fetchObject();
+
+        return $data->roles;
     }
 }

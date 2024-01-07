@@ -21,10 +21,10 @@ class UserModel extends DatabaseClass
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return null;
+        return $this->fetchObject();
     }
 }

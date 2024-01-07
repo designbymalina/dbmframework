@@ -42,6 +42,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php if ($data['articles'] != null): ?>
                                         <?php foreach ($data['articles'] as $item): ?>
                                         <tr>
                                             <td class="font-weight-bold"><?php echo $item->aid; ?></td>
@@ -53,6 +54,7 @@
                                             <td class="text-right"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h mr-1"></i></button><div class="dropdown-menu dropdown-menu-right"><a href="<?php echo 'createOrEditBlog?id=' . $item->aid; ?>" class="dropdown-item text-primary" type="button">Edit</a><button type="button" class="dropdown-item text-danger deleteArticle" data-toggle="modal" data-target=".deleteModal" data-id="<?php echo $item->aid; ?>">Delete</button></div></div></td>
                                         </tr>
                                         <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>

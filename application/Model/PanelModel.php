@@ -13,20 +13,20 @@ use Dbm\Classes\DatabaseClass;
 
 class PanelModel extends DatabaseClass
 {
-    public function getAllArticlesLimit(int $limit): array
+    public function getAllArticlesLimit(int $limit): ?array
     {
         $query = "SELECT page_header FROM dbm_article ORDER BY created DESC LIMIT :limit";
 
         $this->queryExecute($query, [':limit' => $limit]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return [];
+        return $this->fetchAllObject();
     }
 
-    public function getJoinArticlesFirst(): array
+    public function getJoinArticlesFirst(): ?array
     {
         $query = "SELECT article.id AS aid, article.page_header, article.created, article.modified, section.section_name, user_details.fullname"
             . " FROM dbm_article article"
@@ -36,27 +36,27 @@ class PanelModel extends DatabaseClass
 
         $this->queryExecute($query);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return [];
+        return $this->fetchAllObject();
     }
 
-    public function getAllSections(): array
+    public function getAllSections(): ?array
     {
         $query = "SELECT * FROM dbm_article_sections ORDER BY id DESC";
 
         $this->queryExecute($query);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return [];
+        return $this->fetchAllObject();
     }
 
-    public function getAllUsers(): array
+    public function getAllUsers(): ?array
     {
         $query = "SELECT user.id, user.login, details.fullname FROM dbm_user user"
             . " JOIN dbm_user_details details ON details.user_id = user.id"
@@ -64,29 +64,29 @@ class PanelModel extends DatabaseClass
 
         $this->queryExecute($query);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return [];
+        return $this->fetchAllObject();
     }
 
-    public function getArticle(int $id): object
+    public function getArticle(int $id): ?object
     {
         $query = "SELECT * FROM dbm_article WHERE id = :id";
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return (object) [];
+        return $this->fetchObject();
     }
 
     public function getLastId(): ?string
     {
-        return $this->lastInsertId();
+        return $this->getLastInsertId();
     }
 
     public function insertArticle(array $data): bool
@@ -114,17 +114,17 @@ class PanelModel extends DatabaseClass
         return $this->queryExecute($query, [':id' => $id]);
     }
 
-    public function getSection(int $id): object
+    public function getSection(int $id): ?object
     {
         $query = "SELECT * FROM dbm_article_sections WHERE id = :id";
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return (object) [];
+        return $this->fetchObject();
     }
 
     public function updateSection($data): bool
@@ -168,11 +168,11 @@ class PanelModel extends DatabaseClass
         $result = [];
         $users = $this->getAllUsers();
 
-        foreach ($users as $value) {
-            if ($value->fullname !== null) {
-                $result[$value->id] = $value->fullname . ' (' . $value->login .')';
-            } else {
-                $result[$value->id] = $value->login;
+        if ($users) {
+            foreach ($users as $value) {
+                ($value->fullname !== null)
+                ? $result[$value->id] = $value->fullname . ' (' . $value->login .')'
+                : $result[$value->id] = $value->login;
             }
         }
 

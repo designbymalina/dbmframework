@@ -32,7 +32,7 @@ class LoginModel extends DatabaseClass
 
         if (empty($data['error_login']) && empty($data['error_password'])) {
             $queryParams = [':login' => $login, ':email' => $login];
-            $correctUser = $this->userSigninCorrect($queryParams, $password);
+            $correctUser = $this->checkIsUserCorrect($queryParams, $password);
 
             if (!empty($correctUser)) {
                 if ($correctUser == self::VALIDATION_LOGIN) {
@@ -49,24 +49,22 @@ class LoginModel extends DatabaseClass
         return $data;
     }
 
-    private function userSigninCorrect(array $params, string $password): ?string
+    private function checkIsUserCorrect(array $params, string $password): string
     {
         $query = "SELECT * FROM dbm_user WHERE (login=:login OR email=:email) AND verified=true LIMIT 1";
 
-        if ($this->queryExecute($query, $params)) {
-            if ($this->rowCount() > 0) {
-                $result = $this->fetchObject();
+        $this->queryExecute($query, $params);
 
-                if (password_verify($password, $result->password)) {
-                    return (string) $result->id;
-                } else {
-                    return self::VALIDATION_PASSWORD;
-                }
-            } else {
-                return self::VALIDATION_LOGIN;
-            }
-        } else {
-            return null;
+        if ($this->rowCount() == 0) {
+            return self::VALIDATION_LOGIN;
         }
+
+        $result = $this->fetchObject();
+
+        if (!password_verify($password, $result->password)) {
+            return self::VALIDATION_PASSWORD;
+        }
+
+        return $result->id;
     }
 }

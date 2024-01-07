@@ -190,6 +190,21 @@ class PanelController extends FrameworkClass
         $allUsers = $this->controllerModel->arrayUsers();
         $dataArticle = $this->controllerModel->getArticle($id);
 
+        $arrayFields = [];
+
+        if ($dataArticle) {
+            $arrayFields = [
+                'keywords' => $dataArticle->meta_keywords,
+                'description' => $dataArticle->meta_description,
+                'title' => $dataArticle->meta_title,
+                'header' => $dataArticle->page_header,
+                'content' => $dataArticle->page_content,
+                'image' => $dataArticle->image_thumb,
+                'sid' => (int) $dataArticle->section_id,
+                'uid' => (int) $dataArticle->user_id,
+            ];
+        }
+
         if (!empty($id) && ($id !== 0)) {
             $data = [
                 'meta.title' => "Article editing - Dashboard DbM Framework",
@@ -200,16 +215,7 @@ class PanelController extends FrameworkClass
                 'images' => $imageFiles,
                 'sections' => $allSections,
                 'users' => $allUsers,
-                'fields' => (object) [
-                    'keywords' => $dataArticle->meta_keywords,
-                    'description' => $dataArticle->meta_description,
-                    'title' => $dataArticle->meta_title,
-                    'header' => $dataArticle->page_header,
-                    'content' => $dataArticle->page_content,
-                    'image' => $dataArticle->image_thumb,
-                    'sid' => (int) $dataArticle->section_id,
-                    'uid' => (int) $dataArticle->user_id,
-                ],
+                'fields' => (object) $arrayFields,
             ];
         } else {
             $data = [
@@ -340,6 +346,17 @@ class PanelController extends FrameworkClass
         $imageFiles = array_diff(scandir(self::DIR_IMG_SECTION), array('..', '.'));
         $dataSection = $this->controllerModel->getSection($id);
 
+        $arrayFields = [];
+
+        if ($dataSection) {
+            $arrayFields = [
+                'keywords' => $dataSection->section_keywords,
+                'description' => $dataSection->section_description,
+                'name' => $dataSection->section_name,
+                'image' => $dataSection->image_thumb,
+            ];
+        }
+
         if (!empty($id) && ($id !== 0)) {
             $data = [
                 'meta.title' => "Section editing - Dashboard DbM Framework",
@@ -348,12 +365,7 @@ class PanelController extends FrameworkClass
                 'submit' => '<i class="fa fa-edit mr-2"></i>Edit',
                 'id' => $id,
                 'images' => $imageFiles,
-                'fields' => (object) [
-                    'keywords' => $dataSection->section_keywords,
-                    'description' => $dataSection->section_description,
-                    'name' => $dataSection->section_name,
-                    'image' => $dataSection->image_thumb,
-                ],
+                'fields' => (object) $arrayFields,
             ];
         } else {
             $data = [

@@ -5,7 +5,7 @@
         include(BASE_DIRECTORY . 'application/View/_include/messages.html.php');
         // Page data
         !empty($data['user']) ? $user = $data['user'] : $user = null;
-        $user->avatar ? $avatar = $user->avatar : $avatar = 'no-avatar.png';
+        !empty($user->avatar) ? $avatar = $user->avatar : $avatar = 'no-avatar.png';
     ?>
     <!-- Breadcrumb -->
     <section class="container">

@@ -30,10 +30,7 @@ class DataFlatfileClass
 
             if (!empty($arrayData[$type])) {
                 if ($type === $arrKeys[3]) {
-                    $string = array("\n", "{{url}}");
-                    $replace = array("\n".$sign, APP_PATH);
-
-                    $result = trim(str_replace($string, $replace, $arrayData[$type])) . "\n";
+                    $result = $this->replaceContent($arrayData[$type], $sign);
                 } else {
                     $result = strip_tags(trim($arrayData[$type]));
                 }
@@ -48,32 +45,44 @@ class DataFlatfileClass
         return $result;
     }
 
-    private function fileName(): string
+    private function fileName(): ?string
     {
-        if (isset($_GET['url'])) {
-            $url = $_GET['url'];
-            $str = ['/','.html'];
-            $rep = ['-',''];
-
-            $url = str_replace($str, $rep, $url);
-            $url = trim($url . '.txt');
-
-            return $url;
+        if (!isset($_GET['url'])) {
+            return null;
         }
+
+        $url = $_GET['url'];
+        $str = ['/','.html'];
+        $rep = ['-',''];
+
+        $url = str_replace($str, $rep, $url);
+        $url = trim($url . '.txt');
+
+        return $url;
     }
 
     private function arrayFillKeys(array $arrayKeys, array $arrayValues): ?array
     {
-        if (is_array($arrayKeys)) {
-            foreach($arrayKeys as $key => $value) {
-                if (array_key_exists($key, $arrayValues)) {
-                    $arrayFilled[$value] = $arrayValues[$key];
-                }
-            }
-
-            return $arrayFilled;
+        if (!is_array($arrayKeys)) {
+            return null;
         }
 
-        return null;
+        $arrayFilled = [];
+
+        foreach($arrayKeys as $key => $value) {
+            if (array_key_exists($key, $arrayValues)) {
+                $arrayFilled[$value] = $arrayValues[$key];
+            }
+        }
+
+        return $arrayFilled;
+    }
+
+    private function replaceContent(string $content, string $sign = ''): string
+    {
+        $search = array("\n", "{{url}}");
+        $replace = array("\n" . $sign, APP_PATH);
+        
+        return trim(str_replace($search, $replace, $content)) . "\n";
     }
 }

@@ -29,25 +29,25 @@
                     ?>
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <form action="<?php echo path('panel/'. $data['action']); ?>" method="POST" novalidate>
+                            <form action="<?php echo path('panel/'. $data['action']); ?>" method="POST">
                                 <div class="form-group">
                                     <?php if (!empty($data['id'])) echo '<span class="float-right">Section ID: ' . $data['id'] . '</span>'; ?>
                                     <label for="form_name" class="font-weight-bold">Section name</label>
-                                    <input type="text" name="name" id="form_name" class="form-control" placeholder="write section name" value="<?php if (!empty($data['fields'])) : echo $data['fields']->name; endif; ?>" minlength="3" maxlength="100" required>
+                                    <input type="text" name="name" id="form_name" class="form-control" placeholder="write section name" value="<?php if (!empty($data['fields']->name)) : echo $data['fields']->name; endif; ?>" minlength="3" maxlength="100" required>
                                     <div class="text-danger small"><?php if (!empty($data['errorName'])) : echo $data['errorName']; endif; ?></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="form_keywords"><span class="font-weight-bold">Keywords</span>, separated by a comma</label>
-                                    <input type="text" name="keywords" id="form_keywords" class="form-control" placeholder="write keywords" value="<?php if (!empty($data['fields'])) : echo $data['fields']->keywords; endif; ?>" maxlength="250" required>
+                                    <input type="text" name="keywords" id="form_keywords" class="form-control" placeholder="write keywords" value="<?php if (!empty($data['fields']->keywords)) : echo $data['fields']->keywords; endif; ?>" maxlength="250" required>
                                     <div class="text-danger small"><?php if (!empty($data['errorKeywords'])) : echo $data['errorKeywords']; endif; ?></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="form_image"><span class="font-weight-bold">Section main image</span>, optionally select and insert one of the uploaded images, only the image name with extension.</label>
-                                    <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($data['fields'])) : echo $data['fields']->image; endif; ?>" maxlength="40" readonly>
+                                    <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($data['fields']->image)) : echo $data['fields']->image; endif; ?>" maxlength="40" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="form_description" class="font-weight-bold">Description</label>
-                                    <textarea name="description" id="form_description" class="form-control" rows="3" minlength="300" onKeyDown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" required><?php if (!empty($data['fields'])) : echo $data['fields']->description; endif; ?></textarea>
+                                    <textarea name="description" id="form_description" class="form-control" rows="3" minlength="300" onKeyDown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" required><?php if (!empty($data['fields']->description)) : echo $data['fields']->description; endif; ?></textarea>
                                     <div class="text-danger small"><?php if (!empty($data['errorDescription'])) : echo $data['errorDescription']; endif; ?></div>
                                 </div>
                                 <div class="form-group">

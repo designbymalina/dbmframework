@@ -55,7 +55,7 @@ class ExceptionClass extends Exception
 
         ($code !== 0) ? $code = 'ERROR: <b>' . $code . '</b>; ' : $code = '';
 
-        echo '<!DOCTYPE html>' . "\n"
+        echo('<!DOCTYPE html>' . "\n"
             . '<html lang="en">' . "\n"
             . '<head>' . "\n"
             . '  <meta charset="utf-8">' . "\n"
@@ -74,7 +74,7 @@ class ExceptionClass extends Exception
             . '    </div>' . "\n"
             . '  </div>' . "\n"
             . '</body>' . "\n"
-            . '</html>';
+            . '</html>');
 
         exit();
     }

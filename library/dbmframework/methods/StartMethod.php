@@ -9,10 +9,6 @@
 
 function htmlErrorHandler(string $message, string $file, int $line): void
 {
-    $message = preg_replace('/[a-z0-9_\-]*\.php/i', '$1<u>$0</u>', $message);
-    $message = preg_replace('/[0-9]/i', '$1<em>$0</em>', $message);
-    $message = preg_replace('/[\(\)#\[\]\':]/i', '$1<ss>$0</ss>', $message);
-
     ob_end_clean();
 
     echo('<!DOCTYPE html>' . "\n"
@@ -29,8 +25,8 @@ function htmlErrorHandler(string $message, string $file, int $line): void
         . '  <div class="dbm-container">' . "\n"
         . '    <div class="dbm-header">DbM Fremwork Handler Reporting</div>' . "\n"
         . '    <div class="dbm-content">' . "\n"
-        . '      <h2>Fatal error</h2>' . "\n"
-        . '      <ul><li class="msg">Message: ' . nl2br($message) . '</li><li class="file">File: ' . $file . ' on line ' . $line . '</li></ul>' . "\n"
+        . '      <h2>Oops, something went wrong!</h2>' . "\n"
+        . '      <ul><li class="msg">Message: ' . nl2br($message) . '</li><li class="file">File: ' . basename(dirname($file)) . DS . basename($file)  . ' on line ' . $line . '</li></ul>' . "\n"
         . '    </div>' . "\n"
         . '  </div>' . "\n"
         . '</body>' . "\n"

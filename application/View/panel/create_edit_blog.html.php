@@ -35,22 +35,22 @@
                                         <div class="form-group">
                                             <?php if (!empty($data['id'])) echo '<span class="float-right">Article ID: ' . $data['id'] . '</span>'; ?>
                                             <label for="form_title" class="font-weight-bold">Meta title</label>
-                                            <input type="text" name="title" id="form_title" class="form-control" placeholder="write the website title" value="<?php if (!empty($data['fields'])) : echo $data['fields']->title; endif; ?>" minlength="5" maxlength="65" required>
+                                            <input type="text" name="title" id="form_title" class="form-control" placeholder="write the website title" value="<?php if (!empty($data['fields']->title)) : echo $data['fields']->title; endif; ?>" minlength="5" maxlength="65" required>
                                             <div class="text-danger small"><?php if (!empty($data['errorTitle'])) : echo $data['errorTitle']; endif; ?></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="form_description" class="font-weight-bold">Meta description</label>
-                                            <input type="text" name="description" id="form_description" class="form-control" placeholder="write the website description" value="<?php if (!empty($data['fields'])) : echo $data['fields']->description; endif; ?>" maxlength="250" required>
+                                            <input type="text" name="description" id="form_description" class="form-control" placeholder="write the website description" value="<?php if (!empty($data['fields']->description)) : echo $data['fields']->description; endif; ?>" maxlength="250" required>
                                             <div class="text-danger small"><?php if (!empty($data['errorDescription'])) : echo $data['errorDescription']; endif; ?></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="form_keywords"><span class="font-weight-bold">Meta keywords</span>, separated by a comma</label>
-                                            <input type="text" name="keywords" id="form_keywords" class="form-control" placeholder="write the website keywords" value="<?php if (!empty($data['fields'])) : echo $data['fields']->keywords; endif; ?>" maxlength="250" required>
+                                            <input type="text" name="keywords" id="form_keywords" class="form-control" placeholder="write the website keywords" value="<?php if (!empty($data['fields']->keywords)) : echo $data['fields']->keywords; endif; ?>" maxlength="250" required>
                                             <div class="text-danger small"><?php if (!empty($data['errorKeywords'])) : echo $data['errorKeywords']; endif; ?></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="form_header" class="font-weight-bold">Title and article header</label>
-                                            <input type="text" name="header" id="form_header" class="form-control" placeholder="write the article header" value="<?php if (!empty($data['fields'])) : echo $data['fields']->header; endif; ?>" minlength="10" maxlength="120" required>
+                                            <input type="text" name="header" id="form_header" class="form-control" placeholder="write the article header" value="<?php if (!empty($data['fields']->header)) : echo $data['fields']->header; endif; ?>" minlength="10" maxlength="120" required>
                                             <div class="text-danger small"><?php if (!empty($data['errorHeader'])) : echo $data['errorHeader']; endif; ?></div>
                                         </div>
                                         <div class="form-group row">
@@ -73,13 +73,13 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="form_image"><span class="font-weight-bold">Article main image</span>, optionally select and insert one of the uploaded images, only the image name with extension.</label>
-                                            <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($data['fields'])) : echo $data['fields']->image; endif; ?>" maxlength="40" readonly>
+                                            <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($data['fields']->image)) : echo $data['fields']->image; endif; ?>" maxlength="40" readonly>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="formContent" class="font-weight-bold"><span class="mr-2" title="View remaining fields" data-toggle="tooltip" data-placement="top"><i id="iconUpDown" class="fas fa-angle-up text-primary" data-toggle="collapse" data-target="#collapseFieldsOne" aria-expanded="false" aria-controls="collapseFieldsOne"></i></span>HTML content</label>
-                                    <textarea name="content" id="formContent" class="form-control" rows="15" minlength="1000" onKeyDown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" required><?php if (!empty($data['fields'])) : echo $data['fields']->content; endif; ?></textarea>
+                                    <textarea name="content" id="formContent" class="form-control" rows="15" minlength="1000" onKeyDown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" required><?php if (!empty($data['fields']->content)) : echo $data['fields']->content; endif; ?></textarea>
                                     <div class="text-danger small"><?php if (!empty($data['errorContent'])) : echo $data['errorContent']; endif; ?></div>
                                 </div>
                                 <div class="form-group">

@@ -23,10 +23,10 @@ class RegisterModel extends DatabaseClass
             . " VALUES (:login, :email, :password, :token)";
 
         if ($this->queryExecute($query, $data)) {
-            $userId = $this->lastInsertId();
-            $query = "INSERT INTO dbm_user_details (user_id) VALUES ($userId)";
+            $userId = $this->getLastInsertId();
+            $query = "INSERT INTO dbm_user_details (user_id) VALUES (:uid)";
 
-            return $this->queryExecute($query);
+            return $this->queryExecute($query, [':uid' => $userId]);
         }
 
         return false;

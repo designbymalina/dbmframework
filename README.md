@@ -13,7 +13,9 @@ DbM Framework PHP MVC Simple CMS umożliwia tworzenie prostych i pięknych stron
 
 Funkcjonalna wersja prostego i szybkiego frameworka opartego o wzorzec architektury Model-View-Controller (MVC), który oddziela aplikację na trzy główne grupy: modele, widoki i kontrolery co też oddziela warstwę programistyczną od produkcyjnej. Framework skupiony jest na naturalnym, czystym PHP co daje wręcz nieograniczone możliwości - uwarunkowane w bardziej złożonych, sztucznych frameworkach zaprojektowanych do tworzenia aplikacji internetowych.
 
-UWAGA! Wolna licencja ma tylko jedno ograniczenie. Jeśli chcesz skorzystać z frameworka nie masz prawa usuwać linku do strony z nazwą autora ze stopki skryptu. Usuwając nazwę, używasz oprogramowania nielegalnie. Autor zapewnia wsparcie dla aplikacji, nie ponosi odpowiedzialności za jakiekolwiek szkody powstałe na skutek korzystania z oprogramowania. Jeśli masz pomysł na rozwój projektu napisz do mnie, porozmawiajmy...
+## Warunki wstępne
+
+Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące komponenty: [PHP](http://php.net), [MySQL](https://www.mysql.com), [Apache](https://httpd.apache.org) lub skorzystać z pakietu serwera WWW dla PHP np.: [XAMPP](https://www.apachefriends.org/).
 
 ## Struktura
 
@@ -24,30 +26,45 @@ UWAGA! Wolna licencja ma tylko jedno ograniczenie. Jeśli chcesz skorzystać z f
   - and more: Service
 - config
 - data
-- public (public directory)
+- public (public folder)
 - translations
-- var
-- vendor
+- var / log / mailer (empty folders)
+- vendor (reserved for Composer)
 
 ## Instalacja i konfiguracja
 
-Pobierz DbM Framework i przenieś zawartość na serwer. Po skopiowaniu plików na wstępie przejdź do pliku config.php.dist i zmień nazwę na config.php, następnie uzupełnij wymagane dane konfiguracji. W kolejnym kroku w katalogu głównym oraz katalogu /public/ dla plików .htaccess ustaw prawidłową wartość argumentu RewriteBase.  
-W przypadku instalacji frameworka na serwerze lokalnym (localhost) utwórz katalog np. dbmframework, w tym katalogu dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/. W przypadku instalacji na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu /public/ w katalogu /public/ dla .htaccess ustawić RewriteBase / po czym plik .htaccess w katalogu głównym aplikacji można usunąć.
+Pobierz DbM Framework i przenieś zawartość na serwer. Po skopiowaniu plików na wstępie przejdź do pliku `config.php.dist` i zmień nazwę na `config.php`, następnie uzupełnij wymagane dane konfiguracji. W kolejnym kroku w katalogu głównym oraz katalogu `/public/` dla plików .htaccess ustaw prawidłową wartość argumentu RewriteBase.  
+W przypadku instalacji frameworka na serwerze lokalnym (localhost) utwórz katalog np. dbmframework, w tym katalogu dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/. W przypadku instalacji na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu /public/ w katalogu /public/ dla .htaccess ustawić RewriteBase / po czym plik .htaccess w katalogu głównym aplikacji można usunąć. Do usunięcia jest też plik w katalogu /var/log/mailer/_remove.txt. Katalog /vendor/ jest zastrzeżony dla systemu zarządzania pakietami `Composer`.  
+
+### Composer
+
+Użyj Composera do załadowania wymaganych pakietów, ich aktualizacji itp. (patrz do composer.json).  
+Wykonaj polecenie, które utworzy "autoloading" oraz pobierze i zainstaluje pakiety w najnowszej dostępnej wersji:
+
+```shell
+$ composer install
+```
+
+Ostrożnie! Przed wykonaniem polecenie `composer install` usuń katalog /vendor/ i jego zwartość (autoloading) oraz plik composer.lock.  
+
+Nie mam konieczności wykonania powyższego polecenia, zawsze jednak warto wykonać aktualizacje poleceniem, które sprawdzi jakie najnowsze wersje bibliotek są dostępne i uaktualni plik composer.lock:
+
+```shell
+$ composer update 
+```
+
+Jeżeli nie masz zainstalowanego Composera, a chcesz uruchomić aplikacje możesz skopiować katalog vendor oraz dodatkowe paczki z _Documents/Reserved/vendor do katalogu głównego.
 
 ### Data FlatFile .txt (dane w plikach tekstowych)
 
-- data/contents/ dane w plikach tekstowych, nadaj plikom prawa do zapisu
-- data/message/ szablon, pliki do wysyłania wiadomości e-mail
+- `data/contents/` dane w plikach tekstowych, nadaj plikom prawa do zapisu
+- `data/message/` szablon, pliki do wysyłania wiadomości e-mail
 
 ### Database (baza danych nie jest wymagana do uruchomienia aplikacji)
 
 - _Documents/Database/dbm_cms.sql
 
-Jeśli chcesz użyć bazy danych importuj ją na serwer i skonfiguruj połączenie w pliku config.php. 
-
-### Composer
-
-Możesz używać Composera do załadowania dodatkowych paczek, ich aktualizacji itp. (patrz do composer.json).
+Jeśli chcesz użyć bazy danych importuj ją na serwer i skonfiguruj połączenie w pliku konfiguracyjnym.
 
 ## Biblioteki
 
@@ -56,10 +73,4 @@ Wykorzystano następujące pakiety:
 * [jQuery](https://jquery.com) - JavaScript Library.
 * [Bootstrap](https://getbootstrap.com) - The most popular HTML, CSS, and JS library in the world.
 
-## Warunki wstępne
-
-Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące komponenty:
-
-* [PHP](http://php.net)
-* [MySQL](https://www.mysql.com)
-* [Apache](https://httpd.apache.org)
+UWAGA! Wolna licencja ma tylko jedno ograniczenie. Jeśli chcesz skorzystać z frameworka nie masz prawa usuwać linku do strony z nazwą autora ze stopki skryptu. Usuwając nazwę, używasz oprogramowania nielegalnie. Autor zapewnia wsparcie dla aplikacji, nie ponosi odpowiedzialności za jakiekolwiek szkody powstałe na skutek korzystania z oprogramowania. Jeśli masz pomysł na rozwój projektu napisz do mnie, porozmawiajmy...

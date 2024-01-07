@@ -3,7 +3,7 @@
         include(BASE_DIRECTORY . 'application/View/_include/navigation.html.php');
         // Page data
         !empty($data['data.user']) ? $user = $data['data.user'] : $user = null;
-        $user->avatar ? $avatar = $user->avatar : $avatar = 'no-avatar.png';
+        !empty($user->avatar) ? $avatar = $user->avatar : $avatar = 'no-avatar.png';
     ?>
     <!-- Breadcrumb -->
     <section class="container">
