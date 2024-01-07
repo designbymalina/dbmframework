@@ -19,13 +19,14 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 
 ## Struktura
 
-- Application (classes, methods and code related to the application)
+- application (classes, methods and code related to the application)
   - Controller
   - Model
   - View / folders
   - and more: Service
 - config
 - data
+- library
 - public (public folder)
 - translations
 - var / log / mailer (empty folders)
