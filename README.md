@@ -22,12 +22,12 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 - application (classes, methods and code related to the application)
   - Controller
   - Model
-  - View / folders
+  - View (template folders)
   - and more: Service
 - config
 - data
-- library
-- public (public folder)
+- library / dbmframework
+- public (public folders)
 - translations
 - var / log / mailer (empty folders)
 - vendor (reserved for Composer)
