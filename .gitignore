@@ -1,0 +1,10 @@
+###> framework ### 
+/config/config.php
+/vendor/
+/var/
+###< framework ###
+
+###> tools ###
+/tools/
+.php-cs-fixer.cache
+###< tools ###
