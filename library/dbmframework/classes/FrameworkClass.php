@@ -21,7 +21,7 @@ class FrameworkClass
     private const FILE_BASE = 'base.html.php';
     private const FILE_BASE_PANEL = 'base_panel.html.php';
     private const FILE_BASE_OFFER = 'base_offer.html.php';
-    
+
     /*protected $database;
 
     public function __construct(DbmDatabase $database)

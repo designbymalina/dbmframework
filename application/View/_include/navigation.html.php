@@ -51,7 +51,8 @@
                                     if ($this->getSession('dbmUserId')) { 
                                         Dbm\Classes\TemplateClass::temp_htmlUser($this->getSession('dbmUserId'));
                                     } else { 
-                                        echo '<span>' . Dbm\Classes\TemplateClass::trans('navbar.nav.account') . '</span><i class="bi bi-person ms-2"></i>';
+                                        Dbm\Classes\TemplateClass::trans('navbar.nav.account');
+                                        echo '<i class="bi bi-person ms-2"></i>';
                                     }
                                 ?>
                             </a>

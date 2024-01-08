@@ -101,9 +101,9 @@ class TemplateClass
 
         $query = "SELECT user.login, user.avatar, user_details.fullname FROM dbm_user user"
             . " INNER JOIN dbm_user_details user_details ON user_details.user_id = user.id"
-            . " WHERE user.id = '$userId'";
+            . " WHERE user.id = :uid";
 
-        if ($database->queryExecute($query)) {
+        if ($database->queryExecute($query, [':uid' => $userId])) {
             $data = $database->fetchObject();
 
             !empty($data->avatar) ? $avatar = $data->avatar : $avatar = 'no-avatar.png';

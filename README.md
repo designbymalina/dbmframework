@@ -23,7 +23,9 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
   - Controller
   - Model
   - View (template folders)
-  - and more: Service
+  - -and more-
+  - Config
+  - Service
 - config
 - data
 - library / dbmframework

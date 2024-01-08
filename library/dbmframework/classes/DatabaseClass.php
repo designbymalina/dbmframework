@@ -21,7 +21,7 @@ class DatabaseClass extends PDO
     //private $connect;
     private $result;
     //public $pdo;
-    
+
     public function __construct() // __construct(PDO $pdo)
     {
         try {
@@ -45,7 +45,7 @@ class DatabaseClass extends PDO
                 //return $this->connect->query($query, PDO::FETCH_ASSOC);
                 return $this->query($query, PDO::FETCH_ASSOC);
             }
-            
+
             //return $this->connect->query($query);
             return $this->query($query);
         } catch (PDOException $exception) {
@@ -95,8 +95,8 @@ class DatabaseClass extends PDO
         if ($fetch == 'assoc') {
             return $this->result->fetch(PDO::FETCH_ASSOC);
         }
-        
-        return $this->result->fetch(); 
+
+        return $this->result->fetch();
     }
 
     public function fetchAll(string $fetch = 'assoc'): array
@@ -104,7 +104,7 @@ class DatabaseClass extends PDO
         if ($fetch == 'assoc') {
             return $this->result->fetchAll(PDO::FETCH_ASSOC);
         }
-        
+
         return $this->result->fetchAll();
     }
 

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Config\Constants;
+use App\Config\ConstantConfig;
 use App\Service\DbmImageUploadService;
 use App\Service\MethodService;
 use Dbm\Classes\FrameworkClass;
@@ -463,7 +463,7 @@ class PanelController extends FrameworkClass
     {
         $type = $this->requestData('type');
 
-        ($type === 'blog') ? $pathImage = Constants::PATH_BLOG_IMAGES : $pathImage = Constants::PATH_PAGE_IMAGES;
+        ($type === 'blog') ? $pathImage = ConstantConfig::PATH_BLOG_IMAGES : $pathImage = ConstantConfig::PATH_PAGE_IMAGES;
 
         if (!empty($_FILES['file'])) {
             $fileName = $_FILES["file"]["name"];
@@ -483,7 +483,7 @@ class PanelController extends FrameworkClass
         $file = $this->requestData('file');
         $type = $this->requestData('type');
 
-        ($type === 'blog') ? $pathImage = Constants::PATH_BLOG_IMAGES : $pathImage = Constants::PATH_PAGE_IMAGES;
+        ($type === 'blog') ? $pathImage = ConstantConfig::PATH_BLOG_IMAGES : $pathImage = ConstantConfig::PATH_PAGE_IMAGES;
 
         $pathPhoto = $pathImage . 'photo/' . $file;
         $pathThumb = $pathImage . 'thumb/' . $file;
@@ -542,7 +542,7 @@ class PanelController extends FrameworkClass
             $fileTempName = $_FILES["file"]["tmp_name"];
 
             $imageUpload = new DbmImageUploadService();
-            $arrayResult = $imageUpload->createImages($fileTempName, $fileName, Constants::PATH_SECTION_IMAGES);
+            $arrayResult = $imageUpload->createImages($fileTempName, $fileName, ConstantConfig::PATH_SECTION_IMAGES);
 
             echo json_encode($arrayResult);
         } else {
@@ -556,7 +556,7 @@ class PanelController extends FrameworkClass
 
         $methodService = new MethodService();
         $deleteImages = $methodService->fileMultiDelete(
-            [Constants::PATH_SECTION_IMAGES . 'photo/' . $file, Constants::PATH_SECTION_IMAGES . 'thumb/' . $file]
+            [ConstantConfig::PATH_SECTION_IMAGES . 'photo/' . $file, ConstantConfig::PATH_SECTION_IMAGES . 'thumb/' . $file]
         );
 
         if ($deleteImages !== null) {

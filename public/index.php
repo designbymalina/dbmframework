@@ -51,7 +51,6 @@ set_error_handler('reportingErrorHandler');
 
 ### START, configuration files ###
 require(BASE_DIRECTORY . 'config' . DS . 'config.php');
-require(BASE_DIRECTORY . 'config' . DS . 'constants.php');
 require(BASE_DIRECTORY . 'vendor' . DS . 'autoload.php');
 /* Template methods */
 require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/TemplateMethod.php');

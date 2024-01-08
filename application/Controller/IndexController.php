@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Config\Constants;
+use App\Config\ConstantConfig;
 use Dbm\Classes\FrameworkClass;
 use Dbm\Classes\TranslationClass;
 
@@ -42,7 +42,7 @@ class IndexController extends FrameworkClass
 
         $translation = $this->translation;
 
-        $allArticlesLimit = $this->blogModel->getJoinArticlesLimit(Constants::BLOG_INDEX_ITEM_LIMIT);
+        $allArticlesLimit = $this->blogModel->getJoinArticlesLimit(ConstantConfig::BLOG_INDEX_ITEM_LIMIT);
 
         $data = [
             'meta.title' => $translation->trans('index.title'),
