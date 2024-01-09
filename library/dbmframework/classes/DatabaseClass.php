@@ -16,13 +16,14 @@ use PDOException;
 use PDOStatement;
 use Dbm\Classes\ExceptionClass as DbmException;
 
-class DatabaseClass extends PDO
+class DatabaseClass // implements SingletonInterface
 {
-    //private $connect;
-    private $result;
-    //public $pdo;
+    private static $instance = null;
+    private $connect;
+    private $statement;
 
-    public function __construct() // __construct(PDO $pdo)
+    //private function __construct()
+    public function __construct()
     {
         try {
             $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
@@ -31,23 +32,34 @@ class DatabaseClass extends PDO
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
             ];
 
-            //$this->connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
-            parent::__construct($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            $this->connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->getCode());
         }
+    }
+
+    public static function getInstance() //: Result ?
+    {
+        if (!self::$instance) {
+            self::$instance = new DatabaseClass();
+        }
+
+        return self::$instance;
+    }
+
+    public function getConnection() //: Result ?
+    {
+        return $this->connect;
     }
 
     public function querySql(string $query, string $fetch = 'assoc'): PDOStatement
     {
         try {
             if ($fetch == 'assoc') {
-                //return $this->connect->query($query, PDO::FETCH_ASSOC);
-                return $this->query($query, PDO::FETCH_ASSOC);
+                return $this->connect->query($query, PDO::FETCH_ASSOC);
             }
 
-            //return $this->connect->query($query);
-            return $this->query($query);
+            return $this->connect->query($query);
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
@@ -55,31 +67,30 @@ class DatabaseClass extends PDO
 
     public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool
     {
-        // TODO! Czy $this->result jest ok?
         try {
-            $this->result = $this->prepare($query);
-
+            $this->statement = $this->connect->prepare($query);
+ 
             if (empty($params)) {
-                return $this->result->execute();
-            } else {
-                $first = array_key_first($params);
-
-                if (is_string($first)) {
-                    foreach ($params as $key => &$value) {
-                        is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
-
-                        if (!$reference) {
-                            $this->result->bindValue($key, $value, $type);
-                        } else {
-                            $this->result->bindParam($key, $value, $type);
-                        }
-                    }
-
-                    return $this->result->execute();
-                }
-
-                return $this->result->execute($params);
+                return $this->statement->execute();
             }
+ 
+            $first = array_key_first($params);
+ 
+            if (!is_string($first)) {
+                return $this->statement->execute($params);
+            }
+ 
+            foreach ($params as $key => &$value) {
+                is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
+ 
+                if (!$reference) {
+                    $this->statement->bindValue($key, $value, $type);
+                } else {
+                    $this->statement->bindParam($key, $value, $type);
+                }
+            }
+ 
+            return $this->statement->execute();
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
@@ -87,45 +98,44 @@ class DatabaseClass extends PDO
 
     public function rowCount(): int
     {
-        return $this->result->rowCount();
+        return $this->statement->rowCount();
     }
 
     public function fetch(string $fetch = 'assoc'): array
     {
         if ($fetch == 'assoc') {
-            return $this->result->fetch(PDO::FETCH_ASSOC);
+            return $this->statement->fetch(PDO::FETCH_ASSOC);
         }
 
-        return $this->result->fetch();
+        return $this->statement->fetch();
     }
 
     public function fetchAll(string $fetch = 'assoc'): array
     {
         if ($fetch == 'assoc') {
-            return $this->result->fetchAll(PDO::FETCH_ASSOC);
+            return $this->statement->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        return $this->result->fetchAll();
+        return $this->statement->fetchAll();
     }
 
     public function fetchObject(): object
     {
-        return $this->result->fetch(PDO::FETCH_OBJ);
+        return $this->statement->fetch(PDO::FETCH_OBJ);
     }
 
     public function fetchAllObject(): array
     {
-        return $this->result->fetchAll(PDO::FETCH_OBJ);
+        return $this->statement->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function debugDumpParams(): ?string
     {
-        return $this->result->debugDumpParams();
+        return $this->statement->debugDumpParams();
     }
 
     public function getLastInsertId(): ?string
     {
-        //return $this->connect->lastInsertId();
-        return $this->lastInsertId();
+        return $this->connect->lastInsertId();
     }
 }

@@ -11,8 +11,15 @@ namespace App\Model;
 
 use Dbm\Classes\DatabaseClass;
 
-class BlogModel extends DatabaseClass
+class BlogModel extends DatabaseClass // TODO! Remove extends DatabaseClass
 {
+    /* TODO! private $database;
+
+    public function __construct(DatabaseClass $database)
+    {
+        $this->database = $database;
+    } */
+
     public function getJoinArticlesLimit(int $limit): ?array
     {
         $query = "SELECT article.id AS aid, article.image_thumb, article.page_header, article.page_content, section.id AS sid, section.section_name, details.user_id AS uid, details.fullname"
@@ -23,11 +30,11 @@ class BlogModel extends DatabaseClass
 
         $this->queryExecute($query, [':limit' => $limit]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return null;
+        return $this->fetchAllObject();
     }
 
     public function getJoinSectionArticles(int $id): ?array
@@ -40,11 +47,11 @@ class BlogModel extends DatabaseClass
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
-
-        return null;
+        
+        return $this->fetchAllObject();
     }
 
     public function getJoinArticle(int $id): ?object
@@ -58,11 +65,11 @@ class BlogModel extends DatabaseClass
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return null;
+        return $this->fetchObject();
     }
 
     public function getSection(int $id): ?array
@@ -71,11 +78,11 @@ class BlogModel extends DatabaseClass
 
         $this->queryExecute($query, [':id' => $id]);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetch();
+        if ($this->rowCount() == 0) {
+            return null;
         }
 
-        return null;
+        return $this->fetch();
     }
 
     public function getSections(): ?array
@@ -84,10 +91,10 @@ class BlogModel extends DatabaseClass
 
         $this->queryExecute($query);
 
-        if ($this->rowCount() > 0) {
-            return $this->fetchAllObject();
+        if ($this->rowCount() == 0) {
+            return null;
         }
-
-        return null;
+        
+        return $this->fetchAllObject();
     }
 }
