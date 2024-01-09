@@ -18,27 +18,30 @@ use Dbm\Classes\ExceptionClass as DbmException;
 
 class DatabaseClass // implements SingletonInterface
 {
-    private static $instance = null;
-    private $connect;
+    //private static $instance = null;
+    protected static $connect;
     private $statement;
 
     //private function __construct()
     public function __construct()
     {
         try {
-            $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
-            $dbOptions = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-            ];
-
-            $this->connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            if (!self::$connect) {
+                $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
+                $dbOptions = [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+                ];
+ 
+                self::$connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            }
+            // TDDO! Co jesli nie If ?
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->getCode());
         }
     }
 
-    public static function getInstance() //: Result ?
+    /* public static function getInstance() //: Result ?
     {
         if (!self::$instance) {
             self::$instance = new DatabaseClass();
@@ -49,17 +52,17 @@ class DatabaseClass // implements SingletonInterface
 
     public function getConnection() //: Result ?
     {
-        return $this->connect;
-    }
+        return self::$connect;
+    } */
 
     public function querySql(string $query, string $fetch = 'assoc'): PDOStatement
     {
         try {
             if ($fetch == 'assoc') {
-                return $this->connect->query($query, PDO::FETCH_ASSOC);
+                return self::$connect->query($query, PDO::FETCH_ASSOC);
             }
 
-            return $this->connect->query($query);
+            return self::$connect->query($query);
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
@@ -68,7 +71,7 @@ class DatabaseClass // implements SingletonInterface
     public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool
     {
         try {
-            $this->statement = $this->connect->prepare($query);
+            $this->statement = self::$connect->prepare($query);
  
             if (empty($params)) {
                 return $this->statement->execute();
@@ -136,6 +139,6 @@ class DatabaseClass // implements SingletonInterface
 
     public function getLastInsertId(): ?string
     {
-        return $this->connect->lastInsertId();
+        return self::$connect->lastInsertId();
     }
 }
