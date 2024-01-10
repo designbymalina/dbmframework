@@ -1,8 +1,8 @@
 {
-    "name": "dbmframework/dbmframework",
+    "name": "artimman/dbmframework",
     "type": "library",
     "description": "The DbM Framework PHP MVC Simple CMS",
-    "keywords": ["dbmframework", "framework", "version cms"],
+    "keywords": ["dbmframework", "php framework", "framework", "php", "version cms"],
     "homepage": "https://dbm.org.pl",
     "license": "MIT",
     "authors": [
