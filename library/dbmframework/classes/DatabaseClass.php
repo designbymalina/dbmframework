@@ -52,7 +52,7 @@ class DatabaseClass // implements SingletonInterface
 
     public function getConnection() //: Result ?
     {
-        return self::$connect;
+        return self::$connect; // $this->connect;
     } */
 
     public function querySql(string $query, string $fetch = 'assoc'): PDOStatement
@@ -84,7 +84,8 @@ class DatabaseClass // implements SingletonInterface
             }
  
             foreach ($params as $key => &$value) {
-                is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
+                //is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
+                $type = $this->paramType($value);
  
                 if (!$reference) {
                     $this->statement->bindValue($key, $value, $type);
@@ -140,5 +141,23 @@ class DatabaseClass // implements SingletonInterface
     public function getLastInsertId(): ?string
     {
         return self::$connect->lastInsertId();
+    }
+
+    /* TODO! Sprawdz metode i rozne opcje */
+    private function paramType($value) // value type? : Result 
+    {
+        switch (true) {
+            case is_null($value):
+                return PDO::PARAM_NULL;
+                break;
+            case is_int($value):
+                return PDO::PARAM_INT;
+                break;
+            case is_bool($value):
+                return PDO::PARAM_BOOL;
+                break;				
+            default:
+                return PDO::PARAM_STR;
+        }
     }
 }

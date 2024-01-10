@@ -17,15 +17,20 @@ class BlogController extends FrameworkClass
     private $blogModel;
     private $translation;
 
+    // TODO! Poprawic kod, dodac wstrzykiwanie do kontruktora public function __construct(TranslationClass $translation)
     public function __construct()
     {
-        $this->blogModel = $this->model('BlogModel');
+        $this->blogModel = $this->model('BlogModel'); // TODO! Zmienic sposob ladowania modeli -> class FrameworkClass -> public function model()
 
         $translation = new TranslationClass();
         $this->translation = $translation;
     }
 
-    /* @Route: "/blog" */
+    /* 
+     * TODO! Wstrzykiwanie do metody -> public function index(TranslationClass $translation)
+     * 
+     * @Route: "/blog"
+    */
     public function index()
     {
         $this->redirect("./");
