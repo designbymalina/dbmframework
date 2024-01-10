@@ -5,7 +5,8 @@ Application tested on: PHP 7.4
 All code copyright Design by Malina (DbM)  
 Web: www.dbm.org.pl
 
-This project is in the development phase. As soon as the project reaches a stable point. Appropriate notice will be given.
+This project is in the development phase. As soon as the project reaches a stable point.  
+Appropriate notice will be given.
 
 # Język polski (PL - Polish language)
 
