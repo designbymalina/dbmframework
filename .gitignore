@@ -1,7 +1,7 @@
 ###> framework ### 
 /config/config.php
-/vendor/
 /var/
+/vendor/
 ###< framework ###
 
 ###> tools ###

@@ -7,7 +7,29 @@
  * Contact: biuro@dbm.org.pl
 */
 
-function htmlErrorHandler(string $message, string $file, int $line): void
+function reportingErrorHandler(string $errLevel, string $errMessage, string $errFile, string $errLine): void
+{
+    $date = date('Y-m-d H:i:s');
+    $file = date('Ymd') . '_' . BASE_FILE . '.log';
+    $dir =  BASE_DIRECTORY . 'var' . DS . 'log' . DS;
+    $path = $dir . $file;
+
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+
+    $errorHandler = "DATE: $date, level: $errLevel\n File: $errFile on line $errLine\n Message: $errMessage\n";
+
+    $handle = fopen($path, 'a');
+    fwrite($handle, $errorHandler);
+    fclose($handle);
+
+    if (!empty($errLine)) {
+        htmlErrorHandler($errMessage, $errFile, $errLine);
+    }
+}
+
+function htmlErrorHandler(string $message, string $file, string $line): void
 {
     ob_end_clean();
 
@@ -33,4 +55,35 @@ function htmlErrorHandler(string $message, string $file, int $line): void
         . '</html>');
 
     exit();
+}
+
+function configurationSettings(string $pathConfig): void
+{
+    if (!file_exists($pathConfig)) {
+        die('CONFIGURATION! Rename the config.php.dist file to config.php and configure the applications to run the program.');
+    }
+
+    require($pathConfig);
+}
+
+function autoloadingWithWithoutComposer(string $pathAutoload): void
+{
+    if (file_exists($pathAutoload)) {
+        require($pathAutoload);
+    } else {
+        spl_autoload_register(function ($className) {
+            $arrayClassName = explode(DS, $className);
+            $firstLocation = reset($arrayClassName);
+
+            switch ($firstLocation) {
+                case 'App':
+                    $className = str_replace('App', 'application', $className);
+                    break;
+                default:
+                    $className = str_replace('Dbm', 'library' . DS . 'dbmframework', $className);
+            }
+
+            include(BASE_DIRECTORY . $className . '.php');
+        });
+    }
 }

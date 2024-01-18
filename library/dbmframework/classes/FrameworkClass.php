@@ -73,7 +73,7 @@ class FrameworkClass
         if (file_exists($pathBase)) {
             $modelNamespace = 'App\\Model\\' . $modelName;
 
-            return new $modelNamespace; // TODO! Abstract model
+            return new $modelNamespace(); // TODO! Abstract model
         } else {
             throw new DbmException('Model file ' . $pathBase . ' is required. File not found!', 404);
         }

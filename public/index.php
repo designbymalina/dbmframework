@@ -19,29 +19,14 @@ ob_start();
 isset($_GET['url']) ? $file_basename = basename(str_replace('/', ',', $_GET['url']), '.html') : $file_basename = 'index';
 
 define('DS', DIRECTORY_SEPARATOR);
-define('BASE_DIRECTORY', str_replace('public' . DS, '', realpath(dirname(__FILE__)) . DS));
+define('BASE_DIRECTORY', str_replace('public' . DS, '', __DIR__ . DS));
 define('BASE_FILE', $file_basename);
 
-### ERROR HANDLING, logging error handling ###
+### FUNCTIONS - application starting, template engine, etc
 require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/StartMethod.php');
+require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/TemplateMethod.php'); // Template methods *TODO! Do poprawki, czy jest Ok?
 
-function reportingErrorHandler($errLevel, $errMessage, $errFile, $errLine)
-{
-    $date = date('Y-m-d H:i:s');
-    $file = date('Ymd') . '_' . BASE_FILE . '.log';
-    $path = BASE_DIRECTORY . 'var' . DS . 'log' . DS . $file;
-
-    $errorHandler = "DATE: $date, level: $errLevel\n File: $errFile on line $errLine\n Message: $errMessage\n";
-
-    $handle = fopen($path, 'a');
-    fwrite($handle, $errorHandler);
-    fclose($handle);
-
-    if (!empty($errLine)) {
-        htmlErrorHandler($errMessage, $errFile, $errLine);
-    }
-}
-
+### ERROR HANDLING, logging error handling ###
 /* Time zone; Info: Not every server needed! */
 @date_default_timezone_set('Europe/Warsaw');
 /* Error handler */
@@ -49,11 +34,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 set_error_handler('reportingErrorHandler');
 
-### START, configuration files ###
-require(BASE_DIRECTORY . 'config' . DS . 'config.php');
-require(BASE_DIRECTORY . 'vendor' . DS . 'autoload.php');
-/* Template methods */
-require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/TemplateMethod.php');
+### STARTING APPLICATION, configuration and autoloading ###
+$pathConfig = BASE_DIRECTORY . 'config' . DS . 'config.php';
+$pathAutoload = BASE_DIRECTORY . 'vendor' . DS . 'autoload.php';
+
+// Configuration settings
+configurationSettings($pathConfig);
+
+// Autoloading with and without Composer
+autoloadingWithWithoutComposer($pathAutoload);
 
 ### RENDER PAGE ###
 use Dbm\Classes\RoutClass;

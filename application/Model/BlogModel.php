@@ -50,7 +50,7 @@ class BlogModel extends DatabaseClass // TODO! Remove extends DatabaseClass
         if ($this->rowCount() == 0) {
             return null;
         }
-        
+
         return $this->fetchAllObject();
     }
 
@@ -94,7 +94,7 @@ class BlogModel extends DatabaseClass // TODO! Remove extends DatabaseClass
         if ($this->rowCount() == 0) {
             return null;
         }
-        
+
         return $this->fetchAllObject();
     }
 }

@@ -19,23 +19,26 @@ use Dbm\Classes\ExceptionClass as DbmException;
 class DatabaseClass // implements SingletonInterface
 {
     //private static $instance = null;
-    protected static $connect;
+    //protected static $connect;
+
+    private $connect;
     private $statement;
 
     //private function __construct()
     public function __construct()
     {
         try {
-            if (!self::$connect) {
-                $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
-                $dbOptions = [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-                ];
- 
-                self::$connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
-            }
-            // TDDO! Co jesli nie If ?
+            //if (!self::$connect) {
+            $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
+            $dbOptions = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
+            ];
+
+            //self::$connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            $this->connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            //}
+            // TDDO! Co jesli nie If -> else throw = No connection?
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->getCode());
         }
@@ -59,10 +62,12 @@ class DatabaseClass // implements SingletonInterface
     {
         try {
             if ($fetch == 'assoc') {
-                return self::$connect->query($query, PDO::FETCH_ASSOC);
+                //return self::$connect->query($query, PDO::FETCH_ASSOC);
+                return $this->connect->query($query, PDO::FETCH_ASSOC);
             }
 
-            return self::$connect->query($query);
+            //return self::$connect->query($query);
+            return $this->connect->query($query);
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
         }
@@ -71,29 +76,29 @@ class DatabaseClass // implements SingletonInterface
     public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool
     {
         try {
-            $this->statement = self::$connect->prepare($query);
- 
+            //$this->statement = self::$connect->prepare($query);
+            $this->statement = $this->connect->prepare($query);
+
             if (empty($params)) {
                 return $this->statement->execute();
             }
- 
+
             $first = array_key_first($params);
- 
+
             if (!is_string($first)) {
                 return $this->statement->execute($params);
             }
- 
+
             foreach ($params as $key => &$value) {
-                //is_int($value) ? $type = PDO::PARAM_INT : $type = PDO::PARAM_STR;
                 $type = $this->paramType($value);
- 
+
                 if (!$reference) {
                     $this->statement->bindValue($key, $value, $type);
                 } else {
                     $this->statement->bindParam($key, $value, $type);
                 }
             }
- 
+
             return $this->statement->execute();
         } catch (PDOException $exception) {
             throw new DbmException($exception->getMessage(), $exception->errorInfo[1]);
@@ -140,11 +145,12 @@ class DatabaseClass // implements SingletonInterface
 
     public function getLastInsertId(): ?string
     {
-        return self::$connect->lastInsertId();
+        //return self::$connect->lastInsertId();
+        return $this->connect->lastInsertId();
     }
 
     /* TODO! Sprawdz metode i rozne opcje */
-    private function paramType($value) // value type? : Result 
+    private function paramType($value) // value type? : Result
     {
         switch (true) {
             case is_null($value):
@@ -155,7 +161,7 @@ class DatabaseClass // implements SingletonInterface
                 break;
             case is_bool($value):
                 return PDO::PARAM_BOOL;
-                break;				
+                break;
             default:
                 return PDO::PARAM_STR;
         }

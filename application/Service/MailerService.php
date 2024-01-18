@@ -97,11 +97,17 @@ class MailerService
 
     private function errorLogger(mixed $error): void
     {
+        $dir = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'mailer' . DS;
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
         if (is_array($error)) {
             $error = json_encode($error);
         }
 
-        $path = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'mailer' . DS . date('ym') . '_error.log';
+        $path = $dir . date('ym') . '_error.log';
 
         $data = "TIME: " . date('Y-m-d H:i:s');
         $data .= "\r\n    REQUEST: " . json_encode($_REQUEST);

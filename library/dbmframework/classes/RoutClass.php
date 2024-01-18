@@ -22,12 +22,12 @@ class RoutClass
 
     public function __construct()
     {
-        $path = BASE_DIRECTORY.'application'.DS.'Controller'.DS;
+        $path = BASE_DIRECTORY . 'application' . DS . 'Controller' . DS;
         $url = $this->parseUrl();
 
         // ### CONTROLLERS
         if (!empty($url)) {
-            $controllerName = ucfirst($url[0]).'Controller'; // The static part of the controller name
+            $controllerName = ucfirst($url[0]) . 'Controller'; // The static part of the controller name
 
             if (file_exists($path . $controllerName . '.php')) {
                 $this->controller = $controllerName;
@@ -37,10 +37,7 @@ class RoutClass
             }
         }
 
-        // Include controller; * INFO: Composer autoload
-        // require_once($path . $this->controller . '.php');
-
-        // Instantiate controller
+        // Instantiate controller *TODO! Abstract controller ?
         $controllerNamespace = 'App\\Controller\\' . $this->controller;
         $this->controller = new $controllerNamespace();
 
@@ -55,7 +52,7 @@ class RoutClass
                 $this->method = $methodName;
                 unset($url[1]);
             } else {
-                throw new DbmException($methodName. ' in ' . $controllerName . '.php is required. Method not found!');
+                throw new DbmException($methodName . ' in ' . $controllerName . '.php is required. Method not found!');
             }
         }
 
@@ -70,7 +67,6 @@ class RoutClass
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-    // INFO: Problem -> get values = http/s, see to .htaccess?
     public function parseUrl()
     {
         if (isset($_GET['url'])) {

@@ -26,9 +26,9 @@ class BlogController extends FrameworkClass
         $this->translation = $translation;
     }
 
-    /* 
+    /*
      * TODO! Wstrzykiwanie do metody -> public function index(TranslationClass $translation)
-     * 
+     *
      * @Route: "/blog"
     */
     public function index()
