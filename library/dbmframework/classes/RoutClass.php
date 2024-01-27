@@ -39,7 +39,7 @@ class RoutClass
 
         // Instantiate controller *TODO! Abstract controller ?
         $controllerNamespace = 'App\\Controller\\' . $this->controller;
-        $this->controller = new $controllerNamespace();
+        $this->controller = new $controllerNamespace;
 
         // ### METHODS
         if (!empty($url[1])) {
@@ -67,7 +67,7 @@ class RoutClass
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
-    public function parseUrl()
+    private function parseUrl()
     {
         if (isset($_GET['url'])) {
             $url = $_GET['url'];
