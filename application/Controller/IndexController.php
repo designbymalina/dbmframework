@@ -19,7 +19,7 @@ class IndexController extends FrameworkClass
     private $translation;
 
     /*
-     * TODO! public function __construct(TranslationClass $translation)
+     * TODO! public function __construct(DatabaseClass $database, TranslationClass $translation) // TODO! Wstrzykiwanie!?
      */
     public function __construct()
     {
@@ -30,7 +30,7 @@ class IndexController extends FrameworkClass
     }
 
     /*
-     * TODO! public function index(TranslationClass $translation, etc...)
+     * TODO! public function index(TranslationClass $translation, etc...) // TODO! Wstrzykiwanie!?
      *
      * @Route: "/"
      */
@@ -54,7 +54,8 @@ class IndexController extends FrameworkClass
         // OPTIONS to Choose
         // $this->view("index/index.html.php", $data);
         // $this->view("page/index.html.php", $data);
-        $this->view("blog/index.html.php", $data);
+        // $this->view("blog/index.html.php", $data);
+        $this->view("blog/index.phtml", $data);
     }
 
     /* @Route: "/index/link.html" */

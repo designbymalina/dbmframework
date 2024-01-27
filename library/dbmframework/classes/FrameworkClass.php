@@ -16,8 +16,8 @@ use Dbm\Classes\ExceptionClass as DbmException;
 
 class FrameworkClass
 {
-    private const PATH_VIEW = '../application/View/';
-    private const PATH_MODEL = '../application/Model/';
+    private const PATH_MODEL = BASE_DIRECTORY . 'application/Model/';
+    private const PATH_VIEW = BASE_DIRECTORY . 'templates/';
     private const FILE_BASE = 'base.html.php';
     private const FILE_BASE_PANEL = 'base_panel.html.php';
     private const FILE_BASE_OFFER = 'base_offer.html.php';

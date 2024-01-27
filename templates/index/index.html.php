@@ -1,9 +1,8 @@
     <?php
-        // TODO! Path for include ?!
         // Navigation
-        include(BASE_DIRECTORY . 'application/View/_include/navigation.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/navigation.html.php');
         // Flash messages
-        include(BASE_DIRECTORY . 'application/View/_include/messages.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/messages.html.php');
     ?>
     <!-- Main Content -->
     <main class="container my-5">

@@ -1,6 +1,6 @@
 <?php
     // Navigation
-    include(BASE_DIRECTORY . 'application/View/_include/navigation.html.php');
+    include(BASE_DIRECTORY . 'templates/_include/navigation.html.php');
 ?>
     <!-- Breadcrumb -->
     <section class="container">

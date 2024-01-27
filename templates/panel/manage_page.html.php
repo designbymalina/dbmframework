@@ -1,14 +1,14 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <?php
-            include('../application/View/_include/panel_sidebar.html.php');
+            include(BASE_DIRECTORY . 'templates/_include/panel_sidebar.html.php');
         ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
                 <?php
-                    include('../application/View/_include/panel_topbar.html.php');
+                    include(BASE_DIRECTORY . 'templates/_include/panel_topbar.html.php');
                 ?>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -23,7 +23,7 @@
                     </div>
                     <?php
                         // Panel flash messages
-                        include('../application/View/_include/panel_messages.html.php');
+                        include(BASE_DIRECTORY . 'templates/_include/panel_messages.html.php');
                     ?>
                     <!-- DataTales -->
                     <div class="card shadow mb-4">
@@ -61,12 +61,12 @@
             </div>
             <!-- End of Main Content -->
             <?php
-                include('../application/View/_include/panel_footer.html.php');
+                include(BASE_DIRECTORY . 'templates/_include/panel_footer.html.php');
             ?>
         </div>
         <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
     <?php
-        include('../application/View/_include/panel_logout.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/panel_logout.html.php');
     ?>

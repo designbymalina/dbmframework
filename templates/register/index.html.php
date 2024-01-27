@@ -1,8 +1,8 @@
     <?php
         // Navigation
-        include(BASE_DIRECTORY . 'application/View/_include/navigation.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/navigation.html.php');
         // Flash messages
-        include(BASE_DIRECTORY . 'application/View/_include/messages.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/messages.html.php');
         // Code
         !empty($data['data.form']) ? $form = $data['data.form'] : $form = null;
     ?>

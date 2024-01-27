@@ -1,8 +1,8 @@
     <?php
         // Navigation
-        include(BASE_DIRECTORY . 'application/View/_include/navigation.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/navigation.html.php');
         // Flash messages
-        include(BASE_DIRECTORY . 'application/View/_include/messages.html.php');
+        include(BASE_DIRECTORY . 'templates/_include/messages.html.php');
     ?>
 <!-- Main Content - Blog section -->
     <main class="container">
@@ -48,9 +48,9 @@
                 <div class="position-sticky" style="top: 2rem;">
                     <?php
                         // Box right about
-                        include(BASE_DIRECTORY . 'application/View/_include/box_right_about.html.php');
+                        include(BASE_DIRECTORY . 'templates/_include/box_right_about.html.php');
                         // Box right about
-                        include(BASE_DIRECTORY . 'application/View/_include/box_right_images.html.php');
+                        include(BASE_DIRECTORY . 'templates/_include/box_right_images.html.php');
                     ?>
                 </div>
             </div>
