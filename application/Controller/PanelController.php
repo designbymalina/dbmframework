@@ -67,7 +67,7 @@ class PanelController extends FrameworkClass
             'articles' => $arrayArticles,
         );
 
-        $this->view("panel/admin.html.php", $data);
+        $this->view("panel/admin.phtml", $data);
     }
 
     public function managePageMethod()
@@ -84,7 +84,7 @@ class PanelController extends FrameworkClass
             'dir' => self::DIR_CONTENT,
         );
 
-        $this->view("panel/manage_page.html.php", $data);
+        $this->view("panel/manage_page.phtml", $data);
     }
 
     public function createOrEditPageMethod()
@@ -127,7 +127,7 @@ class PanelController extends FrameworkClass
             ];
         }
 
-        $this->view("panel/create_edit_page.html.php", $data);
+        $this->view("panel/create_edit_page.phtml", $data);
     }
 
     public function createPageMethod()
@@ -179,7 +179,7 @@ class PanelController extends FrameworkClass
             'articles' => $allArticles,
         );
 
-        $this->view("panel/manage_blog.html.php", $data);
+        $this->view("panel/manage_blog.phtml", $data);
     }
 
     public function createOrEditBlogMethod()
@@ -231,7 +231,7 @@ class PanelController extends FrameworkClass
             ];
         }
 
-        $this->view("panel/create_edit_blog.html.php", $data);
+        $this->view("panel/create_edit_blog.phtml", $data);
     }
 
     public function createBlogMethod()
@@ -292,7 +292,7 @@ class PanelController extends FrameworkClass
             $this->redirect("panel/createOrEditBlog", ['id' => $lastId]);
         } else {
             $data = array_merge($data, $errorValidate);
-            $this->view("panel/create_edit_blog.html.php", $data);
+            $this->view("panel/create_edit_blog.phtml", $data);
         }
     }
 
@@ -337,7 +337,7 @@ class PanelController extends FrameworkClass
             'sections' => $querySections,
         );
 
-        $this->view("panel/manage_blog_sections.html.php", $data);
+        $this->view("panel/manage_blog_sections.phtml", $data);
     }
 
     public function createOrEditBlogSectionMethod()
@@ -378,7 +378,7 @@ class PanelController extends FrameworkClass
             ];
         }
 
-        $this->view("panel/create_edit_blog_section.html.php", $data);
+        $this->view("panel/create_edit_blog_section.phtml", $data);
     }
 
     public function createSectionMethod()
@@ -423,7 +423,7 @@ class PanelController extends FrameworkClass
             $this->redirect("panel/createOrEditBlogSection", ['id' => $lastId]);
         } else {
             $data = array_merge($data, $errorValidate);
-            $this->view("panel/create_edit_blog_section.html.php", $data);
+            $this->view("panel/create_edit_blog_section.phtml", $data);
         }
     }
 
@@ -456,7 +456,7 @@ class PanelController extends FrameworkClass
             'files' => $contentFiles,
         );
 
-        $this->view("panel/tabels.html.php", $data);
+        $this->view("panel/tabels.phtml", $data);
     }
 
     public function ajaxUploadImageMethod(): void

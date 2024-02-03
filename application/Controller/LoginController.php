@@ -39,7 +39,7 @@ class LoginController extends FrameworkClass
             'meta.keywords' => $translation->trans('login.keywords'),
         ];
 
-        $this->view("login/index.html.php", $data);
+        $this->view("login/index.phtml", $data);
     }
 
     public function signinMethod()
@@ -70,7 +70,7 @@ class LoginController extends FrameworkClass
                 'data.form' => $dataForm,
             ];
 
-            $this->view("login/index.html.php", $data);
+            $this->view("login/index.phtml", $data);
         }
     }
 

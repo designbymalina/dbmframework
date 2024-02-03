@@ -30,7 +30,7 @@ class PageController extends FrameworkClass
             'page_content' => $this->pageModel->Content(),
         ];
 
-        $this->view("page/index.html.php", $data);
+        $this->view("page/index.phtml", $data);
     }
 
     /* @Route: "/page/site.html" and more pages "page/site[-website-title].html" or "/website-title,site.html" */
@@ -43,7 +43,7 @@ class PageController extends FrameworkClass
             'page_content' => $this->pageModel->Content(),
         ];
 
-        $this->view("page/site.html.php", $data);
+        $this->view("page/site.phtml", $data);
     }
 
     /* @Route: website-title,offer.html */
@@ -56,6 +56,6 @@ class PageController extends FrameworkClass
             'page_content' => $this->pageModel->Content(),
         ];
 
-        $this->view("page/offer.html.php", $data);
+        $this->view("page/offer.phtml", $data);
     }
 }

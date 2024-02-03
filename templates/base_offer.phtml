@@ -24,11 +24,11 @@
 <body class="d-flex flex-column h-100">
 <?php
     // Header
-    include('_include/header_offer.html.php');
+    include('_include/header_offer.phtml');
     // Block Body Content, view content of the pages; variable $pathViewName is in location: FrameworkClass.php > view()
     include($pathViewName);
     // Footer
-    include('_include/footer.html.php');
+    include('_include/footer.phtml');
     // Block Custom Body for the current page in: _include/body_[file_name] (e.g. additional JavaScript of a given subpage)
     if ($pathBodyInc !== null) {
         include($pathBodyInc);

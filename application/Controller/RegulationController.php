@@ -29,6 +29,6 @@ class RegulationController extends FrameworkClass
             'page_content' => $this->pageModel->Content(),
         ];
 
-        $this->view("page/site.html.php", $data);
+        $this->view("page/site.phtml", $data);
     }
 }

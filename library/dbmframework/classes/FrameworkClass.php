@@ -18,9 +18,9 @@ class FrameworkClass
 {
     private const PATH_MODEL = BASE_DIRECTORY . 'application/Model/';
     private const PATH_VIEW = BASE_DIRECTORY . 'templates/';
-    private const FILE_BASE = 'base.html.php';
-    private const FILE_BASE_PANEL = 'base_panel.html.php';
-    private const FILE_BASE_OFFER = 'base_offer.html.php';
+    private const FILE_BASE = 'base.phtml'; // TODO! Mozna dopracowac dla zmiany rozszerzenia pliku na .twig lub inne
+    private const FILE_BASE_PANEL = 'base_panel.phtml';
+    private const FILE_BASE_OFFER = 'base_offer.phtml';
 
     /*protected $database;
 

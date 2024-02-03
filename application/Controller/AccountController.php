@@ -43,6 +43,6 @@ class AccountController extends FrameworkClass
             'user' => $userAccount,
         ];
 
-        $this->view("account/index.html.php", $data);
+        $this->view("account/index.phtml", $data);
     }
 }

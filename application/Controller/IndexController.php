@@ -52,15 +52,15 @@ class IndexController extends FrameworkClass
         ];
 
         // OPTIONS to Choose
-        // $this->view("index/index.html.php", $data);
-        // $this->view("page/index.html.php", $data);
-        // $this->view("blog/index.html.php", $data);
+        // $this->view("index/index.phtml", $data);
+        // $this->view("page/index.phtml", $data);
+        // $this->view("blog/index.phtml", $data);
         $this->view("blog/index.phtml", $data);
     }
 
     /* @Route: "/index/link.html" */
     public function linkMethod()
     {
-        $this->view("index/index.html.php");
+        $this->view("index/index.phtml");
     }
 }

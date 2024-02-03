@@ -49,7 +49,7 @@ class BlogController extends FrameworkClass
             'sections' => $allSections,
         ];
 
-        $this->view("blog/sections.html.php", $data);
+        $this->view("blog/sections.phtml", $data);
     }
 
     /* @Route: "/section-name,sec,{id}.html" */
@@ -71,7 +71,7 @@ class BlogController extends FrameworkClass
             'articles' => $querySectionArticles,
         ];
 
-        $this->view("blog/section.html.php", $data);
+        $this->view("blog/section.phtml", $data);
     }
 
     /* @Route: "/article-header-title,art,{id}.html" */
@@ -86,6 +86,6 @@ class BlogController extends FrameworkClass
             'article' => $queryArticle,
         ];
 
-        $this->view("blog/article.html.php", $data);
+        $this->view("blog/article.phtml", $data);
     }
 }

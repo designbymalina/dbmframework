@@ -18,6 +18,7 @@ class RegisterController extends FrameworkClass
     private $controllerModel;
     private $translation;
 
+    // public function __construct(MailerService $mailerService) // TODO! Wstrzykiwanie!?
     public function __construct()
     {
         $this->controllerModel = $this->model('RegisterModel');
@@ -41,7 +42,7 @@ class RegisterController extends FrameworkClass
             'data.form' => array(),
         ];
 
-        $this->view("register/index.html.php", $data);
+        $this->view("register/index.phtml", $data);
     }
 
     public function signupMethod()
@@ -95,7 +96,7 @@ class RegisterController extends FrameworkClass
                 'data.form' => $dataForm,
             ];
 
-            $this->view("register/index.html.php", $data);
+            $this->view("register/index.phtml", $data);
         }
     }
 

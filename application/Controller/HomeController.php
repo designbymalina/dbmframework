@@ -15,6 +15,6 @@ class HomeController extends FrameworkClass
 {
     public function index()
     {
-        $this->view("index/home.html.php");
+        $this->view("index/home.phtml");
     }
 }

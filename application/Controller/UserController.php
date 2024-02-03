@@ -30,6 +30,6 @@ class UserController extends FrameworkClass
             'data.user' => $userAccount,
         ];
 
-        $this->view("user/index.html.php", $data);
+        $this->view("user/index.phtml", $data);
     }
 }

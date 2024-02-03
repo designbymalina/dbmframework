@@ -82,7 +82,7 @@ class DataFlatfileClass
     {
         $search = array("\n", "{{url}}");
         $replace = array("\n" . $sign, APP_PATH);
-        
+
         return trim(str_replace($search, $replace, $content)) . "\n";
     }
 }
