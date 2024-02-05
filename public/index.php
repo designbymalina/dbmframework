@@ -16,25 +16,26 @@ session_start();
 ob_start();
 
 ### BASE PATH AND FILE NAME ###
-isset($_GET['url']) ? $file_basename = basename(str_replace('/', ',', $_GET['url']), '.html') : $file_basename = 'index';
+isset($_GET['url']) ? $fileBasename = basename(str_replace('/', ',', $_GET['url']), '.html') : $fileBasename = 'index';
 
 define('DS', DIRECTORY_SEPARATOR);
 define('BASE_DIRECTORY', str_replace('public' . DS, '', __DIR__ . DS));
-define('BASE_FILE', $file_basename);
+define('BASE_FILE', $fileBasename);
 
-### FUNCTIONS - application starting, template engine, etc
-require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/StartMethod.php');
-require(BASE_DIRECTORY . 'library' . DS . 'dbmframework/methods/TemplateMethod.php'); // Template methods *TODO! Do poprawki, czy jest Ok?
+### FUNCTIONS - application starting, template engine, etc.
+require(BASE_DIRECTORY . 'application' . DS . 'start.php');
+// Default template engine, you can change it to any other one
+require(BASE_DIRECTORY . 'application' . DS . 'template.php');
 
 ### ERROR HANDLING, logging error handling ###
-/* Time zone; Info: Not every server needed! */
+// Time zone; Info: Not every server needed!
 @date_default_timezone_set('Europe/Warsaw');
-/* Error handler */
+// Error handler
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 set_error_handler('reportingErrorHandler');
 
-### STARTING APPLICATION, configuration and autoloading ###
+### STARTING APPLICATION, configuration and autoloading. TODO! Maybe add a factory? ###
 $pathConfig = BASE_DIRECTORY . 'config' . DS . 'config.php';
 $pathAutoload = BASE_DIRECTORY . 'vendor' . DS . 'autoload.php';
 
@@ -44,7 +45,6 @@ configurationSettings($pathConfig);
 // Autoloading with and without Composer
 autoloadingWithWithoutComposer($pathAutoload);
 
-### RENDER PAGE ###
-use Dbm\Classes\RoutClass;
-
-new RoutClass();
+// Routing
+$routes = require(BASE_DIRECTORY . 'application' . DS . 'routes.php');
+$routes();
