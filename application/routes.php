@@ -16,12 +16,13 @@ use App\Controller\HomeController;
 use App\Controller\IndexController;
 use App\Controller\PageController;
 use App\Controller\RegulationController;
+use Dbm\Classes\Database;
 use Dbm\Classes\Router;
 
-return function () {
+return function (Database $database) {
     $uri = $_SERVER['REQUEST_URI'];
 
-    $router = new Router();
+    $router = new Router($database);
 
     $router->addRoute('/', [IndexController::class, 'index']);
     $router->addRoute('/link.html', [IndexController::class, 'linkMethod']);

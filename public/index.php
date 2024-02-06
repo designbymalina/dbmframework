@@ -46,5 +46,9 @@ configurationSettings($pathConfig);
 autoloadingWithWithoutComposer($pathAutoload);
 
 // Routing and database connection
+use Dbm\Classes\Database;
+
+$database = new Database;
+
 $routes = require(BASE_DIRECTORY . 'application' . DS . 'routes.php');
-$routes();
+$routes($database);

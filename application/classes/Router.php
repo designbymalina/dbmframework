@@ -16,6 +16,12 @@ use Dbm\Classes\ExceptionHandler;
 class Router
 {
     protected $routes = [];
+    private $database;
+
+    public function __construct(Database $database)
+    {
+        $this->database = $database;
+    }
 
     public function addRoute(string $route, array $arrayController): void
     {
@@ -25,6 +31,8 @@ class Router
 
     public function dispatch(string $uri): void
     {
+        $database = $this->database;
+        
         $uri = $this->matchLocalhost($uri);
         $uri = $this->matchRoute($uri);
 
@@ -33,7 +41,6 @@ class Router
             $method = $this->routes[$uri]['method'];
 
             if (class_exists($controller)) {
-                $database = new Database;
                 $controllerInstance = new $controller($database);
 
                 if (method_exists($controllerInstance, $method)) {
