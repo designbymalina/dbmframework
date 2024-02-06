@@ -45,6 +45,6 @@ configurationSettings($pathConfig);
 // Autoloading with and without Composer
 autoloadingWithWithoutComposer($pathAutoload);
 
-// Routing
+// Routing and database connection
 $routes = require(BASE_DIRECTORY . 'application' . DS . 'routes.php');
 $routes();

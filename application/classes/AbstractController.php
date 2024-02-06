@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use Dbm\Classes\Database as DbmDatabase;
-use Dbm\Classes\ExceptionHandler as DbmException;
+use Dbm\Classes\Database;
+use Dbm\Classes\ExceptionHandler;
 
 // TODO! abstract class AbstractController
 class AbstractController
@@ -22,12 +22,12 @@ class AbstractController
     private const FILE_BASE_PANEL = 'base_panel.phtml';
     private const FILE_BASE_OFFER = 'base_offer.phtml';
 
-    /*private $database;
+    private $database;
 
-    public function __construct(DbmDatabase $database)
+    public function __construct(Database $database)
     {
         $this->database = $database;
-    }*/
+    }
 
     protected function render(string $fileName, array $data = [])
     {
@@ -48,7 +48,7 @@ class AbstractController
 
         if (file_exists($pathBasename)) {
             if (!file_exists($pathViewName)) {
-                throw new DbmException('View file ' . $pathViewName . ' is required. File not found!', 404);
+                throw new ExceptionHandler('View file ' . $pathViewName . ' is required. File not found!', 404);
             }
 
             if (!file_exists($pathHeadInc)) {
@@ -62,7 +62,7 @@ class AbstractController
             // Include base template width content page
             include($pathBasename);
         } else {
-            throw new DbmException('Base file ' . $pathBasename . ' is required. File not found!', 404);
+            throw new ExceptionHandler('Base file ' . $pathBasename . ' is required. File not found!', 404);
         }
     }
 
@@ -161,17 +161,15 @@ class AbstractController
     // User permissions
     public function userPermissions(int $id): ?string
     {
-        $database = new DbmDatabase(); // TODO! Jak zmienic, aby bylo OK?
-
         $query = "SELECT roles FROM dbm_user WHERE id = ?"; // TODO! Jak to jest z :id lub znakiem zapytania, czy tak samo jest bezpieczne?
 
-        $database->queryExecute($query, [$id]);
+        $this->database->queryExecute($query, [$id]);
 
-        if ($database->rowCount() == 0) {
+        if ($this->database->rowCount() == 0) {
             return null;
         }
 
-        $data = $database->fetchObject();
+        $data = $this->database->fetchObject();
 
         return $data->roles;
     }

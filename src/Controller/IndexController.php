@@ -11,6 +11,7 @@ namespace App\Controller;
 
 use App\Config\ConstantConfig;
 use App\Model\BlogModel;
+use App\Service\MethodService;
 use Dbm\Classes\AbstractController;
 use Dbm\Classes\Database;
 use Dbm\Classes\Translation;
@@ -23,10 +24,8 @@ class IndexController extends AbstractController
     /*
      * TODO! public function __construct(Database $database, Translation $translation) // TODO! Wstrzykiwanie do konstruktora!?
      */
-    public function __construct()
+    public function __construct(Database $database)
     {
-        $database = new Database;
-
         $model = new BlogModel($database);
         $this->model = $model;
 
@@ -35,7 +34,7 @@ class IndexController extends AbstractController
     }
 
     /*
-     * TODO! public function index(TranslationClass $translation, etc...) // TODO! Wstrzykiwanie do metody!?
+     * TODO! public function index(Translation $translation, etc...) // TODO! Wstrzykiwanie do metody!?
      *
      * @Route: "/"
      */

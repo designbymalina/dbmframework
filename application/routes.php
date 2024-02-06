@@ -32,11 +32,11 @@ return function () {
     $router->addRoute('/page', [PageController::class, 'index']);
     $router->addRoute('/page/site', [PageController::class, 'siteMethod']); // ? /page/site.html
     $router->addRoute('/site.html', [PageController::class, 'siteMethod']); // ?
-    $router->addRoute('/offer.html', [PageController::class, 'offerMethod']); // TODO! website-title,offer.html ?
+    $router->addRoute('/offer.html', [PageController::class, 'offerMethod']); // /{#},offer.html
     $router->addRoute('/blog', [BlogController::class, 'index']);
     $router->addRoute('/blog/sections', [BlogController::class, 'sectionsMethod']);
-    $router->addRoute('/blog/{section-name},sec,{id}.html', [BlogController::class, 'sectionMethod']); // TODO!
-    $router->addRoute('/{article-name},art,{id}.html', [BlogController::class, 'articleMethod']); // TODO!
+    $router->addRoute('/blog/{#},sec,{id}.html', [BlogController::class, 'sectionMethod']); // TODO!
+    $router->addRoute('/{#},art,{$}.html', [BlogController::class, 'articleMethod']); // TODO!
     
     $router->dispatch($uri);
 };
