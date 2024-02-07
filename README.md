@@ -1,6 +1,6 @@
 # DbM Framework
 
-DbM Framework PHP MVC Simple CMS, Version 2.1  
+DbM Framework PHP MVC Simple CMS, Version 2.2  
 Application tested on: PHP 7.4  
 All code copyright Design by Malina (DbM)  
 Web: www.dbm.org.pl

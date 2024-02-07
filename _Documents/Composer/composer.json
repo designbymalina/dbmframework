@@ -1,0 +1,36 @@
+{
+    "name": "artimman/dbmframework",
+    "type": "library",
+    "description": "The DbM Framework PHP MVC Simple CMS",
+    "keywords": ["dbmframework", "microframework", "php framework", "version cms"],
+    "homepage": "https://github.com/artimman/dbmframework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arthur Malinowsky",
+            "email": "biuro@dbm.org.pl",
+            "homepage": "https://dbm.org.pl"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "phpmailer/phpmailer": "^6.6"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "classmap": [
+            "application/"
+        ],
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
