@@ -1,0 +1,19 @@
+    <?php
+        // Navigation
+        include(BASE_DIRECTORY . 'templates/_include/navigation.phtml');
+        // Flash messages
+        include(BASE_DIRECTORY . 'templates/_include/messages.phtml');
+    ?>
+    <!-- Breadcrumb -->
+    <section class="container">
+        <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="<?= path() ?>" class="link-secondary">Home</a></li>
+                <li class="breadcrumb-item active">Landing pages</li>
+            </ol>
+        </nav>
+    </section>
+    <!-- Main Content - Page index -->
+    <main>
+        <?= $data['content'] ?>
+    </main>

@@ -1,0 +1,7 @@
+<!-- includePanelFlashMessages -->
+<?php
+    $this->flashPanel('messageInfo', 'alert-info');
+    $this->flashPanel('messageWarning', 'alert-warning');
+    $this->flashPanel('messageDanger', 'alert-danger');
+    $this->flashPanel('messageSuccess', 'alert-success');
+?>

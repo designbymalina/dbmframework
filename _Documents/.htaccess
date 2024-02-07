@@ -1,0 +1,9 @@
+## START; Enable or disable the URL rewriting engine (mod_rewrite in use)
+RewriteEngine On
+
+# Rewrite Base; *ATTENTION Configure the path, example for localhost in dbmframework folder: /dbmframework/
+RewriteBase /dbmframework/
+
+# Rewrite Rules
+RewriteRule ^$ public/ [L]
+RewriteRule (.*) public/$1 [L]
