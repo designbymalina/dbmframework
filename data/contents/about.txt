@@ -1,9 +1,0 @@
-o nas
-<!--@-->
-Informacje o nas.
-<!--@-->
-O nas
-<!--@-->
-<div class="container mb-4">
-    <p>Zawartość strony -> O nas...</p>
-</div>

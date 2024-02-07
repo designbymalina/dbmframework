@@ -1,9 +1,0 @@
-regulamin, polityka prywatnośći
-<!--@-->
-Regulamin i polityka prywatności
-<!--@-->
-Regulamin
-<!--@-->
-    <div class="container mb-4">
-        <p>Zawartość strony -> Regulamin...</p>
-    </div>
