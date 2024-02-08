@@ -34,8 +34,9 @@ class IndexController extends BaseController
     /* @Route: "/" */
     public function index()
     {
+        // Option for render: blog/index.phtml
         if (empty(DB_DATABASE)) {
-            $this->redirect('home');
+            $this->redirect('page');
         }
 
         $translation = $this->translation;
