@@ -9,7 +9,7 @@ deny from all
  RewriteEngine On
 
  # Rewrite Base; *ATTENTION Configure the path, example for localhost in dbmframework folder: /dbmframework/
- RewriteBase /__TESTY/DbMFramework/
+ RewriteBase /dbmframework/
 
  # RewriteBase /
  RewriteRule ^$ public/ [L]
