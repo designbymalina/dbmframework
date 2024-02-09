@@ -9,7 +9,7 @@
                     <p class="p-3 bg-info bg-opacity-10 border border-info rounded rounded-3">Zapoznaj się z instrukcją w pliku README.md i skonfiguruj poprawnie aplikacje. Pamiętaj, aby w katalogu głównym oraz katalogu /public/ dla plików .htaccess ustawić prawidłową wartość argumentu RewriteBase. W przypadku instalacji frameworka na serwerze lokalnym (localhost) utwórz katalog np. dbmframework, w tym katalogu dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/. W przypadku instalacji na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu /public/ w katalogu /public/ dla .htaccess ustawić RewriteBase / po czym plik .htaccess w katalogu głównym aplikacji można usunąć.</p>
                     <ul>
                         <li>
-                            <a href="home.html" class="fw-bold">Home</a> - home (index in HomeController)
+                            <a href="home" class="fw-bold">Home</a> - home (index in HomeController)
                             <p class="small ms-3 mb-0">Starter aplikacji dla DbMFramework.</p>
                         </li>
                         <li>
@@ -17,11 +17,11 @@
                             <p class="small ms-3 mb-0">Adres: 'page' - przykład przekierowania do strony głównej ustawionej na wersje blog/portal.</p>
                         </li>
                         <li>
-                            <a href="page/site" class="fw-bold">Page -> site (name)</a> - SEO friendly (simple without rules)
+                            <a href="page/site" class="fw-bold">Page -> site (name)</a>
                             <p class="small ms-3 mb-0">Przykładowy adres: <b>page/site</b> (.html) i kolejne <b>page/site</b><b class="text-success">-website-title</b><b>.html</b> - zawartość strony (content) należy utworzyć odpowiednio dla nazwy w pliku page-site-website-title.txt.</p>
                         </li>
                         <li>
-                            <a href="your-website-title,site.html" class="fw-bold">Your website title</a> - SEO friendly (with RewriteRule)
+                            <a href="your-website-title,site.html" class="fw-bold">Your website title</a> - URL with RewriteRule
                             <p class="small ms-3 mb-0">Przykładowy adres: <b class="text-success">website-title</b><b>,site.html</b> - zawartość strony (content) należy utworzyć odpowiednio dla nazwy w pliku page-website-title.txt.</p>
                         </li>
                     </ul>

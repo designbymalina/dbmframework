@@ -1,6 +1,6 @@
 <?php
 /*
- * Application: DbM Framework v1.2
+ * Application: DbM Framework v.2.1
  * Author: Arthur Malinowsky (Design by Malina)
  * License: MIT
  * Web page: www.dbm.org.pl

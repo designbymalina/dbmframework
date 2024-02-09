@@ -44,20 +44,25 @@ class DataFlatfile
         return $result;
     }
 
-    private function fileName(): ?string
+    private function fileName(): string
     {
-        if (!isset($_GET['url'])) {
-            return null;
+        $dir = dirname($_SERVER['PHP_SELF']);
+        $name = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
+
+        if (strpos($dir, 'public')) {
+            $path = substr($dir, 0, strpos($dir, 'public'));
+            $name = str_replace($path, '', $name);
         }
 
-        $url = $_GET['url'];
-        $str = ['/','.html'];
-        $rep = ['-',''];
+        $name = ltrim($name, '/');
+        $name = str_replace('.html', '', $name);
 
-        $url = str_replace($str, $rep, $url);
-        $url = trim($url . '.txt');
+        if (strpos($name, ',') !== false) {
+            $name = substr($name, 0, strpos($name, ','));
+            $name = 'page-' . $name;
+        }
 
-        return $url;
+        return $name . '.txt';
     }
 
     private function arrayFillKeys(array $arrayKeys, array $arrayValues): ?array

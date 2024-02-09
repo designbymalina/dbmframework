@@ -31,7 +31,7 @@ return function (Database $database) {
 
     $router->addRoute('/', [IndexController::class, 'index']);
     $router->addRoute('/link.html', [IndexController::class, 'linkMethod']);
-    $router->addRoute('/home.html', [HomeController::class, 'index']);
+    $router->addRoute('/home', [HomeController::class, 'index']);
     $router->addRoute('/about.html', [AboutController::class, 'index']);
     $router->addRoute('/contact.html', [ContactController::class, 'index']);
     $router->addRoute('/regulation.html', [RegulationController::class, 'index']);
@@ -41,8 +41,8 @@ return function (Database $database) {
     $router->addRoute('/{#},offer.html', [PageController::class, 'offerMethod']);
     $router->addRoute('/blog', [BlogController::class, 'index']);
     $router->addRoute('/blog/sections', [BlogController::class, 'sectionsMethod']);
-    $router->addRoute('/blog/{#},sec,{$}.html', [BlogController::class, 'sectionMethod']);
-    $router->addRoute('/{#},art,{$}.html', [BlogController::class, 'articleMethod']);
+    $router->addRoute('/blog/{#},sec,{id}.html', [BlogController::class, 'sectionMethod']);
+    $router->addRoute('/{#},art,{id}.html', [BlogController::class, 'articleMethod']);
     $router->addRoute('/login', [LoginController::class, 'index']);
     $router->addRoute('/login/signin', [LoginController::class, 'signinMethod']);
     $router->addRoute('/login/logout', [LoginController::class, 'logoutMethod']);
@@ -50,7 +50,7 @@ return function (Database $database) {
     $router->addRoute('/register', [RegisterController::class, 'index']);
     $router->addRoute('/register/signup', [RegisterController::class, 'signupMethod']);
     $router->addRoute('/register/verified.php', [RegisterController::class, 'verifiedMethod']);
-    $router->addRoute('/user,{$}.html', [UserController::class, 'index']);
+    $router->addRoute('/user,{id}.html', [UserController::class, 'index']);
     $router->addRoute('/panel', [PanelController::class, 'index']);
     $router->addRoute('/panel/managePage', [PanelController::class, 'managePageMethod']);
     $router->addRoute('/panel/createPage', [PanelController::class, 'createPageMethod']);

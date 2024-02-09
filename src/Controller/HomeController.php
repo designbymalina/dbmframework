@@ -13,7 +13,7 @@ use Dbm\Classes\BaseController;
 
 class HomeController extends BaseController
 {
-    /* @Route: "home.html" */
+    /* @Route: "/home" */
     public function index()
     {
         $this->render("index/home.phtml");
