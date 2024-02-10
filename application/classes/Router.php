@@ -149,6 +149,7 @@ class Router
         ];
     }
 
+    /* Method for localhost and application in catalog */
     private function matchDomain(string $uri): string
     {
         $dir = dirname($_SERVER['PHP_SELF']);

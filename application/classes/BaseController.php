@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use Dbm\Classes\Database;
 use Dbm\Classes\ExceptionHandler;
 
 class BaseController
@@ -154,7 +153,18 @@ class BaseController
             $path = $path . '?' . http_build_query($params);
         }
 
-        header("Location: " . APP_PATH . $path); // TODO! Zmien path na automatyczny nie z configu
+        $dir = dirname($_SERVER['PHP_SELF']);
+
+        if (strpos($dir, 'public')) { // for localhost (application in catalog)
+            $public = substr($dir, 0, strpos($dir, 'public'));
+        } else {
+            $public = '/';
+        }
+
+        $url = empty($_SERVER['HTTPS']) ? 'http' : 'https';
+        $url = $url . '://' . $_SERVER['HTTP_HOST'] . $public . $path;
+
+        header("Location: " . $url);
     }
 
     // User permissions
