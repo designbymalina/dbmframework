@@ -56,11 +56,7 @@ return [
     'index.keywords' => "dbm framework, simple cms, framework, cms",
     // Index template (html)
     'index.header' => "<small>Welcome to </small> <strong>DbM <small>Framework</small></strong>",
-    'index.lead' => "DbM Framework PHP MVC Simple CMS allows you to create simple and beautiful websites such as business cards, landing pages, etc. where the content is stored in text files (you don't need a database), but to edit the content it is recommended to know CSS and HTML. The framework also enables the creation of larger applications requiring a database, such as a regularly updated, professional blog, and more complex systems of an individual project, where programming knowledge is required.",
-    'index.content_landingpage_header' => "Home/Landingpage on text files",
-    'index.content_landingpage_description' => "CMS systems are almost always based on cooperation with databases. So what can users of small websites, landing pages or business cards do? A helpful solution here is a system based on text files. It allows for management and ongoing editing of content on websites built on the basis of text files (txt, html and php). The functionality of applications created on text files is similar to CMS systems cooperating with databases.",
-    'index.content_blog_header' => "Blog/Portal database system",
-    'index.content_blog_description' => "CMS content management systems are designed to maximally facilitate the process of creating and maintaining websites, as well as their subsequent expansion and updating. New content is published by the website administrator by saving it in a database (e.g. MySQL). ), and then dynamic subpages are generated using templates and content. Typically, such systems are free unless you need advanced add-ons, e.g. a payment script, an individual responsive graphic template, which require the work of an expert.",
+    'index.lead' => "DbM Framework PHP MVC Simple CMS allows you to create simple and beautiful websites such as business cards, landing pages, etc. where the content is stored in text files (you don't need a database), but to edit the content it is recommended to know HTML and CSS. The framework also enables the creation of larger applications requiring a database, such as a regularly updated, professional blog, and more complex systems of an individual project, where programming knowledge is required.",
     // LoginController
     'login.title' => "Login",
     'login.description' => "Log in with your user account.",

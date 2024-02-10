@@ -55,7 +55,7 @@ class DataFlatfile
         }
 
         $name = ltrim($name, '/');
-        $name = str_replace('.html', '', $name);
+        $name = str_replace(['/', '.html'], ['-', ''], $name);
 
         if (strpos($name, ',') !== false) {
             $name = substr($name, 0, strpos($name, ','));

@@ -154,7 +154,7 @@ class BaseController
             $path = $path . '?' . http_build_query($params);
         }
 
-        header("Location: " . APP_PATH . $path);
+        header("Location: " . APP_PATH . $path); // TODO! Zmien path na automatyczny nie z configu
     }
 
     // User permissions

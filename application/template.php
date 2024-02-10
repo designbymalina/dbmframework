@@ -13,11 +13,6 @@
 function path(string $file = null): string
 {
     $seperator = '/';
-
-    if (APP_PATH === $seperator) {
-        return APP_PATH . trim($file);
-    }
-
     $requestUri = $_SERVER['REQUEST_URI'];
     $httpHost = $_SERVER['HTTP_HOST'];
 
@@ -102,8 +97,10 @@ function truncate(string $content, int $limit = 250, string $ending = '...'): st
 function linkSEO(string $rule, int $id, string $text = null, int $limit = 120, string $separator = '-'): string
 {
     if ($text != null) {
+        $search = ['-', 'the', 'and', 'or', 'a', 'i', 'oraz', 'tudzież', 'albo', 'lub'];
+
         $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-        $text = str_replace('-', '', $text);
+        $text = str_replace($search, '', $text);
         $text = strip_tags($text);
         $text = preg_replace('/[^a-zA-Z0-9 -]/', '', $text);
         $text = strtolower($text);
