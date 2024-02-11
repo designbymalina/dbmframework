@@ -20,7 +20,7 @@ class PageController extends BaseController
     public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
-        
+
         $model = new PageModel();
         $this->model = $model;
     }

@@ -142,7 +142,7 @@ function counterVisits(): string
     $path = '../data/txt/';
     $pathFile = $path . $file;
 
-    if (!file_exists($pathFile)) {
+    if (!file_exists($pathFile) || (filesize($pathFile) == 0)) {
         file_put_contents($pathFile, $result);
         $counterFile = 0;
     } else {
@@ -157,7 +157,7 @@ function counterVisits(): string
 
     $pathCopy = $path . 'copies' . DS . $file;
 
-    if (!file_exists($pathCopy)) {
+    if (!file_exists($pathCopy) || (filesize($pathCopy) == 0)) {
         file_put_contents($pathCopy, $result);
         $counterCopy = 0;
     } else {
