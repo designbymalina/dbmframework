@@ -12,13 +12,15 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use Dbm\Classes\ExceptionHandler;
+use Dbm\Interfaces\DatabaseInterface;
+use Dbm\Interfaces\RouterInterface;
 
-class Router
+class Router implements RouterInterface
 {
     protected $routes = [];
     private $database;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         $this->database = $database;
     }

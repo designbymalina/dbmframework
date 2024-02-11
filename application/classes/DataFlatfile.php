@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-class DataFlatfile
+use Dbm\Interfaces\DataFlatfileInterface;
+
+class DataFlatfile implements DataFlatfileInterface
 {
     public function dataFlatFile(string $type = 'content', string $sign = ''): string
     {

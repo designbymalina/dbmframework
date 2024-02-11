@@ -11,24 +11,12 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
+use Dbm\Interfaces\TranslationInterface;
 use Exception;
 
-class Translation
+class Translation implements TranslationInterface
 {
     private const PATH_TRANSLATION = '../translations/language.';
-
-    /* Switch translation */
-    public function translation(): array
-    {
-        $language = $this->language();
-        $pathTranslation = self::PATH_TRANSLATION . strtolower($language) . '.php';
-
-        if (file_exists($pathTranslation)) {
-            return require($pathTranslation);
-        } else {
-            throw new Exception('No translation file ' . $pathTranslation);
-        }
-    }
 
     /* Language translation */
     public function trans(string $key, array $data = null, array $sprint = null): string
@@ -43,6 +31,19 @@ class Translation
             return $value;
         } else {
             return $key;
+        }
+    }
+
+    /* Switch translation */
+    private function translation(): array
+    {
+        $language = $this->language();
+        $pathTranslation = self::PATH_TRANSLATION . strtolower($language) . '.php';
+
+        if (file_exists($pathTranslation)) {
+            return require($pathTranslation);
+        } else {
+            throw new Exception('No translation file ' . $pathTranslation);
         }
     }
 

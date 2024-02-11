@@ -21,10 +21,10 @@ use App\Controller\PanelController;
 use App\Controller\RegisterController;
 use App\Controller\RegulationController;
 use App\Controller\UserController;
-use Dbm\Classes\Database;
 use Dbm\Classes\Router;
+use Dbm\Interfaces\DatabaseInterface;
 
-return function (Database $database) {
+return function (DatabaseInterface $database) {
     $uri = $_SERVER['REQUEST_URI'];
 
     $router = new Router($database);

@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Dbm\Classes\Database;
+use Dbm\Interfaces\DatabaseInterface;
 
 class PanelModel
 {
     private $database;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         $this->database = $database;
     }

@@ -11,15 +11,15 @@ namespace App\Controller;
 
 use App\Model\UserModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Database;
 use Dbm\Classes\Translation;
+use Dbm\Interfaces\DatabaseInterface;
 
 class AccountController extends BaseController
 {
     private $model;
     private $translation;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         if (!$this->getSession('dbmUserId')) {
             $this->redirect("login");

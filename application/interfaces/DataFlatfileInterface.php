@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Dbm\Interfaces;
 
-interface ExampleInterface
+interface DataFlatfileInterface
 {
+    public function dataFlatFile(string $type = 'content', string $sign = ''): string;
 }

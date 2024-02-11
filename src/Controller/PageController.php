@@ -11,17 +11,17 @@ namespace App\Controller;
 
 use App\Model\PageModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Database;
+use Dbm\Interfaces\DatabaseInterface;
 
 class PageController extends BaseController
 {
     private $model;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
-
-        $model = new PageModel($database);
+        
+        $model = new PageModel();
         $this->model = $model;
     }
 

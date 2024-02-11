@@ -9,53 +9,27 @@
 
 declare(strict_types=1);
 
-namespace Dbm\Classes;
+namespace Dbm\Interfaces;
 
-//namespace Dbm\Interfaces; // Dbm\Contracts ?
+use PDOStatement;
 
-class DatabaseInterface
+interface DatabaseInterface
 {
-    private $connect;
-    private $statement;
+    public function querySql(string $query, string $fetch = 'assoc'): PDOStatement;
 
-    public function __construct()
-    {
-        $this->connect;
-    }
+    public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool;
 
-    public function querySql(string $query, string $fetch = 'assoc')
-    {
-    }
+    public function rowCount(): int;
 
-    public function queryExecute(string $query, ?array $params = [], bool $reference = false)
-    {
-        return $this->statement;
-    }
+    public function fetch(string $fetch = 'assoc'): array;
 
-    public function rowCount()
-    {
-    }
+    public function fetchAll(string $fetch = 'assoc'): array;
 
-    public function fetchAll(string $fetch = 'assoc')
-    {
-    }
+    public function fetchObject(): object;
 
-    public function fetchObject()
-    {
-    }
+    public function fetchAllObject(): array;
 
-    public function fetchAllObject(): object
-    {
-        return $this->statement;
-    }
+    public function debugDumpParams(): ?string;
 
-    public function debugDumpParams()
-    {
-    }
-
-    public function getLastInsertId()
-    {
-    }
-
-    //private function paramType() {}
+    public function getLastInsertId(): ?string;
 }

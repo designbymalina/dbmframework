@@ -9,15 +9,15 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Dbm\Classes\Database;
 use Dbm\Classes\Translation;
+use Dbm\Interfaces\DatabaseInterface;
 
 class RegisterModel
 {
     private $database;
     private $translation;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         $this->database = $database;
 

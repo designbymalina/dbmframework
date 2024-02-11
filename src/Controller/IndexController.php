@@ -12,15 +12,15 @@ namespace App\Controller;
 use App\Config\ConstantConfig;
 use App\Model\BlogModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Database;
 use Dbm\Classes\Translation;
+use Dbm\Interfaces\DatabaseInterface;
 
 class IndexController extends BaseController
 {
     private $model;
     private $translation;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
 

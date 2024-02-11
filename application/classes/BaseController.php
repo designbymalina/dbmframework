@@ -12,27 +12,30 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use Dbm\Classes\ExceptionHandler;
+use Dbm\Interfaces\BaseInterface;
+use Dbm\Interfaces\DatabaseInterface;
 
-class BaseController
+class BaseController implements BaseInterface
 {
-    private const PATH_VIEW = BASE_DIRECTORY . 'templates/';
+    private const PATH_VIEW = BASE_DIRECTORY . 'templates'. DS;
     private const FILE_BASE = 'base.phtml';
     private const FILE_BASE_PANEL = 'base_panel.phtml';
     private const FILE_BASE_OFFER = 'base_offer.phtml';
 
     private $database;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         $this->database = $database;
     }
 
-    protected function render(string $fileName, array $data = [])
+    protected function render(string $fileName, array $data = []): void
     {
         extract($data);
 
         $pathBasename = self::PATH_VIEW . self::FILE_BASE;
-        $dirname = explode('/', $fileName);
+        $fileName = str_replace('/', DS, $fileName);
+        $dirname = explode(DS, $fileName);
 
         if ($dirname[0] == 'panel') {
             $pathBasename = self::PATH_VIEW . self::FILE_BASE_PANEL;
@@ -41,8 +44,8 @@ class BaseController
         }
 
         $pathViewName = self::PATH_VIEW . $fileName;
-        $pathHeadInc = self::PATH_VIEW . '_include/head_' . basename($fileName);
-        $pathBodyInc = self::PATH_VIEW . '_include/body_' . basename($fileName);
+        $pathHeadInc = self::PATH_VIEW . '_include' . DS . 'head_' . basename($fileName);
+        $pathBodyInc = self::PATH_VIEW . '_include' . DS . 'body_' . basename($fileName);
 
         if (file_exists($pathBasename)) {
             if (!file_exists($pathViewName)) {
@@ -65,7 +68,7 @@ class BaseController
     }
 
     // Request data
-    public function requestData(string $fieldName)
+    public function requestData(string $fieldName): ?string
     {
         if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'post') {
             if (array_key_exists($fieldName, $_POST)) {
@@ -78,6 +81,8 @@ class BaseController
                 return trim($_GET[$fieldName]);
             }
         }
+
+        return null;
     }
 
     // Set session
@@ -89,15 +94,17 @@ class BaseController
     }
 
     // Get session
-    public function getSession(string $sessionName)
+    public function getSession(string $sessionName): ?string
     {
         if (isset($_SESSION['dbmUserId']) && !empty($sessionName)) {
             return $_SESSION[$sessionName];
         }
+
+        return null;
     }
 
     // Unset session
-    public function unsetSession(string $sessionName)
+    public function unsetSession(string $sessionName): void
     {
         if (!empty($sessionName)) {
             unset($_SESSION[$sessionName]);
@@ -105,7 +112,7 @@ class BaseController
     }
 
     // Destroy whole sessions
-    public function destroySession()
+    public function destroySession(): void
     {
         session_destroy();
     }
@@ -170,8 +177,7 @@ class BaseController
     // User permissions
     public function userPermissions(int $id): ?string
     {
-        //$database = $this->database; // TODO!
-        $database = new Database();
+        $database = $this->database;
 
         $query = "SELECT roles FROM dbm_user WHERE id = ?"; // TODO! Jak to jest z :id lub znakiem zapytania, czy tak samo jest bezpieczne?
 

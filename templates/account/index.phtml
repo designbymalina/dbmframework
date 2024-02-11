@@ -1,8 +1,8 @@
     <?php
         // Navigation
-        include(BASE_DIRECTORY . 'templates/_include/navigation.phtml');
+        include('../templates/_include/navigation.phtml');
         // Flash messages
-        include(BASE_DIRECTORY . 'templates/_include/messages.phtml');
+        include('../templates/_include/messages.phtml');
         // Page data
         !empty($user->avatar) ? $avatar = $user->avatar : $avatar = 'no-avatar.png';
     ?>
@@ -10,7 +10,7 @@
     <section class="container">
         <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 small">
-                <li class="breadcrumb-item"><a href="<?php echo path(); ?>" class="link-secondary">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= path() ?>" class="link-secondary">Home</a></li>
                 <li class="breadcrumb-item active">User account - Profile</li>
             </ol>
         </nav>
@@ -22,10 +22,10 @@
                 <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
-                            <img src="<?php echo path('images/avatar/' . $avatar); ?>" alt="avatar" class="rounded-circle img-fluid" style="width:150px">
-                            <h5 class="my-3"><?php echo $user->fullname; ?></h5>
-                            <p class="text-muted mb-1"><?php echo $user->profession; ?></p>
-                            <p class="text-muted mb-4"><?php echo $user->business; ?></p>
+                            <img src="<?= path('images/avatar/' . $avatar) ?>" alt="avatar" class="rounded-circle img-fluid" style="width:150px">
+                            <h5 class="my-3"><?= $user->fullname; ?></h5>
+                            <p class="text-muted mb-1"><?= $user->profession; ?></p>
+                            <p class="text-muted mb-4"><?= $user->business; ?></p>
                         </div>
                     </div>
                     <div class="card mb-4 mb-lg-0">
@@ -46,7 +46,7 @@
                                     <p class="mb-0">Full Name</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0"><?php echo $user->fullname; ?></p>
+                                    <p class="text-muted mb-0"><?= $user->fullname; ?></p>
                                 </div>
                             </div>
                             <hr>
@@ -55,7 +55,7 @@
                                     <p class="mb-0">E-mail</p>
                                 </div>
                                 <div class="col-sm-9">
-                                    <p class="text-muted mb-0"><?php echo $user->email; ?></p>
+                                    <p class="text-muted mb-0"><?= $user->email; ?></p>
                                 </div>
                             </div>
                             <hr>

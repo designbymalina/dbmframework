@@ -15,7 +15,7 @@ use App\Service\DbmImageUploadService;
 use App\Service\MethodService;
 use Dbm\Classes\Translation;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Database;
+use Dbm\Interfaces\DatabaseInterface;
 use DateTime;
 
 /*
@@ -23,28 +23,28 @@ use DateTime;
 */
 class PanelController extends BaseController
 {
-    private const DIR_CONTENT = BASE_DIRECTORY . 'data' . DS . 'content' . DS;
-    private const DIR_IMG_PAGE = BASE_DIRECTORY . 'public' . DS . 'images' . DS . 'page' . DS . 'photo' . DS;
-    private const DIR_IMG_BLOG = BASE_DIRECTORY . 'public' . DS . 'images' . DS . 'blog' . DS . 'photo' . DS;
-    private const DIR_IMG_SECTION = BASE_DIRECTORY . 'public' . DS . 'images' . DS . 'blog' . DS . 'category' . DS . 'photo' . DS;
+    private const DIR_CONTENT = BASE_DIRECTORY . 'data/content/';
+    private const DIR_IMG_PAGE = BASE_DIRECTORY . 'public/images/page/photo/';
+    private const DIR_IMG_BLOG = BASE_DIRECTORY . 'public/images/blog/photo/';
+    private const DIR_IMG_SECTION = BASE_DIRECTORY . 'public/images/blog/category/photo/';
     private const SPLIT = "<!--@-->";
 
     private $model;
     private $translation;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         if (!$this->getSession('dbmUserId')) {
             $this->redirect("login");
         }
+
+        parent::__construct($database);
 
         $userId = (int) $this->getSession('dbmUserId');
 
         if ($this->userPermissions($userId) !== 'ADMIN') {
             $this->redirect("index");
         }
-
-        parent::__construct($database);
 
         $model = new PanelModel($database);
         $this->model = $model;

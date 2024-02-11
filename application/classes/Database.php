@@ -12,11 +12,12 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use Dbm\Classes\ExceptionHandler;
+use Dbm\Interfaces\DatabaseInterface;
 use PDO;
 use PDOException;
 use PDOStatement;
 
-class Database
+class Database implements DatabaseInterface
 {
     private $connect;
     private $statement;

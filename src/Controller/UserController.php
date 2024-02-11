@@ -11,13 +11,13 @@ namespace App\Controller;
 
 use App\Model\UserModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Database;
+use Dbm\Interfaces\DatabaseInterface;
 
 class UserController extends BaseController
 {
     private $model;
 
-    public function __construct(Database $database)
+    public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
 
