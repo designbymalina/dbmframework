@@ -21,7 +21,7 @@
     <main class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="pb-4 mb-4 fst-italic border-bottom"><?= truncate($article->page_header, 45) ?></h1>
+                <h1 class="pb-4 mb-4 fst-italic border-bottom"><?= $article->page_header ?></h1>
                 <article class="blog-post mb-3">
                     <?= outputHTML($article->page_content) ?>
     			</article>

@@ -48,6 +48,7 @@ class DataFlatfile implements DataFlatfileInterface
 
     private function fileName(): string
     {
+        $divider = '.';
         $dir = dirname($_SERVER['PHP_SELF']);
         $name = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
 
@@ -59,8 +60,8 @@ class DataFlatfile implements DataFlatfileInterface
         $name = ltrim($name, '/');
         $name = str_replace(['/', '.html'], ['-', ''], $name);
 
-        if (strpos($name, ',') !== false) {
-            $name = substr($name, 0, strpos($name, ','));
+        if (strpos($name, $divider) !== false) {
+            $name = substr($name, 0, strpos($name, $divider));
             $name = 'page-' . $name;
         }
 

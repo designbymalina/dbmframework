@@ -163,7 +163,7 @@ class BaseController implements BaseInterface
         $dir = dirname($_SERVER['PHP_SELF']);
 
         if (strpos($dir, 'public')) { // for localhost (application in catalog)
-            $public = substr($dir, 0, strpos($dir, 'public'));
+            $public = strstr($dir, 'public', true);
         } else {
             $public = '/';
         }

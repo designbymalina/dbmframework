@@ -8,7 +8,6 @@ deny from all
  RewriteEngine On
 
  # Redirect to HTTPS
- # RewriteEngine On
  # RewriteCond %{HTTPS} off
  # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
@@ -19,14 +18,6 @@ deny from all
  # If the above doesn't work you might need to set the `RewriteBase` directive manually
  # Rewrite Base; Configure the path, example for localhost in dbmframework folder: /dbmframework/public/
  # RewriteBase /dbmframework/public/
-
- ### Rewrite Rule
- RewriteRule ^([a-z]+)\.html$ $1 [L]
- RewriteRule ^([a-z0-9-]+),site\.html$ page/$1 [L]
- RewriteRule ^([a-z0-9-]+),offer\.html$ page/$1 [L]
- RewriteRule ^blog/[a-z0-9-]+,sec,([0-9]+)\.html$ blog/sec/?id=$1 [L]
- RewriteRule ^[a-z0-9-]+,art,([0-9]+)\.html$ art/?id=$1 [L]
- RewriteRule ^user,([0-9]+)\.html$ user/?id=$1 [L]
  
  # Rewrite Rule Request
  RewriteCond %{REQUEST_FILENAME} !-d

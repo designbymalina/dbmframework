@@ -37,12 +37,12 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/regulation.html', [RegulationController::class, 'index']);
     $router->addRoute('/page', [PageController::class, 'index']);
     $router->addRoute('/page/site', [PageController::class, 'siteMethod']);
-    $router->addRoute('/{#},site.html', [PageController::class, 'siteMethod']);
-    $router->addRoute('/{#},offer.html', [PageController::class, 'offerMethod']);
+    $router->addRoute('/{#}.site.html', [PageController::class, 'siteMethod']);
+    $router->addRoute('/{#}.offer.html', [PageController::class, 'offerMethod']);
     $router->addRoute('/blog', [BlogController::class, 'index']);
     $router->addRoute('/blog/sections', [BlogController::class, 'sectionsMethod']);
-    $router->addRoute('/blog/{#},sec,{id}.html', [BlogController::class, 'sectionMethod']);
-    $router->addRoute('/{#},art,{id}.html', [BlogController::class, 'articleMethod']);
+    $router->addRoute('/blog/{#}.sec.{id}.html', [BlogController::class, 'sectionMethod']);
+    $router->addRoute('/{#}.art.{id}.html', [BlogController::class, 'articleMethod']);
     $router->addRoute('/login', [LoginController::class, 'index']);
     $router->addRoute('/login/signin', [LoginController::class, 'signinMethod']);
     $router->addRoute('/login/logout', [LoginController::class, 'logoutMethod']);
@@ -50,7 +50,7 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/register', [RegisterController::class, 'index']);
     $router->addRoute('/register/signup', [RegisterController::class, 'signupMethod']);
     $router->addRoute('/register/verified.php', [RegisterController::class, 'verifiedMethod']);
-    $router->addRoute('/user,{id}.html', [UserController::class, 'index']);
+    $router->addRoute('/user.{id}.html', [UserController::class, 'index']);
     $router->addRoute('/panel', [PanelController::class, 'index']);
     $router->addRoute('/panel/managePage', [PanelController::class, 'managePageMethod']);
     $router->addRoute('/panel/createPage', [PanelController::class, 'createPageMethod']);

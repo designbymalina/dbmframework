@@ -12,25 +12,25 @@
  */
 function path(string $file = null): string
 {
-    $seperator = '/';
+    $divider = '/';
     $requestUri = $_SERVER['REQUEST_URI'];
     $httpHost = $_SERVER['HTTP_HOST'];
 
     $requestPath = substr($requestUri, strpos($requestUri, $httpHost) + strlen($httpHost));
-    $arrayRequestPath = explode($seperator, ltrim($requestPath, $seperator));
+    $arrayRequestPath = explode($divider, ltrim($requestPath, $divider));
 
     $countDir = (int) count($arrayRequestPath);
 
     if ($countDir > 0) {
         switch ($countDir) {
             case 2:
-                $pathResult = '.' . $seperator;
+                $pathResult = '.' . $divider;
                 break;
             case 3:
-                $pathResult = '..' . $seperator;
+                $pathResult = '..' . $divider;
                 break;
             default:
-                $pathResult = $seperator;
+                $pathResult = $divider;
         }
     } else {
         $pathResult = '#pathError:';
@@ -94,24 +94,37 @@ function truncate(string $content, int $limit = 250, string $ending = '...'): st
         : $content;
 }
 
-function linkSEO(string $rule, int $id, string $text = null, int $limit = 120, string $separator = '-'): string
+function linkSEO(string $rule, int $id, string $text = null, int $limit = 65): string
 {
+    $hyphen = '-';
+    $divider = '.';
+    $extension = '.html';
+
     if ($text != null) {
-        $search = ['-', 'the', 'and', 'or', 'a', 'i', 'oraz', 'tudzież', 'albo', 'lub'];
+        $arrayRemove = ['a', 'i', 'o', 'u', 'w', 'z', 'r.', 'itp.', 'and', 'or', 'to', 'an', 'etc.']; // words to remove from url
+        $allowedPattern = "/[^a-zA-Z0-9 ]/";
 
         $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-        $text = str_replace($search, '', $text);
         $text = strip_tags($text);
-        $text = preg_replace('/[^a-zA-Z0-9 -]/', '', $text);
         $text = strtolower($text);
-        $text = substr($text, 0, $limit);
-        $text = trim($text);
-        $text = preg_replace('/\s+/', $separator, $text);
+        $text = str_replace($hyphen, '', $text);
+        $text = preg_replace($allowedPattern, '', $text);
 
-        $text = $text . ',';
+        if (!empty($arrayRemove)) {
+            $removePattern = "/\b(" . implode("|", $arrayRemove) . ")\b/";
+            $text = trim(preg_replace($removePattern, '', $text));
+        }
+
+        if (mb_strlen($text) > $limit) {
+            $text = trim(preg_replace('~\s+\S+$~', '', substr($text, 0, $limit)));
+        }
+
+        $text = trim(preg_replace('~\s+~', $hyphen, $text));
+        
+        $text = $text . $divider;
     }
 
-    return $text . $rule . ',' . $id . '.html';
+    return $text . $rule . $divider . $id . $extension;
 }
 
 function output(string $data): string

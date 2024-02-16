@@ -17,6 +17,9 @@ use Dbm\Interfaces\RouterInterface;
 
 class Router implements RouterInterface
 {
+    private const ADDRESS_EXTENSION = '.html';
+    private const ADDRESS_DIVIDER = '.';
+
     protected $routes = [];
     private $database;
 
@@ -84,15 +87,15 @@ class Router implements RouterInterface
     {
         $paramsLength = count($params);
 
-        if (!is_numeric($params[0]) && $paramsLength > 2) { // pattern /{#},sec,{id}.html itp
+        if (!is_numeric($params[0]) && $paramsLength > 2) { // pattern /{#}.sec.{id}.html itp
             $params[0] = '{#}';
         }
 
-        if (!is_numeric($params[0]) && !is_numeric(end($params))) { // pattern /{#},offer.html
+        if (!is_numeric($params[0]) && !is_numeric(end($params))) { // pattern /{#}.offer.html
             $params[0] = '{#}';
         }
 
-        if (is_numeric(end($params))) { // pattern /user,{id}.html
+        if (is_numeric(end($params))) { // pattern /user.{id}.html
             $params[$paramsLength - 1] = '{id}';
         }
 
@@ -102,7 +105,7 @@ class Router implements RouterInterface
             $paths = '/';
         }
 
-        return $paths . implode(',', $params) . '.html';
+        return $paths . implode(self::ADDRESS_DIVIDER, $params) . self::ADDRESS_EXTENSION;
     }
 
     private function matchRoute(string $uri): array
@@ -119,8 +122,9 @@ class Router implements RouterInterface
         $params = [];
 
         foreach ($path as $subPath) {
-            if (strpos($subPath, '.html') !== false) {
-                $params = explode(',', $subPath);
+            if (strpos($subPath, self::ADDRESS_EXTENSION) !== false) {
+                $subPath = str_replace(self::ADDRESS_EXTENSION, '', $subPath);
+                $params = explode('.', $subPath);
 
                 if (end($params) === $subPath) {
                     $params = [];
@@ -129,18 +133,11 @@ class Router implements RouterInterface
 
                 $param = end($params);
 
-                if (($pos = strpos($param, '.html')) !== false) {
+                if (($pos = strpos($param, self::ADDRESS_EXTENSION)) !== false) {
                     $params[count($params) - 1] = substr($param, 0, $pos);
                 }
             } else {
                 $paths[] = $subPath;
-            }
-
-        }
-
-        foreach ($path as $index => $param) {
-            if (preg_match("/{.*}/", $param)) {
-                $indexNum[] = $index;
             }
         }
 
@@ -158,8 +155,8 @@ class Router implements RouterInterface
         $host = $_SERVER['HTTP_HOST'] . $dir;
         $host = rtrim($host, '\\');
 
-        if (strpos($host, '.') === false) {
-            $path = substr($dir, 0, strpos($dir, 'public'));
+        if (strpos($host, '.') === false) { // domain recognition by dot
+            $path = strstr($dir, 'public', true);
             $uri = str_replace($path, '', $uri);
 
             return '/' . $uri;

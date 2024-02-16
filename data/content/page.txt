@@ -10,22 +10,22 @@ Landing pages - System on text files, yours offer
                 <h1 class="pb-4 mb-4 fst-italic border-bottom">Landing pages</h1>
                 <div class="row mx-0 mb-4 dbm-box-image">
                     <div class="col-md-4">
-                        <a href="the-best-offer,offer.html"><img src="https://img.youtube.com/vi/zJGleGyahC8/maxresdefault.jpg" alt="..." class="img-fluid img-thumbnail"></a>
+                        <a href="the-best-offer.offer.html"><img src="https://img.youtube.com/vi/zJGleGyahC8/maxresdefault.jpg" alt="..." class="img-fluid img-thumbnail"></a>
                     </div>
                     <div class="col-md-8 dbm-box-item-dsc">
-                        <h2 class="title"><a href="the-best-offer,offer.html">[Video|LinkSEOHtml] The Best Offer</a></h2>
+                        <h2 class="title"><a href="the-best-offer.offer.html">[Video|LinkSEOHtml] The Best Offer</a></h2>
                         <div class="d-flex flex-wrap justify-content-between text-xs details">
-                            <p>By <a href="user,1.html" class="link-dark">Arthur Malinowsky</a></p>
+                            <p>By <a href="user.1.html" class="link-dark">Arthur Malinowsky</a></p>
                         </div>
                         <div>Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization. Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization. Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization. Quickly build an effective pricing table for your potential customers with this Bootstrap example.</div>
                     </div>
                 </div>
                 <div class="row mx-0 mb-4 dbm-box-image">
                     <div class="col-md-4">
-                        <a href="itaque-ad-tempus-ad-pisonem-omnes,offer.html"><img src="images/page/thumb/post-graphics.jpg" alt="..." class="img-fluid img-thumbnail"></a>
+                        <a href="itaque-ad-tempus-ad-pisonem-omnes.offer.html"><img src="images/page/thumb/post-graphics.jpg" alt="..." class="img-fluid img-thumbnail"></a>
                     </div>
                     <div class="col-md-8 dbm-box-item-dsc">
-                        <h2 class="title"><a href="itaque-ad-tempus-ad-pisonem-omnes,offer.html">[LinkSEOHtml] Itaque ad tempus ad Pisonem omnes</a></h2>
+                        <h2 class="title"><a href="itaque-ad-tempus-ad-pisonem-omnes.offer.html">[LinkSEOHtml] Itaque ad tempus ad Pisonem omnes</a></h2>
                         <div class="d-flex flex-wrap justify-content-between text-xs details">
                             <p>By <a href="#" class="link-dark">Arthur Malinowsky</a></p>
                         </div>

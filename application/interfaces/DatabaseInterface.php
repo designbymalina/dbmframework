@@ -15,15 +15,15 @@ use PDOStatement;
 
 interface DatabaseInterface
 {
-    public function querySql(string $query, string $fetch = 'assoc'): PDOStatement;
+    public function querySql(string $query, string $fetch = 'assoc'): PDOStatement; // TODO!
 
-    public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool;
+    public function queryExecute(string $query, ?array $params = [], bool $reference = false): bool; // TODO! Check in controllers and models DatabaseInterface -> Database
 
     public function rowCount(): int;
 
-    public function fetch(string $fetch = 'assoc'): array;
+    public function fetch(string $fetch = 'assoc'): array; // TODO!
 
-    public function fetchAll(string $fetch = 'assoc'): array;
+    public function fetchAll(string $fetch = 'assoc'): array; // TODO!
 
     public function fetchObject(): object;
 
