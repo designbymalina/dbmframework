@@ -174,6 +174,12 @@ class BaseController implements BaseInterface
         header("Location: " . $url);
     }
 
+    // Get Database
+    public function getDatabase(): DatabaseInterface
+    {
+        return $this->database;
+    }
+
     // User permissions
     public function userPermissions(int $id): ?string
     {

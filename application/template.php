@@ -314,13 +314,14 @@ function htmlList(array $list, ?string $sign = '', ?string $class = ''): string
 }
 
 // TODO! Temporary function
-use Dbm\Classes\Database;
+//use Dbm\Classes\Database;
+use Dbm\Interfaces\DatabaseInterface;
 
-function temp_htmlUser($sessionUserId, $module = null, $tempPath = null): string
+function htmlUser(DatabaseInterface $database, int $sessionUserId, string $module = null): string
 {
-    $database = new Database();
+    //$database = new Database();
     $userId = (int) $sessionUserId;
-    $tempPath = path(); // ?
+    $path = path();
 
     $query = "SELECT user.login, user.avatar, user_details.fullname FROM dbm_user user"
         . " INNER JOIN dbm_user_details user_details ON user_details.user_id = user.id"
@@ -333,16 +334,16 @@ function temp_htmlUser($sessionUserId, $module = null, $tempPath = null): string
         !empty($data->login) ? $login = $data->login : $login = 'NoName';
         !empty($data->fullname) ? $name = $data->fullname : $name = 'NoName';
 
-        if ($module === 'panel') {
+        if ($module == 'PANEL') {
             $html = '<span class="mr-2 d-none d-lg-inline text-gray-600 small">' . $name . '</span>';
-            $html .= '<img class="img-profile rounded-circle" src="' . $tempPath . 'images/avatar/' . $avatar . '">' . "\n";
+            $html .= '<img class="img-profile rounded-circle" src="' . $path . 'images/avatar/' . $avatar . '">' . "\n";
         } else {
             $html = '<span class="d-none d-lg-inline me-2">' . $login . '</span>';
-            $html .= '<img class="dbm-img-profile rounded-circle" src="' . $tempPath . 'images/avatar/' . $avatar . '">' . "\n";
+            $html .= '<img class="dbm-img-profile rounded-circle" src="' . $path . 'images/avatar/' . $avatar . '">' . "\n";
         }
 
         return $html;
     } else {
-        return 'Error: temp_htmlUser()' . "\n";
+        return 'Error: htmlUser()' . "\n";
     }
 }

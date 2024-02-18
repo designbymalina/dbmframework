@@ -43,13 +43,13 @@
                     </li>
                 </ul>
                 <div class="d-flex text-white">
-                    <!-- TODO! echo htmlUserNavigation($this->getSession('dbmUserId')) -->
+                    <!-- TODO! echo htmlUserNavigation(session) -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="width:100%">
                         <li class="nav-item dropdown<?php if ($this->getSession('dbmUserId')) { echo ' no-arrow'; } ?>">
                             <a class="nav-link dropdown-toggle ?link-light" href="#" id="navbarAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php 
                                     if ($this->getSession('dbmUserId')) { 
-                                        echo temp_htmlUser($this->getSession('dbmUserId'));
+                                        echo htmlUser($this->getDatabase(), $this->getSession('dbmUserId'));
                                     } else { 
                                         echo trans('navbar.nav.account');
                                         echo '<i class="bi bi-person ms-2"></i>';
