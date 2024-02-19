@@ -86,6 +86,10 @@ $router->addRoute('address', [Controller, 'method']);
 
 Metoda pozwala dodać ścieżkę routingu w uproszczony sposób, przy użyciu argumentów: nazwa-strony (adres), kontroler i metoda. W adresie nazwa może zawierać parametry: {#} - stały oraz {id} zmienny, przykładowo dla linku page-title.key.5.html adres to `/{#}.key.{id}.html`. Jeżeli zachodzi potrzeba rozbudowania routingu o kolejne wzorce można dodać takie w klasie Router -> buildRouteUri() -> create pattern.
 
+## Silnik szablonów
+
+Używaj domyślnego lub dowolnego silnika szablonów. Domyślne funkcje dla szablonów znajdują się w pliku template.php, natomiast render() do wyświetlania widoków jest w pliku BaseController.php. Render możesz zmienić na procujący z silnikiem szablonów np. Twig Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php.
+
 ## Biblioteki
 
 Wykorzystano następujące pakiety:

@@ -6,9 +6,11 @@
  * Web page: www.dbm.org.pl
  * Contact: biuro@dbm.org.pl
  * 
- * TEMP: function htmlUser(DatabaseInterface $database) doesn't look great in this file!
- * INFO: Look for another solution for templates.
- * Check: https://github.com/slimphp/Twig-View
+ * TEMPLATE UNDER EXPANSION: function htmlUser(DatabaseInterface $database) doesn't look great in this file!
+ * INFO: You don't have to use the default template engine, but any template engine, e.g.: 
+ * Twig - https://twig.symfony.com/, example of use in /_Documents/Script/BaseController_for_Twig.php
+ * Lightweight - https://codeshack.io/lightweight-template-engine-php/ and others.
+ * If you decide to use a different template engine, remove this file and the filename line in public/index.php.
  */
 
 /*
