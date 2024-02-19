@@ -3,7 +3,7 @@
  * DbM Framework (PHP MVC Simple CMS)
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl
- * 
+ *
  * INFO! Rozbij PanelController na wiecej kontrolerow panelu!
  */
 

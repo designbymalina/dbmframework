@@ -5,9 +5,9 @@
  * License: MIT
  * Web page: www.dbm.org.pl
  * Contact: biuro@dbm.org.pl
- * 
+ *
  * TEMPLATE UNDER EXPANSION: function htmlUser(DatabaseInterface $database) doesn't look great in this file!
- * INFO: You don't have to use the default template engine, but any template engine, e.g.: 
+ * INFO: You don't have to use the default template engine, but any template engine, e.g.:
  * Twig - https://twig.symfony.com/, example of use in /_Documents/Script/BaseController_for_Twig.php
  * Lightweight - https://codeshack.io/lightweight-template-engine-php/ and others.
  * If you decide to use a different template engine, remove this file and the filename line in public/index.php.
@@ -34,7 +34,7 @@ function path(string $file = null): string
     $countDir = (int) count($arrayRequestPath) - 1;
 
     if ($countDir > 0) {
-        for ($i=0; $i < $countDir; $i++) {    
+        for ($i = 0; $i < $countDir; $i++) {
             $pathResult .= '..' . $divider;
         }
     } else {
@@ -131,7 +131,7 @@ function linkSEO(string $rule, int $id, string $text = null, int $limit = 65): s
         }
 
         $text = trim(preg_replace('~\s+~', $hyphen, $text));
-        
+
         $text = $text . $divider;
     }
 
