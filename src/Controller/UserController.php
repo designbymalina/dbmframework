@@ -25,11 +25,9 @@ class UserController extends BaseController
         $this->model = $model;
     }
 
-    /* @Route: "/user,{id}.html" */
-    public function index()
+    /* @Route: "/user.{id}.html" */
+    public function index(int $id)
     {
-        $id = (int) $this->requestData('id');
-
         $userAccount = $this->model->userAccount($id);
 
         $this->render('user/index.phtml', [

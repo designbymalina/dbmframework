@@ -1,6 +1,6 @@
 # DbM Framework
 
-DbM Framework PHP MVC Simple CMS, Version 2.2  
+DbM Framework PHP MVC Simple CMS, Version 2.1  
 Application tested on: PHP 7.4  
 All code copyright Design by Malina (DbM)  
 Web: www.dbm.org.pl
@@ -73,6 +73,18 @@ $ composer install
 - _Documents/Database/dbm_cms.sql
 
 Jeśli chcesz użyć bazy danych importuj ją na serwer i skonfiguruj połączenie w pliku konfiguracyjnym.
+
+## Mechanizm routingu
+
+Klasa znajdująca się w pliku /application/classes/Router.php jest używana przez framework do stworzenia obiektu rutera, obiekt pozwala zdefiniować routing oraz inicjuje wykonanie akcji za pomocą metody. Dla podstawowego wzorca routingu użytkownik nie wykorzystuje bezpośrednio klasy Router, używa metody klasy addRoute() w celu dodania kolejnych podstron projektu.  
+
+Aby dodać adres routingu przejdź do pliku `/aplicattion/routes.php` i użyj metody router'a:
+
+```shell
+$router->addRoute('address', [Controller, 'method']);
+```
+
+Metoda pozwala dodać ścieżkę routingu w uproszczony sposób, przy użyciu argumentów: nazwa-strony (adres), kontroler i metoda. W adresie nazwa może zawierać parametry: {#} - stały oraz {id} zmienny, przykładowo dla linku page-title.key.5.html adres to `/{#}.key.{id}.html`. Jeżeli zachodzi potrzeba rozbudowania routingu o kolejne wzorce można dodać takie w klasie Router -> buildRouteUri() -> create pattern.
 
 ## Biblioteki
 

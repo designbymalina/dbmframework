@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * DbM Framework
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl

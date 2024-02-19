@@ -1,8 +1,10 @@
 <?php
-/**
+/*
  * DbM Framework (PHP MVC Simple CMS)
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl
+ * 
+ * INFO! Rozbij PanelController na wiecej kontrolerow panelu!
  */
 
 declare(strict_types=1);
@@ -18,9 +20,6 @@ use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 use DateTime;
 
-/*
- * TODO! Rozbij PanelController na wiecej kontrolerow panelu!
-*/
 class PanelController extends BaseController
 {
     private const DIR_CONTENT = BASE_DIRECTORY . 'data/content/';

@@ -55,7 +55,7 @@ class BlogController extends BaseController
         ]);
     }
 
-    /* @Route: "/blog//section-name,sec,{id}.html" */
+    /* @Route: "/blog/section-name.sec.{id}.html" */
     public function sectionMethod(int $id): void
     {
         $translation = $this->translation;
@@ -79,7 +79,7 @@ class BlogController extends BaseController
         ]);
     }
 
-    /* @Route: "/art_{id}_article-header-title.html" */
+    /* @Route: "/article-header-title.art.{id}.html" */
     public function articleMethod(int $id): void
     {
         //echo 'ID:'.$id;

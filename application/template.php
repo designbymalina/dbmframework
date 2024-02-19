@@ -5,40 +5,46 @@
  * License: MIT
  * Web page: www.dbm.org.pl
  * Contact: biuro@dbm.org.pl
+ * 
+ * TEMP: function htmlUser(DatabaseInterface $database) doesn't look great in this file!
+ * INFO: Look for another solution for templates.
+ * Check: https://github.com/slimphp/Slim-Views, https://github.com/slimphp/Twig-View
  */
 
 /*
- * TODO! Path generator, przetestuj na serwerze nie lokalnym
+ * Path generator
  */
 function path(string $file = null): string
 {
+    $pathResult = '';
     $divider = '/';
     $requestUri = $_SERVER['REQUEST_URI'];
-    $httpHost = $_SERVER['HTTP_HOST'];
+    $dir = dirname($_SERVER['PHP_SELF']);
+    $pathFile = !empty($file) ? trim($file) : '';
 
-    $requestPath = substr($requestUri, strpos($requestUri, $httpHost) + strlen($httpHost));
-    $arrayRequestPath = explode($divider, ltrim($requestPath, $divider));
-
-    $countDir = (int) count($arrayRequestPath);
-
-    if ($countDir > 0) {
-        switch ($countDir) {
-            case 2:
-                $pathResult = '.' . $divider;
-                break;
-            case 3:
-                $pathResult = '..' . $divider;
-                break;
-            default:
-                $pathResult = $divider;
-        }
+    if (strpos($dir, 'public')) { // for localhost (application in catalog)
+        $pathPublic = substr($requestUri, strlen(strstr($dir, 'public', true)));
     } else {
-        $pathResult = '#pathError:';
+        $pathPublic = $requestUri;
     }
 
-    return $pathResult . trim($file);
+    $arrayRequestPath = explode($divider, $pathPublic);
+    $countDir = (int) count($arrayRequestPath) - 1;
+
+    if ($countDir > 0) {
+        for ($i=0; $i < $countDir; $i++) {    
+            $pathResult .= '..' . $divider;
+        }
+    } else {
+        $pathResult .= '.' . $divider;
+    }
+
+    return $pathResult . $pathFile;
 }
 
+/*
+ * Translations
+ */
 function trans(string $key, array $overwrite = [], array $sprint = null): string
 {
     $cookieName = 'DbmLanguage';
@@ -94,6 +100,9 @@ function truncate(string $content, int $limit = 250, string $ending = '...'): st
         : $content;
 }
 
+/*
+ * Link generator
+ */
 function linkSEO(string $rule, int $id, string $text = null, int $limit = 65): string
 {
     $hyphen = '-';
@@ -127,6 +136,9 @@ function linkSEO(string $rule, int $id, string $text = null, int $limit = 65): s
     return $text . $rule . $divider . $id . $extension;
 }
 
+/*
+ * String output
+ */
 function output(string $data): string
 {
     $search = array('@<script[^>]*?>.*?</script>@si', '@<style[^>]*?>.*?</style>@si');
@@ -137,6 +149,9 @@ function output(string $data): string
     return $data;
 }
 
+/*
+ * HTML output
+ */
 function outputHTML(string $data, $sign = ''): string
 {
     $data = htmlspecialchars_decode($data, ENT_QUOTES);
@@ -146,6 +161,9 @@ function outputHTML(string $data, $sign = ''): string
     return $data;
 }
 
+/*
+ * Visit counter
+ */
 function counterVisits(): string
 {
     $result = 1;
@@ -188,6 +206,9 @@ function counterVisits(): string
     return $result;
 }
 
+/*
+ * Language switcher
+ */
 function htmlLanguage(string $path): string
 {
     $html = '<!-- htmlLanguage -->';
@@ -246,6 +267,9 @@ function htmlLanguage(string $path): string
     return $html;
 }
 
+/*
+ * Creating address for the website, used in the panel: create_edit_page.phtml
+ */
 function htmlPageAddress(?string $address): ?string
 {
     $search = 'txt';
@@ -259,7 +283,7 @@ function htmlPageAddress(?string $address): ?string
     $first = substr($address, 0, strpos($address, '-'));
 
     if ($first == 'page') {
-        $result = str_replace(['page-', '.html'], ['', ',site.html'], $result);
+        $result = str_replace(['page-', '.html'], ['', '.site.html'], $result);
     } else {
         $result = $result . ' / INFO: For a page with this address you need to create a controller: ' . str_replace('.txt', '', ucfirst($address)) . 'Controller.php';
     }
@@ -267,6 +291,9 @@ function htmlPageAddress(?string $address): ?string
     return $result;
 }
 
+/*
+ * Creating field "select"
+ */
 function htmlSelect(array $options, string $name, int $item = null, string $sort = null, string $style = null): string
 {
     if (strtolower($sort) === 'asc') {
@@ -296,6 +323,9 @@ function htmlSelect(array $options, string $name, int $item = null, string $sort
     return $html;
 }
 
+/*
+ * Creating a list
+ */
 function htmlList(array $list, ?string $sign = '', ?string $class = ''): string
 {
     $html = '<!-- htmlList -->' . "\n";
@@ -313,13 +343,11 @@ function htmlList(array $list, ?string $sign = '', ?string $class = ''): string
     return $html;
 }
 
-// TODO! Temporary function
-//use Dbm\Classes\Database;
-use Dbm\Interfaces\DatabaseInterface;
-
-function htmlUser(DatabaseInterface $database, int $sessionUserId, string $module = null): string
+/*
+ * Creating a user item
+ */
+function htmlUser($database, $sessionUserId, $module = null): string
 {
-    //$database = new Database();
     $userId = (int) $sessionUserId;
     $path = path();
 

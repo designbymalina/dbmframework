@@ -35,7 +35,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 set_error_handler('reportingErrorHandler');
 
-### STARTING APPLICATION, configuration and autoloading. TODO! Maybe add a factory? ###
+### STARTING APPLICATION, configuration and autoloading.
 $pathConfig = BASE_DIRECTORY . 'config' . DS . 'config.php';
 $pathAutoload = BASE_DIRECTORY . 'vendor' . DS . 'autoload.php';
 

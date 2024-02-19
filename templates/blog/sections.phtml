@@ -22,7 +22,6 @@
                     <?php 
                         foreach($sections as $object) {
                             ($object->image_thumb != null) ? $image = $object->image_thumb : $image = 'no-image.jpg';
-                            $link = linkSEO('sec', $object->id, $object->section_name);
                     ?>
 
                     <div class="col-md-6 d-flex align-items-stretch mb-4 aos-init aos-animate" data-aos="zoom-in" data-aos-delay="200">
@@ -30,7 +29,7 @@
                             <div class="image">
                                 <img src="<?= path('images/blog/category/thumb/' . $image) ?>" alt="<?= output($object->section_name) ?>" class="img-fluid img-thumbnail" style="width:100%;max-height:215px">
                             </div>
-                            <h4 class="title"><a href="<?= $link ?>" title="<?= output($object->section_name) ?>"><?= truncate($object->section_name, 40) ?></a></h4>
+                            <h4 class="title"><a href="<?= path('blog/'.linkSEO('sec', $object->id, $object->section_name)) ?>" title="<?= output($object->section_name) ?>"><?= truncate($object->section_name, 40) ?></a></h4>
                             <p class="description"><?= truncate($object->section_description, 300) ?></p>
                         </div>
                     </div>

@@ -12,7 +12,7 @@
             <ol class="breadcrumb mb-0 small">
                 <li class="breadcrumb-item"><a href="<?= path() ?>" class="link-secondary">Blog</a></li>
                 <li class="breadcrumb-item"><a href="<?= path('blog/sections') ?>" class="link-secondary">Article categories</a></li>
-                <li class="breadcrumb-item"><a href="<?= linkSEO('sec', $article->sid, $article->section_name) ?>" class="link-secondary"><?= $article->section_name ?></a></li>
+                <li class="breadcrumb-item"><a href="<?= path('blog/'.linkSEO('sec', $article->sid, $article->section_name)) ?>" class="link-secondary"><?= $article->section_name ?></a></li>
                 <li class="breadcrumb-item active"><?= $article->page_header; ?></li>
             </ol>
         </nav>

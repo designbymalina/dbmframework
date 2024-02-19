@@ -20,7 +20,7 @@
                             <div class="image">
                                 <img src="<?= path('images/blog/thumb/' . $image); ?>" alt="<?= output($object->page_header); ?>" class="img-fluid img-thumbnail" style="width:100%;max-height:215px">
                             </div>
-                            <h4 class="title"><a href="<?= linkSEO('art', $object->aid, $object->page_header); ?>" title="<?= output($object->page_header); ?>"><?= truncate($object->page_header, 40); ?></a></h4>
+                            <h4 class="title"><a href="<?= path(linkSEO('art', $object->aid, $object->page_header)); ?>" title="<?= output($object->page_header); ?>"><?= truncate($object->page_header, 40); ?></a></h4>
                             <h6 class="details"><span class="me-1">By</span><a href="<?= path(linkSEO('user', $object->uid)); ?>" class="link-dark"><?= $object->fullname; ?></a><span class="mx-1">in</span><a href="<?= path('blog/'.linkSEO('sec', $object->sid, $object->section_name)); ?>" class="link-dark"><?= $object->section_name; ?></a></h6>
                             <p class="description"><?= truncate($object->page_content, 300); ?></p>
                         </div>

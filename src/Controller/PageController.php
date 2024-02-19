@@ -40,7 +40,7 @@ class PageController extends BaseController
         ]);
     }
 
-    /* @Route: "/page/site" or mod-rewrite: "/website-title,site.html" */
+    /* @Route: "/page/site" or "/website-title.site.html" */
     public function siteMethod()
     {
         $meta = [
@@ -55,7 +55,7 @@ class PageController extends BaseController
         ]);
     }
 
-    /* @Route: website-title,offer.html */
+    /* @Route: website-title.offer.html */
     public function offerMethod()
     {
         $meta = [
