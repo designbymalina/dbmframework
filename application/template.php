@@ -8,7 +8,7 @@
  * 
  * TEMP: function htmlUser(DatabaseInterface $database) doesn't look great in this file!
  * INFO: Look for another solution for templates.
- * Check: https://github.com/slimphp/Slim-Views, https://github.com/slimphp/Twig-View
+ * Check: https://github.com/slimphp/Twig-View
  */
 
 /*
@@ -81,7 +81,7 @@ function trans(string $key, array $overwrite = [], array $sprint = null): string
     }
 }
 
-/*
+/**
  * Truncates the text to the specified number and adds an ending
  *
  * @param string $content
