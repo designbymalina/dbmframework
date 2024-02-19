@@ -88,7 +88,7 @@ Metoda pozwala dodać ścieżkę routingu w uproszczony sposób, przy użyciu ar
 
 ## Silnik szablonów
 
-Używaj domyślnego lub dowolnego silnika szablonów. Domyślne funkcje dla szablonów znajdują się w pliku template.php, natomiast render() do wyświetlania widoków jest w pliku BaseController.php. Render możesz zmienić na procujący z silnikiem szablonów np. Twig Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php.
+Używaj domyślnego lub dowolnego silnika szablonów. Domyślne funkcje dla szablonów znajdują się w pliku template.php, natomiast render() do wyświetlania widoków jest w pliku BaseController.php. Render możesz zmienić na pracujący z silnikiem szablonów np. Twig Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php.
 
 ## Biblioteki
 
