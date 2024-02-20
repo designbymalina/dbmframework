@@ -185,7 +185,7 @@ class BaseController implements BaseInterface
     {
         $database = $this->database;
 
-        $query = "SELECT roles FROM dbm_user WHERE id = ?"; // TODO! Jak to jest z :id lub znakiem zapytania, czy tak samo jest bezpieczne?
+        $query = "SELECT roles FROM dbm_user WHERE id = ?";
 
         $database->queryExecute($query, [$id]);
 

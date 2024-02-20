@@ -82,10 +82,6 @@ class BlogController extends BaseController
     /* @Route: "/article-header-title.art.{id}.html" */
     public function articleMethod(int $id): void
     {
-        //echo 'ID:'.$id;
-        //print_r($_GET);
-        //exit;
-
         $queryArticle = $this->model->getJoinArticle($id);
 
         $meta = [
