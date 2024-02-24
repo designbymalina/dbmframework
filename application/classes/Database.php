@@ -66,12 +66,26 @@ class Database implements DatabaseInterface
             }
 
             foreach ($params as $key => &$value) {
-                $type = $this->paramType($value);
-
-                if (!$reference) {
-                    $this->statement->bindValue($key, $value, $type);
+                if (is_int($value)) {
+                    $type = PDO::PARAM_INT;
+                } elseif (is_bool($value)) {
+                    $type = PDO::PARAM_BOOL;
+                } elseif (is_string($value)) {
+                    $type = PDO::PARAM_STR;
+                } elseif (is_null($value)) {
+                    $type = PDO::PARAM_NULL;
                 } else {
-                    $this->statement->bindParam($key, $value, $type);
+                    $type = false;
+                }
+
+                if ($type) {
+                    if (!$reference) {
+                        $this->statement->bindValue($key, $value, $type);
+                    } else {
+                        $this->statement->bindParam($key, $value, $type);
+                    }
+                } else {
+                    throw new ExceptionHandler('No param type for bindValue() in queryExecute().', 400);
                 }
             }
 
@@ -122,23 +136,5 @@ class Database implements DatabaseInterface
     public function getLastInsertId(): ?string
     {
         return $this->connect->lastInsertId();
-    }
-
-    /* TODO! Sprawdz metode i rozne opcje */
-    private function paramType($value) // value type? : Result
-    {
-        switch (true) {
-            case is_null($value):
-                return PDO::PARAM_NULL;
-                break;
-            case is_int($value):
-                return PDO::PARAM_INT;
-                break;
-            case is_bool($value):
-                return PDO::PARAM_BOOL;
-                break;
-            default:
-                return PDO::PARAM_STR;
-        }
     }
 }
