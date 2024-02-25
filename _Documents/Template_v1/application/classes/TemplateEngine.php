@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use Dbm\Classes\TemplateReference;
+use Dbm\Classes\TemplateFeature;
 
-class TemplateEngine extends TemplateReference
+class TemplateEngine extends TemplateFeature
 {
     private const PATH_VIEW = BASE_DIRECTORY . 'templates'. DS;
     private const PATH_CACHE = BASE_DIRECTORY . 'var' . DS . 'cache' . DS;
@@ -68,6 +68,9 @@ class TemplateEngine extends TemplateReference
         $code = $this->compileEscapedEchos($code);
         $code = $this->compileEchos($code);
         $code = $this->compilePHP($code);
+
+        $code = $this->extensionPath($code);
+        $code = $this->extensionTrans($code);
 
         return $code;
     }
@@ -132,5 +135,15 @@ class TemplateEngine extends TemplateReference
         $code = preg_replace('/{% ?yield ?(.*?) ?%}/i', '', $code);
 
         return $code;
+    }
+
+    private function extensionPath(string $code): string
+    {
+        return preg_replace('~\{@\s*path(.+?)\s*\@}~is', '<?php echo $this->path($1) ?>', $code);
+    }
+
+    private function extensionTrans(string $code): string
+    {
+        return preg_replace('~\{@\s*trans/((.+?),(.+?),(.+?)/)\s*\@}~is', '<?php echo $this->trans($1,$2,$3) ?>', $code);
     }
 }

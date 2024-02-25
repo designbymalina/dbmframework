@@ -17,6 +17,9 @@
     {% yield head %}
 </head>
 <body class="d-flex flex-column h-100">
+	{@ path('test/') @}
+	{@ trans('lang', [], []) @}
+
     {% include '_include/header.phtml' %}
     {% yield content %}
     {% include '_include/footer.phtml' %}

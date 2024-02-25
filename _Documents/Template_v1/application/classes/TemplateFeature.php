@@ -13,7 +13,7 @@ namespace Dbm\Classes;
 
 use Dbm\Interfaces\DatabaseInterface;
 
-class TemplateReference
+class TemplateFeature
 {
     /*
      * Path generator
