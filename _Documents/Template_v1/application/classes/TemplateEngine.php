@@ -26,7 +26,7 @@ class TemplateEngine extends TemplateFeature
     private const PATH_VIEW = BASE_DIRECTORY . 'templates'. DS;
     private const PATH_CACHE = BASE_DIRECTORY . 'var' . DS . 'cache' . DS;
     private const CACHE_ENABLED = false;
-    public static $blocks = array(); // TODO! static, czy ok?
+    private static $blocks = array(); // TODO! static, czy ok?
 
     protected function render(string $file, array $data = array()): void
     {
@@ -68,9 +68,6 @@ class TemplateEngine extends TemplateFeature
         $code = $this->compileEscapedEchos($code);
         $code = $this->compileEchos($code);
         $code = $this->compilePHP($code);
-
-        $code = $this->extensionPath($code);
-        $code = $this->extensionTrans($code);
 
         return $code;
     }
@@ -135,15 +132,5 @@ class TemplateEngine extends TemplateFeature
         $code = preg_replace('/{% ?yield ?(.*?) ?%}/i', '', $code);
 
         return $code;
-    }
-
-    private function extensionPath(string $code): string
-    {
-        return preg_replace('~\{@\s*path(.+?)\s*\@}~is', '<?php echo $this->path($1) ?>', $code);
-    }
-
-    private function extensionTrans(string $code): string
-    {
-        return preg_replace('~\{@\s*trans/((.+?),(.+?),(.+?)/)\s*\@}~is', '<?php echo $this->trans($1,$2,$3) ?>', $code);
     }
 }

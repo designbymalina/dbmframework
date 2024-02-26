@@ -162,6 +162,7 @@ class TemplateFeature
         $data = wordwrap($data, 50, ' ', true);
         $data = str_replace('{{url}}', APP_PATH, $data);
         $data = trim(str_replace("\n", "\n" . $sign, $data)) . "\n";
+
         return $data;
     }
 
@@ -170,11 +171,11 @@ class TemplateFeature
      */
     public function counterVisits(): string
     {
-        $result = 1;
+        $result = '1';
         $length = 16;
 
         $file = 'counter_visits.txt';
-        $path = '../data/txt/';
+        $path = BASE_DIRECTORY . 'data' . DS . 'txt' . DS;
         $pathFile = $path . $file;
 
         if (!file_exists($pathFile) || (filesize($pathFile) == 0)) {
@@ -183,7 +184,7 @@ class TemplateFeature
         } else {
             $handle = fopen($pathFile, "r+");
             $counterFile = fgets($handle, $length);
-            $result = $counterFile + 1;
+            $result = strval($counterFile + 1);
 
             fseek($handle, 0);
             fwrite($handle, $result, $length);
@@ -299,5 +300,83 @@ class TemplateFeature
         } else {
             return 'Error: htmlUser()' . "\n";
         }
+    }
+
+    /*
+     * Creating field "select"
+     */
+    public function htmlSelect(array $options, string $name, int $item = null, string $sort = null, string $style = null): string
+    {
+        if (strtolower($sort) === 'asc') {
+            asort($options);
+        }
+
+        if ($style !== null) {
+            $style = ' ' . $style;
+        }
+
+        $html = '<!-- htmlSelect -->' . "\n";
+        $html .= '<select name="' . $name . '" id="form_' . $name . '" class="form-control"' . $style. '>' . "\n";
+        $html .= '    <option value="">- select ' . $name . ' -</option>' . "\n";
+
+        foreach ($options as $key => $value) {
+            $html .= '    <option value="' . $key . '"';
+
+            if ($item === $key) {
+                $html .= ' selected';
+            }
+
+            $html .= '>' . $value . '</option>' . "\n";
+        }
+
+        $html .= '</select>' . "\n";
+
+        return $html;
+    }
+
+    /*
+     * Creating a list
+     */
+    public function htmlList(array $list, ?string $sign = '', ?string $class = ''): string
+    {
+        $html = '<!-- htmlList -->' . "\n";
+
+        $html .= $sign . '<ul';
+        ($class != '') ? $html .= ' class="' . $class . '"' : null;
+        $html .= '>' . "\n";
+
+        foreach ($list as $value) {
+            $html .= $sign . '    <li>' . $value . '</li>' . "\n";
+        }
+
+        $html .= $sign . '</ul>' . "\n";
+
+        return $html;
+    }
+
+    /*** BEGIN PANEL METHODS ***/
+
+    /*
+     * Creating address for the website, used in the panel: create_edit_page.phtml
+     */
+    public function htmlPageAddress(?string $address): ?string
+    {
+        $search = 'txt';
+        $replace = 'html';
+
+        if (($pos = strrpos($address, $search)) !== false) {
+            $length = strlen($search);
+            $result = substr_replace($address, $replace, $pos, $length);
+        }
+
+        $first = substr($address, 0, strpos($address, '-'));
+
+        if ($first == 'page') {
+            $result = str_replace(['page-', '.html'], ['', '.site.html'], $result);
+        } else {
+            $result = $result . ' / INFO: For a page with this address you need to create a controller: ' . str_replace('.txt', '', ucfirst($address)) . 'Controller.php';
+        }
+
+        return $result;
     }
 }

@@ -11,62 +11,18 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-//use Dbm\Classes\ExceptionHandler;
 use Dbm\Classes\TemplateEngine;
 use Dbm\Interfaces\BaseInterface;
 use Dbm\Interfaces\DatabaseInterface;
 
 class BaseController extends TemplateEngine implements BaseInterface
 {
-    /*private const PATH_VIEW = BASE_DIRECTORY . 'templates'. DS;
-    private const FILE_BASE = 'base.phtml';
-    private const FILE_BASE_PANEL = 'base_panel.phtml';
-    private const FILE_BASE_OFFER = 'base_offer.phtml';*/
-
     private $database;
 
     public function __construct(DatabaseInterface $database)
     {
         $this->database = $database;
     }
-
-    /*protected function render(string $fileName, array $data = []): void
-    {
-        extract($data);
-
-        $pathBasename = self::PATH_VIEW . self::FILE_BASE;
-        $fileName = str_replace('/', DS, $fileName);
-        $dirname = explode(DS, $fileName);
-
-        if ($dirname[0] == 'panel') {
-            $pathBasename = self::PATH_VIEW . self::FILE_BASE_PANEL;
-        } elseif (!empty($dirname[1]) && substr($dirname[1], 0, strpos($dirname[1], '.')) == 'offer') {
-            $pathBasename = self::PATH_VIEW . self::FILE_BASE_OFFER;
-        }
-
-        $pathViewName = self::PATH_VIEW . $fileName;
-        $pathHeadInc = self::PATH_VIEW . '_include' . DS . 'head_' . basename($fileName);
-        $pathBodyInc = self::PATH_VIEW . '_include' . DS . 'body_' . basename($fileName);
-
-        if (file_exists($pathBasename)) {
-            if (!file_exists($pathViewName)) {
-                throw new ExceptionHandler('View file ' . $pathViewName . ' is required. File not found!', 404);
-            }
-
-            if (!file_exists($pathHeadInc)) {
-                $pathHeadInc = null; // used in the template
-            }
-
-            if (!file_exists($pathBodyInc)) {
-                $pathBodyInc = null; // used in the template
-            }
-
-            // Include base template width content page
-            include($pathBasename);
-        } else {
-            throw new ExceptionHandler('Base file ' . $pathBasename . ' is required. File not found!', 404);
-        }
-    }*/
 
     // Request data
     public function requestData(string $fieldName): ?string
