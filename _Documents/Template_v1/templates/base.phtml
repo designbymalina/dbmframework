@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="<?= $this->trans('lang') ?>" class="h-100">
 <head>
-	<meta charset="<?= $this->trans('charset') ?>">
+    <meta charset="<?= $this->trans('charset') ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="author" content="Design by Malina">
+    <meta name="author" content="Design by Malina">
     <meta name="robots" content="<?= $this->trans('meta.robots', $data) ?>">
     <meta name="keywords" content="<?= $this->trans('meta.keywords', $data) ?>">
-	<meta name="description" content="<?= $this->trans('meta.description', $data) ?>">
-	<title><?= $this->trans('meta.title', $data) ?></title>
-	<link href="<?= $this->path('images/favicon.png') ?>" rel="icon">
-	<!-- Stylesheets -->
-	<link href="<?= $this->path('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
-	<link href="<?= $this->path('assets/css/font/bootstrap-icons.css') ?>" rel="stylesheet">
-	<!-- Stylesheets Custom -->
-	<link href="<?= $this->path('assets/css/custom.css') ?>" rel="stylesheet">
-    {% yield head %}
+    <meta name="description" content="<?= $this->trans('meta.description', $data) ?>">
+    <title><?= $this->trans('meta.title', $data) ?></title>
+    <link href="<?= $this->path('images/favicon.png') ?>" rel="icon">
+    <!-- Stylesheets -->
+    <link href="<?= $this->path('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
+    <link href="<?= $this->path('assets/css/font/bootstrap-icons.css') ?>" rel="stylesheet">
+    <!-- Stylesheets Custom -->
+    <link href="<?= $this->path('assets/css/custom.css') ?>" rel="stylesheet">
+    <!-- Yield Head - Additions -->{% yield head %}
 </head>
 <body class="d-flex flex-column h-100">
     {% include '_include/header.phtml' %}
     {% yield content %}
     {% include '_include/footer.phtml' %}
-    {% yield body %}
+    <!-- Yield Body - Additions -->{% yield body %}
 </body>
 </html>

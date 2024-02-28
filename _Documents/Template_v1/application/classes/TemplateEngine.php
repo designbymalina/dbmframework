@@ -26,7 +26,7 @@ class TemplateEngine extends TemplateFeature
     private const PATH_VIEW = BASE_DIRECTORY . 'templates'. DS;
     private const PATH_CACHE = BASE_DIRECTORY . 'var' . DS . 'cache' . DS;
     private const CACHE_ENABLED = false;
-    private static $blocks = array(); // TODO! static, czy ok?
+    private static $blocks = array();
 
     protected function render(string $file, array $data = array()): void
     {
@@ -55,7 +55,7 @@ class TemplateEngine extends TemplateFeature
             $code = $this->includeFiles($file);
             $code = $this->compileCode($code);
 
-            file_put_contents($cachedFile, '<?php class_exists(\'' . __CLASS__ . '\') or exit; ?>' . PHP_EOL . $code); // TODO! PHP_EOL czy /n
+            file_put_contents($cachedFile, '<?php class_exists(\'' . __CLASS__ . '\') or exit; ?>' . PHP_EOL . $code);
         }
 
         return $cachedFile;
@@ -126,7 +126,7 @@ class TemplateEngine extends TemplateFeature
     private function compileYield(string $code): string
     {
         foreach (self::$blocks as $block => $value) {
-            $code = preg_replace('/{% ?yield ?' . $block . ' ?%}/', $value, $code);
+            $code = preg_replace('/{% ?yield ?' . $block . ' ?%}/', rtrim($value), $code);
         }
 
         $code = preg_replace('/{% ?yield ?(.*?) ?%}/i', '', $code);

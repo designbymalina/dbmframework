@@ -53,11 +53,6 @@ class TemplateFeature
     {
         $cookieName = 'DbmLanguage';
         $lang = 'pl';
-        $languages = array($lang);
-
-        if (!empty($overwrite['meta'])) {
-            $overwrite = $overwrite['meta'];
-        }
 
         if (!empty(APP_LANGUAGES)) {
             $languages = explode('|', APP_LANGUAGES);
@@ -70,19 +65,27 @@ class TemplateFeature
             $lang = $_COOKIE[$cookieName];
         }
 
-        $translation = include(BASE_DIRECTORY . "translations/language.$lang.php");
+        $pathTranslation = BASE_DIRECTORY . "translations/language.$lang.php";
 
-        if (array_key_exists($key, $overwrite) && array_key_exists($key, $translation)) {
-            (!empty($sprint)) ? $value = vsprintf($overwrite[$key], $sprint) : $value = $overwrite[$key];
+        if (file_exists($pathTranslation)) {
+            $translation = include($pathTranslation);
 
-            return $value;
-        } elseif (array_key_exists($key, $translation)) {
-            (!empty($sprint)) ? $value = vsprintf($translation[$key], $sprint) : $value = $translation[$key];
+            if (!empty($overwrite['meta'])) {
+                $overwrite = $overwrite['meta'];
+            }
 
-            return $value;
-        } else {
-            return $key;
+            if (array_key_exists($key, $overwrite) && array_key_exists($key, $translation)) {
+                (!empty($sprint)) ? $value = vsprintf($overwrite[$key], $sprint) : $value = $overwrite[$key];
+
+                return $value;
+            } elseif (array_key_exists($key, $translation)) {
+                (!empty($sprint)) ? $value = vsprintf($translation[$key], $sprint) : $value = $translation[$key];
+
+                return $value;
+            }
         }
+
+        return $key;
     }
 
     /**
@@ -250,14 +253,13 @@ class TemplateFeature
             foreach ($languages as $key => $value) {
                 unset($param['lang']);
                 $param['lang'] = $value;
+                $active = '';
 
                 if ($key === 0) {
                     $active = ' active';
 
                     $html .= '    <button type="button" class="btn btn-sm btn-link text-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="' . $value . '"><img src="' . $path . 'images/lang/' . strtolower($value) . '.png" alt="' . $value . '"></button>' . "\n";
                     $html .= '    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">' . "\n";
-                } else {
-                    $active = '';
                 }
 
                 $html .= '        <li><a href="?' . http_build_query($param) . '" class="dropdown-item' . $active . '"><img src="' . $path . 'images/lang/' . strtolower($value) . '.png" alt="' . $value . '"><span>' . $value . '</span></a></li>' . "\n";
@@ -297,9 +299,9 @@ class TemplateFeature
             }
 
             return $html;
-        } else {
-            return 'Error: htmlUser()' . "\n";
         }
+
+        return 'Error: htmlUser()';
     }
 
     /*
@@ -372,11 +374,11 @@ class TemplateFeature
         $first = substr($address, 0, strpos($address, '-'));
 
         if ($first == 'page') {
-            $result = str_replace(['page-', '.html'], ['', '.site.html'], $result);
-        } else {
-            $result = $result . ' / INFO: For a page with this address you need to create a controller: ' . str_replace('.txt', '', ucfirst($address)) . 'Controller.php';
+            return str_replace(['page-', '.html'], ['', '.site.html'], $result);
         }
 
-        return $result;
+        empty($result) ? $result = '' : $result = ' ';
+
+        return $result . '/ INFO: For a page with this address you need to create a controller: ' . str_replace('.txt', '', ucfirst($address)) . 'Controller.php';
     }
 }

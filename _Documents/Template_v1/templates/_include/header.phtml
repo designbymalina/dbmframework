@@ -1,0 +1,10 @@
+    <!-- Header -->
+    <h1 class="visually-hidden"><?= $this->trans('website.name') ?></h1>
+    <header class="navbar navbar-expand-md shadow py-3 dbm-header">
+        <nav class="container-md flex-wrap flex-md-nowrap position-relative" aria-label="<?= $this->trans('navbar.main_navigation') ?>">
+            <a href="<?= $this->path() ?>" class="navbar-brand text-white text-decoration-none"><img src="<?= $this->path('images/logo.png') ?>" class="img-fluid align-middle me-3" alt="<?= $this->trans('website.name') ?>"><h2 class="d-inline"><?= $this->trans('index.header') ?></h2></a>
+            <div class="position-absolute top-0 end-0">
+                <?= $this->htmlLanguage($this->path()) ?>
+            </div>
+        </nav>
+    </header>

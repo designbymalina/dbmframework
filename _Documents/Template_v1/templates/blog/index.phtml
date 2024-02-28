@@ -1,9 +1,13 @@
 {% extends 'base.phtml' %}
 
+{% block head %}
+    <!-- Block head /blog:index -->
+{% endblock %}
+
 {% block content %}
     {% include '_include/navigation.phtml' %}
     {% include '_include/messages.phtml' %}
-    <!-- Main Content - Blog index -->
+<!-- Main Content - Blog index -->
     <main class="container my-5">
         <div class="row">
             <div class="col-md-8">
@@ -48,10 +52,6 @@
 
 {% endblock %}
 
-{% block head %}
-	<!-- PIP block head index -->
-{% endblock %}
-
 {% block body %}
-	<!-- PIP block body index -->
+	<!-- Block body /blog:index -->
 {% endblock %}
