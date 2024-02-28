@@ -118,11 +118,10 @@ class BaseController extends TemplateEngine implements BaseInterface
         }
 
         $dir = dirname($_SERVER['PHP_SELF']);
+        $public = '/';
 
         if (strpos($dir, 'public')) { // for localhost (application in catalog)
             $public = strstr($dir, 'public', true);
-        } else {
-            $public = '/';
         }
 
         $url = empty($_SERVER['HTTPS']) ? 'http' : 'https';
