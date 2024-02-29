@@ -52,20 +52,22 @@ class TemplateFeature
     public function trans(string $key, array $overwrite = [], array $sprint = null): string
     {
         $cookieName = 'DbmLanguage';
-        $lang = 'pl';
-
-        if (!empty(APP_LANGUAGES)) {
-            $languages = explode('|', APP_LANGUAGES);
-            $lang = $languages[0];
-        }
+        $languageDefault = 'pl';
+        $arrayLanguages = explode('|', APP_LANGUAGES);
+        
+        !empty($arrayLanguages[0]) ? $language = $arrayLanguages[0] : $language = $languageDefault;
 
         if (!empty($_GET['lang'])) {
-            $lang = $_GET['lang'];
+            $language = $_GET['lang']; 
+
+            if (strtolower($language) === 'off') {
+                $language = $languageDefault;
+            }
         } elseif (isset($_COOKIE[$cookieName])) {
-            $lang = $_COOKIE[$cookieName];
+            $language = $_COOKIE[$cookieName];
         }
 
-        $pathTranslation = BASE_DIRECTORY . "translations/language.$lang.php";
+        $pathTranslation = BASE_DIRECTORY . "translations/language." . strtolower($language) . ".php";
 
         if (file_exists($pathTranslation)) {
             $translation = include($pathTranslation);
