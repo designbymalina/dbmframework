@@ -22,7 +22,7 @@ class AccountController extends BaseController
     public function __construct(DatabaseInterface $database)
     {
         if (!$this->getSession('dbmUserId')) {
-            $this->redirect("login");
+            $this->redirect("./login");
         }
 
         parent::__construct($database);

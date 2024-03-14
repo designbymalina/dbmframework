@@ -15,7 +15,7 @@ function reportingErrorHandler(string $errLevel, string $errMessage, string $err
     $path = $dir . $file;
 
     if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
+        mkdir($dir, 0744, true);
     }
 
     $errorHandler = "DATE: $date, level: $errLevel\n File: $errFile on line $errLine\n Message: $errMessage\n";

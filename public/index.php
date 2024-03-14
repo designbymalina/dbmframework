@@ -22,10 +22,8 @@ define('DS', DIRECTORY_SEPARATOR);
 define('BASE_DIRECTORY', str_replace('public' . DS, '', __DIR__ . DS));
 define('BASE_FILE', $fileBasename);
 
-### FUNCTIONS - application starting, template engine, etc.
+### FUNCTIONS - application starting
 require(BASE_DIRECTORY . 'application' . DS . 'start.php');
-// Default template engine, you can change it to any other one
-require(BASE_DIRECTORY . 'application' . DS . 'template.php');
 
 ### ERROR HANDLING, logging error handling ###
 // Time zone; Info: Not every server needed!

@@ -1,19 +1,17 @@
-    <?php
-        // Navigation
-        include('../templates/_include/navigation.phtml');
-        // Flash messages
-        include('../templates/_include/messages.phtml');
-    ?>
-    <?php if (!empty($article)) : ?>
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% if (!empty($article)): %}
 
     <!-- Breadcrumb -->
     <section class="container">
         <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 small">
-                <li class="breadcrumb-item"><a href="<?= path() ?>" class="link-secondary">Blog</a></li>
-                <li class="breadcrumb-item"><a href="<?= path('blog/sections') ?>" class="link-secondary">Article categories</a></li>
-                <li class="breadcrumb-item"><a href="<?= path('blog/'.linkSEO('sec', $article->sid, $article->section_name)) ?>" class="link-secondary"><?= $article->section_name ?></a></li>
-                <li class="breadcrumb-item active"><?= $article->page_header; ?></li>
+                <li class="breadcrumb-item"><a href="{{ $this->path() }}" class="link-secondary">Blog</a></li>
+                <li class="breadcrumb-item"><a href="{{ $this->path('blog/sections') }}" class="link-secondary">Article categories</a></li>
+                <li class="breadcrumb-item"><a href="{{ $this->path('blog/'.$this->linkSEO('sec', $article->sid, $article->section_name)) }}" class="link-secondary">{{ $article->section_name }}</a></li>
+                <li class="breadcrumb-item active">{{ $article->page_header }}</li>
             </ol>
         </nav>
     </section>
@@ -21,26 +19,23 @@
     <main class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="pb-4 mb-4 fst-italic border-bottom"><?= $article->page_header ?></h1>
+                <h1 class="pb-4 mb-4 fst-italic border-bottom">{{ $article->page_header }}</h1>
                 <article class="blog-post mb-3">
-                    <?= outputHTML($article->page_content) ?>
+                    {{ $this->outputHTML($article->page_content) }}
     			</article>
             </div>
             <div class="col-md-4">
                 <div class="position-sticky" style="top: 2rem;">
-                    <?php
-                        // Box right about
-                        include('../templates/_include/box_right_about.phtml');
-                        // Box right about
-                        include('../templates/_include/box_right_images.phtml');
-                    ?>
+                    {% include '_include/box_right_about.phtml' %}
+                    {% include '_include/box_right_images.phtml' %}
                 </div>
     		</div>
         </div>
     </main>
-    <?php else: ?>
 
-    <!-- Main Content - Blog article -->
+    {% else: %}
+
+    <!-- Main Content - Blog article error -->
     <main class="container">
         <div class="row">
             <div class="col-md-12">
@@ -48,4 +43,6 @@
             </div>
         </div>
     </main>
-    <?php endif; ?>
+    
+    {% endif; %}
+{% endblock %}

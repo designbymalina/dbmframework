@@ -1,48 +1,44 @@
-    <?php
-        // Navigation
-        include('../templates/_include/navigation.phtml');
-        // Flash messages
-        include('../templates/_include/messages.phtml');
-    ?>
-<!-- Main Content - Blog index -->
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+    
+    <!-- Main Content - Blog index -->
     <main class="container my-5">
         <div class="row">
             <div class="col-md-8">
                 <div class="row">
-                    <?php
-                        if (!empty($data['articles'])) {
-                            foreach($data['articles'] as $object) {
-                                ($object->image_thumb != null) ? $image = $object->image_thumb : $image = 'no-image.jpg';
-                    ?>
-
+                    {% if (!empty($articles)): %}
+                    {% foreach($articles as $item): %}
+                        {% ($item->image_thumb != null) ? $image = $item->image_thumb : $image = 'no-image.jpg'; %}
+                    
                     <div class="col-md-6 d-flex align-items-stretch mb-4 aos-init aos-animate" data-aos="zoom-in" data-aos-delay="200">
                         <div class="dbm-box-image">
                             <div class="image">
-                                <img src="<?= path('images/blog/thumb/' . $image); ?>" alt="<?= output($object->page_header); ?>" class="img-fluid img-thumbnail" style="width:100%;max-height:215px">
+                                <img src="{{ $this->path('images/blog/thumb/' . $image) }}" alt="{{ $this->output($item->page_header); }}" class="img-fluid img-thumbnail" style="width:100%;max-height:215px">
                             </div>
-                            <h4 class="title"><a href="<?= path(linkSEO('art', $object->aid, $object->page_header)); ?>" title="<?= output($object->page_header); ?>"><?= truncate($object->page_header, 40); ?></a></h4>
-                            <h6 class="details"><span class="me-1">By</span><a href="<?= path(linkSEO('user', $object->uid)); ?>" class="link-dark"><?= $object->fullname; ?></a><span class="mx-1">in</span><a href="<?= path('blog/'.linkSEO('sec', $object->sid, $object->section_name)); ?>" class="link-dark"><?= $object->section_name; ?></a></h6>
-                            <p class="description"><?= truncate($object->page_content, 300); ?></p>
+                            <h4 class="title"><a href="{{ $this->path($this->linkSEO('art', $item->aid, $item->page_header)) }}" title="{{ $this->output($item->page_header) }}">{{ $this->truncate($item->page_header, 40) }}</a></h4>
+                            <h6 class="details"><span class="me-1">By</span><a href="{{ $this->path($this->linkSEO('user', $item->uid)) }}" class="link-dark">{{ $item->fullname }}</a><span class="mx-1">in</span><a href="{{ $this->path('blog/'.$this->linkSEO('sec', $item->sid, $item->section_name)) }}" class="link-dark">{{ $item->section_name; }}</a></h6>
+                            <p class="description">{{ $this->truncate($item->page_content, 300) }}</p>
                         </div>
                     </div>
-                    <?php }; 
-                        } else {
-                    ?>
 
-                    <div class="alert alert-info"><?= trans('alert.no_content') ?></div>
-                    <?php } ?>
+                    {% endforeach; %}
+                    {% else: %}
+
+                    <div class="alert alert-info">{{ $this->trans('alert.no_content') }}</div>
+                    {% endif; %}
 
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="position-sticky" style="top:2rem;">
-                    <?php
-                        // Box right about
-                        include('../templates/_include/box_right_about.phtml');
-                        // Box right about
-                        include('../templates/_include/box_right_images.phtml');
-                    ?>
+                    {% include '_include/box_right_about.phtml' %}
+                    {% include '_include/box_right_images.phtml' %}
                 </div>
             </div>
         </div>
     </main>
+
+{% endblock %}

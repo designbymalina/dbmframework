@@ -33,16 +33,16 @@ class PanelController extends BaseController
 
     public function __construct(DatabaseInterface $database)
     {
-        if (!$this->getSession('dbmUserId')) {
-            $this->redirect("login");
-        }
-
         parent::__construct($database);
+
+        if (!$this->getSession('dbmUserId')) {
+            $this->redirect("./login");
+        }
 
         $userId = (int) $this->getSession('dbmUserId');
 
         if ($this->userPermissions($userId) !== 'ADMIN') {
-            $this->redirect("index");
+            $this->redirect("./");
         }
 
         $model = new PanelModel($database);
@@ -105,10 +105,10 @@ class PanelController extends BaseController
             $filePath = self::DIR_CONTENT . $file;
             $fileContent = file_get_contents($filePath);
             $fileFields = explode(self::SPLIT, $fileContent);
-            $keywords = $fileFields[0];
-            $description = $fileFields[1];
-            $title = $fileFields[2];
-            $content = $fileFields[3];
+            $keywords = trim($fileFields[0]);
+            $description = trim($fileFields[1]);
+            $title = trim($fileFields[2]);
+            $content = trim($fileFields[3]);
 
             $meta = [
                 'meta.title' => "Page editing - Dashboard DbM Framework",
@@ -172,7 +172,7 @@ class PanelController extends BaseController
             $this->setFlash('messageSuccess', 'The new page has been successfully created.');
         }
 
-        $this->redirect("panel/createOrEditPage", ['file' => $fileName]);
+        $this->redirect("./panel/createOrEditPage", ['file' => $fileName]);
     }
 
     public function editPageMethod()
@@ -183,7 +183,7 @@ class PanelController extends BaseController
         file_put_contents($filePath, $fileContent);
 
         $this->setFlash('messageSuccess', 'The page has been successfully edited.');
-        $this->redirect("panel/createOrEditPage", ['file' => $this->requestData('file')]);
+        $this->redirect("./panel/createOrEditPage", ['file' => $this->requestData('file')]);
     }
 
     public function manageBlogMethod()
@@ -319,7 +319,7 @@ class PanelController extends BaseController
                 $this->setFlash('messageDanger', 'An unexpected error occurred!');
             }
 
-            $this->redirect("panel/createOrEditBlog", ['id' => $lastId]);
+            $this->redirect("./panel/createOrEditBlog", ['id' => $lastId]);
         } else {
             $this->render('panel/create_edit_blog.phtml', [
                 'meta' => $meta,
@@ -358,7 +358,7 @@ class PanelController extends BaseController
             $this->setFlash('messageDanger', 'An unexpected error occurred!');
         }
 
-        $this->redirect("panel/createOrEditBlog", ['id' => $id]);
+        $this->redirect("./panel/createOrEditBlog", ['id' => $id]);
     }
 
     public function manageBlogSectionsMethod()
@@ -460,7 +460,7 @@ class PanelController extends BaseController
                 $this->setFlash('messageDanger', 'An unexpected error occurred!');
             }
 
-            $this->redirect("panel/createOrEditBlogSection", ['id' => $lastId]);
+            $this->redirect("./panel/createOrEditBlogSection", ['id' => $lastId]);
         } else {
             $this->render('panel/create_edit_blog_section.phtml', [
                 'meta' => [
@@ -495,7 +495,7 @@ class PanelController extends BaseController
             $this->setFlash('messageDanger', 'An unexpected error occurred!');
         }
 
-        $this->redirect("panel/createOrEditBlogSection", ['id' => $id]);
+        $this->redirect("./panel/createOrEditBlogSection", ['id' => $id]);
     }
 
     public function tabelsMethod()

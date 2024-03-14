@@ -1,15 +1,18 @@
-    <!-- Page Wrapper -->
+{% extends 'base_panel.phtml' %}
+
+{% block head %}
+	<!-- Style Head Custom Datatables -->
+    <link href="<?= $this->path('admin/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+{% endblock %}
+
+{% block content %}<!-- Page Wrapper -->
     <div id="wrapper">
-        <?php
-            include('../templates/_include/panel_sidebar.phtml');
-        ?>
+        {% include '_include/panel_sidebar.phtml' %}
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <?php
-                    include('../templates/_include/panel_topbar.phtml');
-                ?>
+                {% include '_include/panel_topbar.phtml' %}
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -19,13 +22,9 @@
                                 <li class="breadcrumb-item active" aria-current="page"><h1 class="h3 mb-0 text-gray-800">Manage blog categories</h1></li>
                             </ol>
                         </nav>
-                        <a href="<?php echo path('panel/createOrEditBlogSection'); ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-plus text-white-50 mr-2"></i>Create section</a>
+                        <a href="<?= $this->path('panel/createOrEditBlogSection') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-plus text-white-50 mr-2"></i>Create section</a>
                     </div>
-                    <?php
-                        // Panel flash messages
-                        include('../templates/_include/panel_messages.phtml');
-                    ?>
-
+                    {% include '_include/panel_messages.phtml' %}
                     <!-- DataTales -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -39,15 +38,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php if ($data['sections'] != null): ?>
-                                        <?php foreach ($data['sections'] as $item): ?>
+                                        <?php foreach ($sections as $item): ?>
                                         <tr>
-                                            <td class="font-weight-bold"><?php echo $item->id; ?></td>
-                                            <td class="font-weight-bold"><?php echo $item->section_name; ?></td>
-                                            <td class="text-right"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h mr-1"></i></button><div class="dropdown-menu dropdown-menu-right"><a href="<?php echo 'createOrEditBlogSection?id=' . $item->id; ?>" class="dropdown-item text-primary" type="button">Edit</a><button type="button" class="dropdown-item text-danger deleteArticle" data-toggle="modal" data-target=".deleteModal" data-id="<?php echo $item->id; ?>">Delete</button></div></div></td>
+                                            <td class="font-weight-bold"><?= $item->id ?></td>
+                                            <td class="font-weight-bold"><?= $item->section_name ?></td>
+                                            <td class="text-right"><div class="btn-group"><button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h mr-1"></i></button><div class="dropdown-menu dropdown-menu-right"><a href="<?= 'createOrEditBlogSection?id=' . $item->id; ?>" class="dropdown-item text-primary" type="button">Edit</a><button type="button" class="dropdown-item text-danger deleteArticle" data-toggle="modal" data-target=".deleteModal" data-id="<?= $item->id ?>">Delete</button></div></div></td>
                                         </tr>
                                         <?php endforeach; ?>
-                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -57,13 +54,79 @@
                 </div>
             </div>
             <!-- End of Main Content -->
-            <?php
-                include('../templates/_include/panel_footer.phtml');
-            ?>
+            {% include '_include/panel_footer.phtml' %}
         </div>
         <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
-    <?php
-        include('../templates/_include/panel_logout.phtml');
-    ?>
+    {% include '_include/panel_logout.phtml' %}
+{% endblock %}
+
+{% block body %}
+    <!-- Modal Delete -->
+	<div id="deleteModal" class="modal fade deleteModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="deleteModalLabel">
+    	<div class="modal-dialog" role="document">
+        	<div class="modal-content">
+            	<div class="modal-header border-0">
+                	<h5 class="modal-title" id="deleteModalLabel"><i class="fas fa-trash-alt mr-3 text-danger"></i>Confirm Delete</h5>
+                	<button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            	</div>
+            	<div class="modal-body">
+					<p class="font-weight-bold mb-2">Are you sure you want to delete this?</p>
+				</div>
+            	<div class="modal-footer border-0">
+                	<button type="button" class="btn btn-light text-muted" data-dismiss="modal">Cancel</button>
+					<button type="button" id="sectionDelete" class="btn btn-danger px-4 ml-2" data-dismiss="modal" data-file="">Delete</button>
+            	</div>
+        	</div>
+    	</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$('#sectionDelete').click(function () {
+				var id = $(this).attr("data-id");
+				var params = 'id=' + id;
+				
+				$.ajax({
+					type: "GET",
+					url: '<?= APP_PATH ?>panel/ajaxDeleteSection',
+					data: params,
+					success: function(response) {
+						if (response != 0) {
+							var alert = JSON.parse(response);
+							window.location.replace("<?= APP_PATH ?>panel/manageBlogSections?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+						} else {
+							alert('JavaScript: An unexpected response error occurred!');
+						}
+					},
+					error: function(response) {
+						alert('JavaScript: An unexpected error occurred!');
+					}
+				});
+			});
+
+			$('.deleteArticle').click(function () {
+				var id = $(this).attr("data-id");
+				$('#sectionDelete').attr("data-id", id);
+			});
+
+			$('#collapseOne').show();
+			$('#collapseOne a:nth-child(5)').addClass("active");
+		});
+	</script>
+	<!-- DataTables.net -->
+    <script src="../admin/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="../admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTableOne').dataTable({
+                pageLength: 10,
+                columnDefs: [{
+                    targets: 'noSort',
+                    orderable: false,
+                }],
+				order: [[1, 'asc']],
+            });
+        });
+    </script>
+{% endblock %}

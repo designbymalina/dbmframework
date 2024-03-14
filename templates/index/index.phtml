@@ -1,10 +1,9 @@
-    <?php
-        // Navigation
-        include('../templates/_include/navigation.phtml');
-        // Flash messages
-        include('../templates/_include/messages.phtml');
-    ?>
-    <!-- Main Content -->
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+<!-- Main Content -->
     <main class="container my-5">
         <div class="row g-5">
             <div class="col-md-8">
@@ -131,8 +130,8 @@
                     </div>
                     <div class="p-4">
                         <h4 class="fst-italic">Images</h4>
-                        <p><img src="<?= path('images/blog/photo/post-idea.jpg') ?>" class="img-fluid" alt="..."></p>
-                        <p class="mb-0"><img src="<?= path('images/blog/photo/post-web.jpg') ?>" class="img-fluid" alt="..."></p>
+                        <p><img src="<?= $this->path('images/blog/photo/post-idea.jpg') ?>" class="img-fluid" alt="..."></p>
+                        <p class="mb-0"><img src="<?= $this->path('images/blog/photo/post-web.jpg') ?>" class="img-fluid" alt="..."></p>
                     </div>
                     <div class="p-4">
                         <h4 class="fst-italic">Movies</h4>
@@ -169,3 +168,5 @@
             </div>
         </div>
     </main>
+
+{% endblock %}

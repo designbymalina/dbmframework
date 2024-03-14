@@ -34,7 +34,7 @@ class LoginController extends BaseController
     public function index()
     {
         if ($this->getSession('dbmUserId')) {
-            $this->redirect("account");
+            $this->redirect("./account");
         }
 
         $translation = $this->translation;
@@ -68,7 +68,7 @@ class LoginController extends BaseController
         if (array_key_exists($userKey, $errorValidate)) {
             $this->setSession("dbmUserId", $errorValidate[$userKey]);
             $this->setFlash("messageSuccess", $translation->trans('login.message.logged_in'));
-            $this->redirect("account");
+            $this->redirect("./account");
         } else {
             $dataForm = array_merge($dataForm, $errorValidate);
 

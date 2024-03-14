@@ -1,15 +1,18 @@
-    <!-- Page Wrapper -->
+{% extends 'base_panel.phtml' %}
+
+{% block head %}
+	<!-- Style Head Custom Datatables Example -->
+    <link href="<?= $this->path('admin/vendor/datatables/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+{% endblock %}
+
+{% block content %}<!-- Page Wrapper -->
     <div id="wrapper">
-        <?php
-            include('../templates/_include/panel_sidebar.phtml');
-        ?>
+        {% include '_include/panel_sidebar.phtml' %}
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <?php
-                    include('../templates/_include/panel_topbar.phtml');
-                ?>
+                {% include '_include/panel_topbar.phtml' %}
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <div class="d-sm-flex align-items-center justify-content-between">
@@ -108,13 +111,27 @@
                 </div>
             </div>
             <!-- End of Main Content -->
-            <?php
-                include('../templates/_include/panel_footer.phtml');
-            ?>
+            {% include '_include/panel_footer.phtml' %}
         </div>
         <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
-    <?php
-        include('../templates/_include/panel_logout.phtml');
-    ?>
+    {% include '_include/panel_logout.phtml' %}
+{% endblock %}
+
+{% block body %}
+    <!-- Example: DataTables.net -->
+    <script src="../admin/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="../admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTableOne').dataTable({
+                "pageLength": 5,
+                "columnDefs": [{
+                    "targets": 'noSort',
+                    "orderable": false,
+                }],
+            });
+        });
+    </script>
+{% endblock %}

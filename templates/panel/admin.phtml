@@ -1,15 +1,13 @@
-    <!-- Page Wrapper -->
+{% extends 'base_panel.phtml' %}
+
+{% block content %}<!-- Page Wrapper -->
     <div id="wrapper">
-        <?php
-            include('../templates/_include/panel_sidebar.phtml');
-        ?>
+        {% include '_include/panel_sidebar.phtml' %}
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <?php
-                    include('../templates/_include/panel_topbar.phtml');
-                ?>
+                {% include '_include/panel_topbar.phtml' %}
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -113,15 +111,15 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                             <div class="dropdown-header">Pages</div>
-                                            <a class="dropdown-item" href="<?php echo path('panel/managePage'); ?>">Manage pages</a>
-                                            <a class="dropdown-item" href="<?php echo path('panel/createOrEditPage'); ?>">Create page</a>
+                                            <a class="dropdown-item" href="<?= $this->path('panel/managePage'); ?>">Manage pages</a>
+                                            <a class="dropdown-item" href="<?= $this->path('panel/createOrEditPage'); ?>">Create page</a>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="overflow-auto">
-                                        <?php echo htmlList($data['files'], '                                        ', 'h-100'); ?>
+                                        <?= $this->htmlList($files, '                                        ', 'h-100'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -138,15 +136,15 @@
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                                             <div class="dropdown-header">Blog</div>
-                                            <a class="dropdown-item" href="<?php echo path('panel/manageBlog'); ?>">Manage blog</a>
-                                            <a class="dropdown-item" href="<?php echo path('panel/createOrEditBlog'); ?>">Create article</a>
+                                            <a class="dropdown-item" href="<?= $this->path('panel/manageBlog'); ?>">Manage blog</a>
+                                            <a class="dropdown-item" href="<?= $this->path('panel/createOrEditBlog'); ?>">Create article</a>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="overflow-auto">
-                                        <?php echo htmlList($data['articles'], '                                        ', 'h-100'); ?>
+                                        <?= $this->htmlList($articles, '                                        ', 'h-100'); ?>
                                     </div>
                                 </div>
                             </div>
@@ -156,13 +154,11 @@
                 <!-- /.container-fluid -->
             </div>
             <!-- End of Main Content -->
-            <?php
-                include('../templates/_include/panel_footer.phtml');
-            ?>
+            {% include '_include/panel_footer.phtml' %}
         </div>
         <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
-    <?php
-        include('../templates/_include/panel_logout.phtml');
-    ?>
+    {% include '_include/panel_logout.phtml' %}
+
+{% endblock %}

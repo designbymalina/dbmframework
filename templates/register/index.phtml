@@ -1,10 +1,9 @@
-    <?php
-        // Navigation
-        include('../templates/_include/navigation.phtml');
-        // Flash messages
-        include('../templates/_include/messages.phtml');
-    ?>
-    <!-- Main Content -->
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+<!-- Main Content -->
     <section class="h-100 dbm-form-gradient-1">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -13,42 +12,50 @@
                         <div class="row g-0">
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
-                                    <form action="<?= path('register/signup') ?>" method="POST" class="dbm-form-primary">
-                                        <h4 class="mt-1 mb-4 pb-1"><?= trans('register.header') ?></h4>
+                                    <form action="{{ $this->path('register/signup') }}" method="POST" class="dbm-form-primary">
+                                        <h4 class="mt-1 mb-4 pb-1">{{ $this->trans('register.header') }}</h4>
                                         <div class="form-outline mb-2">
-                                            <label class="form-label mb-1" for="form_login"><?= trans('username') ?></label>
+                                            <label class="form-label mb-1" for="form_login">{{ $this->trans('username') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_3"><i class="bi bi-person"></i></span>
-                                                <input type="text" name="dbm_login" value="<?php if (!empty($form['login'])): echo $form['login']; endif; ?>" id="form_login" class="form-control" placeholder="<?= trans('your_login') ?>" minlength="2" maxlength="30" required>
+                                                <input type="text" name="dbm_login" value="{% if (!empty($form['login'])): echo $form['login']; endif; %}" id="form_login" class="form-control" placeholder="{{ $this->trans('your_login') }}" minlength="2" maxlength="30" required>
                                             </div>
-                                            <?php if (!empty($form['error_login'])): echo '<div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>' . $form['error_login'] . '</div>' . "\n"; endif; ?>
+                                            {% if (!empty($form['error_login'])): %}
+                                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_login'] }}</div>
+                                            {% endif; %}
                                         </div>
                                         <div class="form-outline mb-2">
-                                            <label class="form-label mb-1" for="form_email"><?= trans('email') ?></label>
+                                            <label class="form-label mb-1" for="form_email">{{ $this->trans('email') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_1">@</span>
-                                                <input type="email" name="dbm_email" value="<?php if (!empty($form['email'])): echo $form['email']; endif; ?>" id="form_email" class="form-control" placeholder="<?= trans('email_address') ?>" required>
+                                                <input type="email" name="dbm_email" value="{% if (!empty($form['email'])): echo $form['email']; endif; %}" id="form_email" class="form-control" placeholder="{{ $this->trans('email_address') }}" required>
                                             </div>
-                                            <?php if (!empty($form['error_email'])): echo '<div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>' . $form['error_email'] . '</div>' . "\n"; endif; ?>
+                                            {% if (!empty($form['error_email'])): %}
+                                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_email'] }}</div>
+                                            {% endif; %}
                                         </div>
                                         <div class="form-outline mb-2">
-                                            <label class="form-label mb-1" for="form_password"><?= trans('password') ?></label>
+                                            <label class="form-label mb-1" for="form_password">{{ $this->trans('password') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_2"><i class="bi bi-lock"></i></span>
-                                                <input type="password" name="dbm_password" id="form_password" class="form-control" placeholder="<?= trans('password') ?>" required>
+                                                <input type="password" name="dbm_password" id="form_password" class="form-control" placeholder="{{ $this->trans('password') }}" required>
                                             </div>
-                                            <?php if (!empty($form['error_password'])): echo '<div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>' . $form['error_password'] . '</div>' . "\n"; endif; ?>
+                                            {% if (!empty($form['error_password'])): %}
+                                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_password'] }}</div>
+                                            {% endif; %}
                                         </div>
                                         <div class="form-outline mb-2">
-                                            <label class="form-label mb-1" for="form_confirmation"><?= trans('repeat_password') ?></label>
+                                            <label class="form-label mb-1" for="form_confirmation">{{ $this->trans('repeat_password') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_2"><i class="bi bi-lock"></i></span>
-                                                <input type="password" name="dbm_confirmation" id="form_confirmation" class="form-control" placeholder="<?= trans('password') ?>" data-rule-equalTo="#form_password" required>
+                                                <input type="password" name="dbm_confirmation" id="form_confirmation" class="form-control" placeholder="{{ $this->trans('password') }}" data-rule-equalTo="#form_password" required>
                                             </div>
-                                            <?php if (!empty($form['error_confirmation'])): echo '<div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>' . $form['error_confirmation'] . '</div>' . "\n"; endif; ?>
+                                            {% if (!empty($form['error_confirmation'])): %}
+                                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_confirmation'] }}</div>
+                                            {% endif; %}
                                         </div>
                                         <div class="d-grid gap-2 mb-2 mt-4 text-center">
-                                            <button type="submit" class="btn btn-primary btn-block text-uppercase fw-bold dbm-btn-primary"><?= trans('create_account') ?></button>
+                                            <button type="submit" class="btn btn-primary btn-block text-uppercase fw-bold dbm-btn-primary">{{ $this->trans('create_account') }}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -62,8 +69,8 @@
                                             <path d="M9.479 14.361c-.48.093-.98.139-1.479.139-.5 0-.999-.046-1.479-.139L7.6 15.8a.5.5 0 0 0 .8 0l1.079-1.439Z"/>
                                         </svg>
                                     </div>
-                                    <h4 class="mb-4"><?= trans('login.subheader') ?></h4>
-                                    <p class="small mb-0"><?= trans('index.lead') ?></p>
+                                    <h4 class="mb-4">{{ $this->trans('login.subheader') }}</h4>
+                                    <p class="small mb-0">{{ $this->trans('index.lead') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -72,3 +79,5 @@
             </div>
         </div>
     </section>
+
+{% endblock %}

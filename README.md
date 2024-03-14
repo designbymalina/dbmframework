@@ -29,7 +29,7 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 - config
 - data
   - attachment
-  - content
+  - content (requires writing permissions)
   - mailer
   - txt (requires writing permissions)
 - public (public folders)
@@ -42,7 +42,7 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 - tests
 - tools (to create for tools)
 - translations
-- var / log / mailer (created automatically, requires writing permissions)
+- var / log / mailer and var / cache (created automatically, requires writing permissions)
 - vendor (reserved for Composer)
 
 ## Instalacja i konfiguracja
@@ -88,7 +88,7 @@ Metoda pozwala dodać ścieżkę routingu w uproszczony sposób, przy użyciu ar
 
 ## Silnik szablonów
 
-Używaj domyślnego lub dowolnego silnika szablonów. Domyślne funkcje dla szablonów znajdują się w pliku template.php, natomiast render() do wyświetlania widoków jest w pliku BaseController.php. Render możesz zmienić na pracujący z silnikiem szablonów np. Twig Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php.
+Używaj domyślnego lub dowolnego silnika szablonów. Domyślny TemplateEngine i Render do wyświetlania widoków możesz zmienić na dowolny, np. pracujący z silnikiem szablonów Twig. Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php. Patrz do plików w folderze `templates`, na przykładzie dowiesz się jak używać zalecanego domyślnego szablonu.
 
 ## Biblioteki
 

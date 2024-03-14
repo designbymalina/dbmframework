@@ -100,7 +100,7 @@ class MailerService
         $dir = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'mailer' . DS;
 
         if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
+            mkdir($dir, 0744, true);
         }
 
         if (is_array($error)) {

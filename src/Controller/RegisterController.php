@@ -35,7 +35,7 @@ class RegisterController extends BaseController
     public function index()
     {
         if ($this->getSession('dbmUserId')) {
-            $this->redirect("account");
+            $this->redirect("./account");
         }
 
         $translation = $this->translation;
@@ -89,10 +89,10 @@ class RegisterController extends BaseController
                 $send->sendMessage($arraySend);
 
                 $this->setFlash("messageSuccess", $translation->trans('register.alert.account_created'));
-                $this->redirect("login");
+                $this->redirect("./login");
             } else {
                 $this->setFlash("messageDanger", $translation->trans('alert.unexpected_error_try_again'));
-                $this->redirect("index");
+                $this->redirect("./index");
             }
         } else {
             $dataForm = array_merge($dataForm, $errorValidate);
@@ -116,6 +116,6 @@ class RegisterController extends BaseController
         $verifiedAccount = $this->model->verifiedAccountEmail();
 
         $this->setFlash($verifiedAccount['type'], $verifiedAccount['message']);
-        $this->redirect("login");
+        $this->redirect("./login");
     }
 }

@@ -110,16 +110,16 @@ class Router implements RouterInterface
 
     private function matchRoute(string $uri): array
     {
-        $path = filter_var($uri, FILTER_SANITIZE_URL);
-        $path = ltrim($path, '/');
-        $path = explode("/", $path);
+        $paths = [];
+        $params = [];
 
         if (($pos = strpos($uri, '?')) !== false) {
             $uri = substr($uri, 0, $pos);
         }
 
-        $paths = [];
-        $params = [];
+        $path = filter_var($uri, FILTER_SANITIZE_URL);
+        $path = ltrim($path, '/');
+        $path = explode("/", $path);
 
         foreach ($path as $subPath) {
             if (strpos($subPath, self::ADDRESS_EXTENSION) !== false) {

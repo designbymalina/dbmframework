@@ -1,7 +1,16 @@
-    <!-- Main Content -->
+{% extends 'base.phtml' %}
+
+{% block head %}
+    <!-- Block head /home:example -->
+{% endblock %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+<!-- Main Content -->
     <main>
         <div class="container mt-5 px-4">
-            <p class="fs-5"><?= trans('index.lead') ?></p>
+            <p class="fs-5">{{ $this->trans('index.lead') }}</p>
             <div class="row row-cols-1 row-cols-lg-2 g-4 py-4">
                 <div class="feature col">
                     <h2>Home/Landingpage na plikach tekstowych</h2>
@@ -44,3 +53,8 @@
             </div>
         </div>
     </main>
+{% endblock %}
+
+{% block body %}
+	<!-- Block body /home:example -->
+{% endblock %}

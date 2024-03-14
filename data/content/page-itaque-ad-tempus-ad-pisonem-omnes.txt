@@ -9,7 +9,7 @@ Itaque ad tempus ad Pisonem omnes
             <div class="col-md-8">
                 <h1 class="pb-4 mb-4 fst-italic border-bottom"><strong>Header</strong> - Itaque ad tempus ad Pisonem omnes</h1>
                 <article class="blog-post mb-3">
-                    <p><img src="{{url}}images/page/photo/post-graphics.jpg" alt="..." class="img-fluid"></p>
+                    <p><img src="[URL]images/page/photo/post-graphics.jpg" alt="..." class="img-fluid"></p>
                     <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
                         <h1 class="display-4 fw-normal">Pricing</h1>
                         <p class="fs-5 text-muted">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p>

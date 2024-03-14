@@ -36,7 +36,7 @@ class IndexController extends BaseController
     {
         // Option for render: blog/index.phtml
         if (empty(DB_DATABASE)) {
-            $this->redirect('home');
+            $this->redirect('./home');
         }
 
         $translation = $this->translation;
