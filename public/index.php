@@ -1,6 +1,6 @@
 <?php
 /*
- * Application: DbM Framework v.2.1
+ * Application: DbM Framework v2.1
  * Author: Arthur Malinowsky (Design by Malina)
  * License: MIT
  * Web page: www.dbm.org.pl
@@ -15,12 +15,9 @@ session_start();
 ### OUTPUT BUFFERING for htmlErrorHandler()
 ob_start();
 
-### BASE PATH AND FILE NAME ###
-isset($_GET['url']) ? $fileBasename = basename(str_replace('/', ',', $_GET['url']), '.html') : $fileBasename = 'index';
-
+### BASE PATH ###
 define('DS', DIRECTORY_SEPARATOR);
 define('BASE_DIRECTORY', str_replace('public' . DS, '', __DIR__ . DS));
-define('BASE_FILE', $fileBasename);
 
 ### FUNCTIONS - application starting
 require(BASE_DIRECTORY . 'application' . DS . 'start.php');

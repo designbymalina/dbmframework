@@ -9,8 +9,24 @@
 
 function reportingErrorHandler(string $errLevel, string $errMessage, string $errFile, string $errLine): void
 {
+    $basename = 'index';
+    $uri = $_SERVER["REQUEST_URI"];
+    $dir = str_replace('public', '', dirname($_SERVER['PHP_SELF']));
+
+    if ($uri !== $dir) {
+        $basename = str_replace('.html', '', basename($_SERVER["REQUEST_URI"]));
+
+        if (strpos($uri, '.') !== false) {
+            preg_match('/\.(.*?)\./', $uri, $match);
+
+            if (array_key_exists(1, $match)) {
+                $basename = $match[1];
+            }
+        }
+    }
+
     $date = date('Y-m-d H:i:s');
-    $file = date('Ymd') . '_' . BASE_FILE . '.log';
+    $file = date('Ymd') . '_' . $basename . '.log';
     $dir =  BASE_DIRECTORY . 'var' . DS . 'log' . DS;
     $path = $dir . $file;
 
