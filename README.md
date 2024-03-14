@@ -96,4 +96,4 @@ Mailer for registration module (optional):
 
 * [PHPMailer](https://github.com/PHPMailer/PHPMailer) - The classic email sending library for PHP.
 
-UWAGA! Wolna licencja ma tylko jedno ograniczenie. Jeśli chcesz skorzystać z frameworka nie masz prawa usuwać linku do strony z nazwą autora ze stopki skryptu. Usuwając nazwę, używasz oprogramowania nielegalnie. Autor zapewnia wsparcie dla aplikacji, nie ponosi odpowiedzialności za jakiekolwiek szkody powstałe na skutek korzystania z oprogramowania. Jeśli masz pomysł na rozwój projektu napisz do mnie, porozmawiajmy...
+UWAGA! Wolna licencja ma tylko jedno ograniczenie. W stopce lub innym widocznym miejscu kodu aplikacji należy pozostawić link do strony z nazwą autora. Usuwając nazwę, używasz oprogramowania nielegalnie. Autor zapewnia wsparcie dla aplikacji, nie ponosi odpowiedzialności za jakiekolwiek szkody powstałe na skutek korzystania z oprogramowania.
