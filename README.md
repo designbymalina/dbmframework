@@ -3,9 +3,7 @@
 DbM Framework PHP MVC Simple CMS, Version 2  
 Application tested on: PHP 7.4  
 All code copyright Design by Malina (DbM)  
-Web: www.dbm.org.pl
-
-# Język polski (PL - Polish language)
+Web: www.dbm.org.pl  
 
 DbM Framework PHP MVC Simple CMS umożliwia tworzenie prostych i pięknych stron internetowych typu wizytówka, landingpage itp. gdzie zawartość jest przechowywana w plikach tekstowych (nie potrzebujesz bazy danych), ale do edycji zawartości wskazana jest znajomość HTML i CSS. Framework umożliwia też tworzenie większych aplikacji wymagających bazy danych takich jak regularnie aktualizowany, profesjonalny blog oraz bardziej rozbudowanych systemów o charakterze indywidualnego projektu, gdzie wymagana jest znajomości programowania. Przykładowa aplikacja demonstruje opcję z Landingpage na plikach tekstowych oraz System CMS na bazie danych.
 
