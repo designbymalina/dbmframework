@@ -45,7 +45,7 @@ class TemplateEngine extends TemplateFeature
     private function cache(string $file): string
     {
         if (!file_exists(self::PATH_CACHE)) {
-            mkdir(self::PATH_CACHE, 0744);
+            mkdir(self::PATH_CACHE, 0744, true);
         }
 
         $cachedFile = self::PATH_CACHE . str_replace(array('/', '.phtml'), array('_', ''), $file . '.php');
