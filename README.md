@@ -83,7 +83,7 @@ Metoda pozwala dodać ścieżkę routingu w uproszczony sposób, przy użyciu ar
 
 ## Silnik szablonów
 
-Używaj domyślnego lub dowolnego silnika szablonów. Domyślny TemplateEngine i Render do wyświetlania widoków możesz zmienić na dowolny, np. pracujący z silnikiem szablonów Twig. Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php. Patrz do plików w folderze `templates`, na przykładzie dowiesz się jak używać zalecanego domyślnego szablonu.
+Używaj domyślnego lub dowolnego silnika szablonów. Domyślny TemplateEngine i Render do wyświetlania widoków możesz zmienić na dowolny, np. pracujący z silnikiem szablonów Twig. Przykład zastosowania w /_Documents/Script/BaseController_for_Twig.php. Patrz do plików w folderze `templates`, na przykładzie dowiesz się jak używać zalecanego domyślnego systemu szablonów.
 
 ## Biblioteki
 
