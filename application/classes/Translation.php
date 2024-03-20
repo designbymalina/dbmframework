@@ -15,23 +15,23 @@ use Dbm\Interfaces\TranslationInterface;
 
 class Translation implements TranslationInterface
 {
-    private $translation;
+    public $arrayTranslation;
 
     public function __construct()
     {
-        $this->translation = $this->translation();
+        $this->arrayTranslation = $this->translation();
     }
 
     /* Language translation */
     public function trans(string $key, array $data = null, array $sprint = null): string
     {
-        $trans = $this->translation;
+        $translation = $this->arrayTranslation;
 
         if (!empty($data) && array_key_exists($key, $data)) {
             (!empty($sprint)) ? $value = vsprintf($data[$key], $sprint) : $value = $data[$key];
             return $value;
-        } elseif (array_key_exists($key, $trans)) {
-            (!empty($sprint)) ? $value = vsprintf($trans[$key], $sprint) : $value = $trans[$key];
+        } elseif (array_key_exists($key, $translation)) {
+            (!empty($sprint)) ? $value = vsprintf($translation[$key], $sprint) : $value = $translation[$key];
             return $value;
         }
 

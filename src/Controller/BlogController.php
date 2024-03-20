@@ -11,13 +11,11 @@ namespace App\Controller;
 
 use App\Model\BlogModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Translation;
 use Dbm\Interfaces\DatabaseInterface;
 
 class BlogController extends BaseController
 {
     private $model;
-    private $translation;
 
     public function __construct(DatabaseInterface $database)
     {
@@ -25,9 +23,6 @@ class BlogController extends BaseController
 
         $model = new BlogModel($database);
         $this->model = $model;
-
-        $translation = new Translation();
-        $this->translation = $translation;
     }
 
     /* @Route: "/blog" */

@@ -15,7 +15,6 @@ use App\Config\ConstantConfig;
 use App\Model\PanelModel;
 use App\Service\DbmImageUploadService;
 use App\Service\MethodService;
-use Dbm\Classes\Translation;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 use DateTime;
@@ -29,15 +28,14 @@ class PanelController extends BaseController
     private const SPLIT = "<!--@-->";
 
     private $model;
-    private $translation;
 
     public function __construct(DatabaseInterface $database)
     {
-        parent::__construct($database);
-
         if (!$this->getSession('dbmUserId')) {
             $this->redirect("./login");
         }
+
+        parent::__construct($database);
 
         $userId = (int) $this->getSession('dbmUserId');
 
@@ -47,9 +45,6 @@ class PanelController extends BaseController
 
         $model = new PanelModel($database);
         $this->model = $model;
-
-        $translation = new Translation();
-        $this->translation = $translation;
     }
 
     public function index()

@@ -15,6 +15,8 @@ use Dbm\Interfaces\DatabaseInterface;
 
 class TemplateFeature
 {
+    public $translation;
+
     /*
      * Path generator
      */
@@ -51,27 +53,9 @@ class TemplateFeature
      */
     public function trans(string $key, array $overwrite = [], array $sprint = null): string
     {
-        $cookieName = 'DbmLanguage';
-        $languageDefault = 'pl';
-        $arrayLanguages = explode('|', APP_LANGUAGES);
+        !empty($this->translation->arrayTranslation) ? $translation = $this->translation->arrayTranslation : $translation = null;
 
-        !empty($arrayLanguages[0]) ? $language = $arrayLanguages[0] : $language = $languageDefault;
-
-        if (!empty($_GET['lang'])) {
-            $language = $_GET['lang'];
-
-            if (strtolower($language) === 'off') {
-                $language = $languageDefault;
-            }
-        } elseif (isset($_COOKIE[$cookieName])) {
-            $language = $_COOKIE[$cookieName];
-        }
-
-        $pathTranslation = BASE_DIRECTORY . "translations/language." . strtolower($language) . ".php";
-
-        if (file_exists($pathTranslation)) {
-            $translation = include($pathTranslation);
-
+        if (!empty($translation)) {
             if (!empty($overwrite['meta'])) {
                 $overwrite = $overwrite['meta'];
             }

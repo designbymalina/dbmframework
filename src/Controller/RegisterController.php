@@ -12,13 +12,11 @@ namespace App\Controller;
 use App\Model\RegisterModel;
 use App\Service\MailerService;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Translation;
 use Dbm\Interfaces\DatabaseInterface;
 
 class RegisterController extends BaseController
 {
     private $model;
-    private $translation;
 
     public function __construct(DatabaseInterface $database)
     {
@@ -26,9 +24,6 @@ class RegisterController extends BaseController
 
         $model = new RegisterModel($database);
         $this->model = $model;
-
-        $translation = new Translation();
-        $this->translation = $translation;
     }
 
     /* @Route: "/register" */

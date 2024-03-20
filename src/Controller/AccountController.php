@@ -11,13 +11,11 @@ namespace App\Controller;
 
 use App\Model\UserModel;
 use Dbm\Classes\BaseController;
-use Dbm\Classes\Translation;
 use Dbm\Interfaces\DatabaseInterface;
 
 class AccountController extends BaseController
 {
     private $model;
-    private $translation;
 
     public function __construct(DatabaseInterface $database)
     {
@@ -29,9 +27,6 @@ class AccountController extends BaseController
 
         $model = new UserModel($database);
         $this->model = $model;
-
-        $translation = new Translation();
-        $this->translation = $translation;
     }
 
     /* @Route: "/account" */
