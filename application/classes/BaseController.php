@@ -17,7 +17,6 @@ use Dbm\Interfaces\DatabaseInterface;
 
 class BaseController extends TemplateEngine implements BaseInterface
 {
-    public $translation;
     private $database;
 
     public function __construct(DatabaseInterface $database)

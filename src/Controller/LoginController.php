@@ -21,7 +21,7 @@ class LoginController extends BaseController
     {
         parent::__construct($database);
 
-        $model = new LoginModel($database);
+        $model = new LoginModel($database, $this->translation);
         $this->model = $model;
     }
 

@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Dbm\Classes\Translation;
 use Dbm\Interfaces\DatabaseInterface;
+use Dbm\Interfaces\TranslationInterface;
 
 class LoginModel
 {
@@ -20,11 +20,9 @@ class LoginModel
     private $database;
     private $translation;
 
-    public function __construct(DatabaseInterface $database)
+    public function __construct(DatabaseInterface $database, TranslationInterface $translation)
     {
         $this->database = $database;
-
-        $translation = new Translation();
         $this->translation = $translation;
     }
 

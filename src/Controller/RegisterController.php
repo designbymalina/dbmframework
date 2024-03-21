@@ -22,7 +22,7 @@ class RegisterController extends BaseController
     {
         parent::__construct($database);
 
-        $model = new RegisterModel($database);
+        $model = new RegisterModel($database, $this->translation);
         $this->model = $model;
     }
 
