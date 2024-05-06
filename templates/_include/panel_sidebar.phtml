@@ -14,26 +14,32 @@
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Interfejs</div>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-fw fa-cog"></i><span>Management</span></a>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-fw fa-folder"></i><span>Pages on text files</span></a>
                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
                     <div class="collapse-inner bg-white rounded py-2">
                         <h6 class="collapse-header">Pages on text files</h6>
                         <a class="collapse-item" href="<?= $this->path('panel/managePage') ?>">Manage pages</a>
+                        <a class="collapse-item" href="<?= $this->path('panel/createOrEditPage') ?>">Create page</a>
+                    </div>
+                </div>
+                <a class="nav-link collapsed pt-0" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-fw fa-blog"></i><span>Blog and articles</span></a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="collapse-inner bg-white rounded py-2">
                         <h6 class="collapse-header">Blog and articles</h6>
                         <a class="collapse-item" href="<?= $this->path('panel/manageBlog') ?>">Manage blog</a>
+                        <a class="collapse-item" href="<?= $this->path('panel/createOrEditBlog') ?>">Create article</a>
                         <a class="collapse-item" href="<?= $this->path('panel/manageBlogSections') ?>">Manage blog sections</a>
+                        <a class="collapse-item" href="<?= $this->path('panel/createOrEditBlogSection') ?>">Create section</a>
                     </div>
                 </div>
             </li>
             <hr class="sidebar-divider">
-            <div class="sidebar-heading">Accessories</div>
-            <li class="nav-item">
-                <a class="nav-link" href="<?= $this->path('panel/tabels.html') ?>"><i class="fas fa-fw fa-table"></i><span>Tables example</span></a>
-            </li>
-            <hr class="sidebar-divider">
             <div class="sidebar-heading">Tools</div>
             <li class="nav-item">
-                <a class="nav-link" href="http://localhost/phpmyadmin/" target="_blank"><i class="fas fa-fw fa-database"></i><span>SQL Database</span></a>
+                <a class="nav-link" href="<?= $this->path('panel/toolsLogs') ?>"><i class="fas fa-fw fa-exclamation-triangle"></i><span>Error logs</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link pt-0" href="http://localhost/phpmyadmin/" target="_blank"><i class="fas fa-fw fa-database"></i><span>SQL Database</span></a>
             </li>
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">

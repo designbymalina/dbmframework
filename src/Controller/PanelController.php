@@ -22,6 +22,7 @@ use DateTime;
 class PanelController extends BaseController
 {
     private const DIR_CONTENT = BASE_DIRECTORY . 'data/content/';
+    private const DIR_LOG = BASE_DIRECTORY . 'var/log/';
     private const DIR_IMG_PAGE = BASE_DIRECTORY . 'public/images/page/photo/';
     private const DIR_IMG_BLOG = BASE_DIRECTORY . 'public/images/blog/photo/';
     private const DIR_IMG_SECTION = BASE_DIRECTORY . 'public/images/blog/category/photo/';
@@ -493,17 +494,32 @@ class PanelController extends BaseController
         $this->redirect("./panel/createOrEditBlogSection", ['id' => $id]);
     }
 
-    public function tabelsMethod()
+    public function toolsLogsMethod()
     {
-        $contentFiles = array_diff(scandir(self::DIR_CONTENT), array('..', '.'));
+        $contentPreview = null;
+        $action = $this->requestData('action');
+        $file = $this->requestData('file');
+        $pathFile = self::DIR_LOG . $file;
+
+        if (!empty($file) && (file_exists($pathFile) && (filesize($pathFile) > 0))) {
+            if ($action == 'delete') {
+                unlink($pathFile);
+            } else {
+                $contentPreview = file_get_contents($pathFile);
+                $contentPreview = str_replace(["\n"], ["<br>"], $contentPreview);
+            }
+        }
+
+        $contentFiles = array_diff(scandir(self::DIR_LOG), array('..', '.', 'mailer'));
 
         $meta = array(
-            'meta.title' => 'managePagesMethod()',
+            'meta.title' => 'errorLogs',
         );
 
-        $this->render('panel/tabels.phtml', [
+        $this->render('panel/logs.phtml', [
             'meta' => $meta,
             'files' => $contentFiles,
+            'preview' => $contentPreview,
         ]);
     }
 

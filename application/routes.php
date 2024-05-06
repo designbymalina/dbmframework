@@ -67,9 +67,9 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/panel/createOrEditBlogSection', [PanelController::class, 'createOrEditBlogSectionMethod']);
     $router->addRoute('/panel/editSection', [PanelController::class, 'editSectionMethod']);
     $router->addRoute('/panel/ajaxDeleteSection', [PanelController::class, 'ajaxDeleteSectionMethod']);
-    $router->addRoute('/panel/tabels.html', [PanelController::class, 'tabelsMethod']);
     $router->addRoute('/panel/ajaxUploadImage', [PanelController::class, 'ajaxUploadImageMethod']);
     $router->addRoute('/panel/ajaxDeleteImage', [PanelController::class, 'ajaxDeleteImageMethod']);
+    $router->addRoute('/panel/toolsLogs', [PanelController::class, 'toolsLogsMethod']);
 
     $router->dispatch($uri);
 };

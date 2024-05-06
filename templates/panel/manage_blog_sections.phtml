@@ -19,7 +19,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb bg-transparent">
-                                <li class="breadcrumb-item active" aria-current="page"><h1 class="h3 mb-0 text-gray-800">Manage blog categories</h1></li>
+                                <li class="breadcrumb-item active" aria-current="page"><h1 class="h3 mb-0 text-gray-800">Manage blog sections</h1></li>
                             </ol>
                         </nav>
                         <a href="<?= $this->path('panel/createOrEditBlogSection') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-plus text-white-50 mr-2"></i>Create section</a>
@@ -110,8 +110,8 @@
 				$('#sectionDelete').attr("data-id", id);
 			});
 
-			$('#collapseOne').show();
-			$('#collapseOne a:nth-child(5)').addClass("active");
+			$('#collapseTwo').show();
+			$('#collapseTwo a:nth-child(4)').addClass("active");
 		});
 	</script>
 	<!-- DataTables.net -->
