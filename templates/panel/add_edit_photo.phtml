@@ -1,0 +1,112 @@
+{% extends 'base_panel.phtml' %}
+
+{% block content %}
+	<?php
+        // Form data fields
+        // !empty($page['id']) ? $formId = '?id=' . $page['id'] : $formId = null;
+    ?><!-- Page Wrapper -->
+    <div id="wrapper">
+        {% include '_include/panel_sidebar.phtml' %}
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                {% include '_include/panel_topbar.phtml' %}
+				<!-- Begin Page Content -->
+				<div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb bg-transparent">
+                                <li class="breadcrumb-item"><h1 class="h3 mb-0 text-gray-800"><a href="<?= $this->path('panel/manageGallery') ?>" class="text-dark">Manage gallery</a></h1></li>
+                                <li class="breadcrumb-item active h3" aria-current="page"><?= $page['header'] ?></li>
+                            </ol>
+                        </nav>
+                        <a href="<?= $this->path('panel/addOrEditPhoto') ?>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-plus text-white-50 mr-2"></i>Add photo</a>
+                    </div>
+					{% include '_include/panel_messages.phtml' %}
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <form action="<?= $this->path('panel/'. $page['action']) ?>" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="form_title" class="font-weight-bold">Title</label>
+                                    <input type="text" name="title" id="form_title" class="form-control" placeholder="Write the image title" value="<?php if (!empty($fields->title)) : echo $fields->title; endif; ?>" minlength="3" maxlength="65" ?required>
+                                    <div class="text-danger small"><?php if (!empty($validate['errorTitle'])) : echo $validate['errorTitle']; endif; ?></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="formDescription" class="font-weight-bold">Description</label>
+                                    <textarea name="description" id="formDescription" class="form-control" rows="5"><?php if (!empty($fields->description)) : echo $fields->description; endif; ?></textarea>
+                                    <div class="text-danger small"><?php if (!empty($validate['errorDescription'])) : echo $validate['errorDescription']; endif; ?></div>
+                                </div>
+								<div class="form-group row">
+                                    <?php if (!empty($fields->filename)) : ?>
+                                    <div class="col-sm-6">
+                                        <label for="formContent" class="font-weight-bold">Status</label>
+                                        <?php
+                                            !empty($fields->status) ? $status = $fields->status : $status = 0;
+                                            echo $this->htmlSelect([0 => 'Inactive', 1 => 'Active'], 'status', $status, 'asc', 'required');
+                                        ?>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="formContent" class="font-weight-bold">Photo</label>
+                                        <input type="text" name="file" id="formFile" class="form-control" value="<?php if (!empty($fields->filename)) : echo $fields->filename; endif; ?>" readonly>
+                                    </div>
+                                    <?php else : ?>
+                                    <div class="col-sm-12">
+                                        <label for="formContent" class="font-weight-bold">Photo</label>
+                                        <div class="input-group">
+										    <div class="custom-file small-custom-file">
+											    <input type="file" name="file" id="formFile" class="custom-file-input">
+											    <label for="formFile" class="custom-file-label small-custom-file-label">Choose file</label>
+										    </div>
+									    </div>
+                                    </div>
+                                    <?php endif; ?>
+                                    <div class="col-sm-12">
+                                        <div class="text-danger small"><?php if (!empty($validate['errorPhoto'])) : echo $validate['errorPhoto']; endif; ?></div>
+                                        <div id="progressBox" class="progress mt-2 d-none">
+                                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">Please wait. Image uploading...</div>
+                                        </div>
+                                    </div>
+								</div>
+								<div class="form-group">
+									<button type="submit" name="submit" id="btnSubmit" class="btn btn-primary float-right"><?= $page['submit'] ?></button>
+                                    <?php if (!empty($page['id'])) : ?>
+                                        <input type="hidden" name="id" value="<?= $page['id'] ?>">
+                                    <?php endif; ?>
+								</div>
+                            </form>
+                        </div>
+                    </div>
+				</div>
+			</div>
+            {% include '_include/panel_footer.phtml' %}
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+    {% include '_include/panel_logout.phtml' %}
+{% endblock %}
+
+{% block body %}
+    <script>
+		$(".custom-file-input").on("change", function() {
+			var fileName = $(this).val().replace(/^.*[\\/]/, '');
+			$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
+
+        $('#collapseThree').show();
+		$('#collapseThree a:nth-child(3)').addClass("active");
+	</script>
+    <script>
+        document.querySelector("#btnSubmit").addEventListener('click', (event) => {
+            if (event.target.form.checkValidity() && ($('#formFile').val() != '')) {
+                setTimeout(function () {
+                    var newprogress = 100;
+                    $('#progressBox').removeClass('d-none');
+                    $('#progressBar').width(newprogress + "%").attr('aria-valuenow', newprogress); 
+                }, 100);
+            }
+            event.preventDefault;
+        })
+    </script>
+{% endblock %}

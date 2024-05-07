@@ -1,0 +1,58 @@
+{% extends 'base.phtml' %}
+
+{% block head %}
+    <!-- Lightbox CSS -->
+    <link href="{{ $this->path('assets/vendor/lightbox/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+    <!-- Breadcrumb -->
+    <section class="container">
+        <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item active">Photo gallery</li>
+            </ol>
+        </nav>
+    </section>
+    <!-- Main Content - Blog index -->
+    <main class="photo-gallery">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 gallery-grid mb-4" id="postList">
+                {% foreach($gallery as $item): %}
+                
+                    <div class="col text-center">
+                        <a class="gallery-item" href="{{ $this->path('images/gallery/photo/') . $item->filename; }}">
+                            <img src="{{ $this->path('images/gallery/thumb/') . $item->filename; }}" class="img-fluid" alt="{{ $item->title }}">
+                        </a>
+                    </div>
+                {% endforeach; %}
+
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block body %}
+    <!-- Lightbox JS -->
+    <script src="{{ $this->path('assets/vendor/lightbox/script.js') }}"></script>
+    <div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+            <div class="modal-content">
+                <button type="button" class="btn-fullscreen-enlarge" aria-label="Enlarge fullscreen">
+                    <svg class="bi"><use href="#enlarge"></use></svg>
+                </button>
+                <button type="button" class="btn-fullscreen-exit d-none" aria-label="Exit fullscreen">
+                    <svg class="bi"><use href="#exit"></use></svg>
+                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                    <div class="lightbox-content">
+                        <!-- JS content here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

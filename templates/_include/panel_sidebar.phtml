@@ -32,6 +32,14 @@
                         <a class="collapse-item" href="<?= $this->path('panel/createOrEditBlogSection') ?>">Create section</a>
                     </div>
                 </div>
+                <a class="nav-link collapsed pt-0" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-fw fa-images"></i><span>Photo gallery</span></a>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+                    <div class="collapse-inner bg-white rounded py-2">
+                        <h6 class="collapse-header">Photo gallery</h6>
+                        <a class="collapse-item" href="<?= $this->path('panel/manageGallery') ?>">Manage gallery</a>
+                        <a class="collapse-item" href="<?= $this->path('panel/addOrEditPhoto') ?>">Add photo</a>
+                    </div>
+                </div>
             </li>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Tools</div>

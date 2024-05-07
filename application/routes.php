@@ -13,11 +13,13 @@ use App\Controller\AboutController;
 use App\Controller\AccountController;
 use App\Controller\BlogController;
 use App\Controller\ContactController;
+use App\Controller\GalleryController;
 use App\Controller\HomeController;
 use App\Controller\IndexController;
 use App\Controller\LoginController;
 use App\Controller\PageController;
 use App\Controller\PanelController;
+use App\Controller\PanelGalleryController;
 use App\Controller\RegisterController;
 use App\Controller\RegulationController;
 use App\Controller\UserController;
@@ -51,6 +53,7 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/register/signup', [RegisterController::class, 'signupMethod']);
     $router->addRoute('/register/verified.php', [RegisterController::class, 'verifiedMethod']);
     $router->addRoute('/user.{id}.html', [UserController::class, 'index']);
+    $router->addRoute('/gallery', [GalleryController::class, 'index']);
     $router->addRoute('/panel', [PanelController::class, 'index']);
     $router->addRoute('/panel/managePage', [PanelController::class, 'managePageMethod']);
     $router->addRoute('/panel/createPage', [PanelController::class, 'createPageMethod']);
@@ -70,6 +73,11 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/panel/ajaxUploadImage', [PanelController::class, 'ajaxUploadImageMethod']);
     $router->addRoute('/panel/ajaxDeleteImage', [PanelController::class, 'ajaxDeleteImageMethod']);
     $router->addRoute('/panel/toolsLogs', [PanelController::class, 'toolsLogsMethod']);
+    $router->addRoute('/panel/manageGallery', [PanelGalleryController::class, 'manageGalleryMethod']);
+    $router->addRoute('/panel/addOrEditPhoto', [PanelGalleryController::class, 'addOrEditPhotoMethod']);
+    $router->addRoute('/panel/addPhoto', [PanelGalleryController::class, 'addPhotoMethod']);
+    $router->addRoute('/panel/editPhoto', [PanelGalleryController::class, 'editPhotoMethod']);
+    $router->addRoute('/panel/ajaxDeletePhoto', [PanelGalleryController::class, 'ajaxDeletePhotoMethod']);
 
     $router->dispatch($uri);
 };

@@ -2,10 +2,10 @@
 
 // Translation (en-EN)
 return [
-    'lang' => "pl",
+    'lang' => "en",
     'charset' => "utf-8",
     'meta.robots' => "all",
-    'meta.title' => "PHP Framework - MVC (Model View Controller)",
+    'meta.title' => "DbM Framework PHP MVC Simple CMS",
     'meta.description' => "DbM Framework allows you to create simple and beautiful websites and complex systems of an individual project.",
     'meta.keywords' => "dbmframework, dbm framework, php framework, mvc framework, flat text files, mysql, simple cms",
     'website.name' => "DbM Framework",
@@ -42,7 +42,8 @@ return [
     'navbar.nav.home' => "Home",
     'navbar.nav.pages' => "Pages",
     'navbar.nav.blog' => "Blog",
-    'navbar.nav.link' => "Link",
+    'navbar.nav.gallery' => "Gallery",
+    'navbar.nav.layout' => "Layout",
     'navbar.nav.disabled' => "Disabled",
     'navbar.nav.about' => "About us",
     'navbar.nav.contact' => "Contact",
@@ -51,7 +52,7 @@ return [
     'navbar.nav.login' => "Login",
     'navbar.nav.register' => "Registration",
     // IndexController
-    'index.title' => "DbM Framework - Simple CMS",
+    'index.title' => "DbM Blog - Build a Site, Sell Your Stuff, Start a Blog & More",
     'index.description' => "DbM Framework PHP MVC Simple CMS allows you to create simple and beautiful websites.",
     'index.keywords' => "dbm framework, simple cms, framework, cms",
     // Index template (html)
@@ -96,4 +97,8 @@ return [
     'blog.sections.title' => "Blog categories",
     'blog.sections.description' => "All blog categories.",
     'blog.sections.keywords' => "blog, categories",
+    // GalleryController
+    'gallery.title' => "DbM Photo Gallery - Gallery for Photographers",
+    'gallery.description' => "Gallery for modern photographers.",
+    'gallery.keywords' => "gallery, photo, photo gallery, dbm photo gallery",
 ];

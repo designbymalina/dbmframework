@@ -2,7 +2,7 @@ landingpage, landingpages, text files
 <!--@-->
 CMS systems are almost always based on cooperation with databases. So what can users of small websites, landing pages or business cards do? A helpful solution here is a system based on text files. It allows you to manage and edit content on websites based on text files.
 <!--@-->
-Landing pages - System on text files, yours offer
+DbM Landing Pages - System on text files, yours offer
 <!--@-->
 <div class="container mb-4">
         <div class="row">
