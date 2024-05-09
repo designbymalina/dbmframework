@@ -62,7 +62,7 @@ class GalleryController extends BaseController
                     echo '<div class="col text-center"><a class="gallery-item" href="images/gallery/photo/' . $item->filename . '"><img src="images/gallery/thumb/' . $item->filename . '" class="img-fluid" alt="' . $item->title . '"></a></div>';
                 }
 
-                echo '<div>';
+                echo '</div>';
 
                 // TO DO ?!
                 /* echo '<link href="./assets/vendor/lightbox/style.css" rel="stylesheet">';
