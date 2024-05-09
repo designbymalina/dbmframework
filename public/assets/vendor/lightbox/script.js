@@ -3,7 +3,7 @@ html.setAttribute('data-bs-theme', 'dark');
 
 document.addEventListener('DOMContentLoaded', () => {
   // --- Create LightBox
-  const galleryGrid = document.querySelector(".gallery-grid");
+  const galleryGrid = document.querySelector(".lightboxGalleryGrid");
   const links = galleryGrid.querySelectorAll("a");
   const imgs = galleryGrid.querySelectorAll("img");
   const lightboxModal = document.getElementById("lightbox-modal");

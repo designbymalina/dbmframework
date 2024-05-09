@@ -98,12 +98,12 @@
 				
 				$.ajax({
 					type: "GET",
-					url: '<?php echo APP_PATH; ?>panel/ajaxDeletePhoto',
+					url: '<?= $this->path(); ?>panel/ajaxDeletePhoto',
 					data: params,
 					success: function(response) {
 						if (response != 0) {
 							var alert = JSON.parse(response);
-							window.location.replace("<?php echo APP_PATH; ?>panel/manageGallery?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+							window.location.replace("<?= APP_PATH; ?>panel/manageGallery?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
 						} else {
 							alert('JavaScript: An unexpected response error occurred!');
 						}
@@ -128,17 +128,31 @@
 		});
 	</script>
 	<!-- DataTables.net -->
-    <script src="../admin/vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="../admin/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="<?= $this->path('admin/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
+    <script src="<?= $this->path('admin/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
     <script>
         $(document).ready(function() {
-            $('#dataTableOne').dataTable({
+            table = $('#dataTableOne').dataTable({
                 pageLength: 10,
                 columnDefs: [{
                     targets: 'noSort',
                     orderable: false,
                 }],
 				order: [[0, 'desc']],
+                createdRow: function(row, data, dataIndex) {
+                    var title = data[2];
+                    $(row).attr('title', title);
+                    
+                    if (title !== undefined && title !== '') {
+                        $(row).find('td').each(function(index, td) {
+                            $(td).attr('data-toggle', 'tooltip');
+                            $(td).attr('data-placement', 'top');
+                        });
+                    }
+                }, 
+                drawCallback: function() {
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
             });
         });
     </script>

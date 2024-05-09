@@ -43,4 +43,52 @@ class GalleryController extends BaseController
             'gallery' => $queryGallery,
         ]);
     }
+
+    /* @Route: "/gallery/ajaxLoadData" */
+    public function ajaxLoadDataMethod(): void
+    {
+        $limit = $this->requestData('limit');
+        $start = $this->requestData('start');
+
+        if (isset($limit, $start)) {
+            $queryGallery = $this->model->getGalleryLoadData($limit, $start);
+
+            if ($queryGallery) {
+                echo '<script src="./assets/js/masonry.pkgd.min.js"></script>';
+
+                echo '<div class="row row-cols-1 row-cols-md-3 g-4 mb-4 lightboxGalleryGrid" data-masonry=\'{ "percentPosition": true }\'>';
+
+                foreach ($queryGallery as $item) {
+                    echo '<div class="col text-center"><a class="gallery-item" href="images/gallery/photo/' . $item->filename . '"><img src="images/gallery/thumb/' . $item->filename . '" class="img-fluid" alt="' . $item->title . '"></a></div>';
+                }
+
+                echo '<div>';
+
+                // TO DO ?!
+                /* echo '<link href="./assets/vendor/lightbox/style.css" rel="stylesheet">';
+                echo '<script src="./assets/js/bootstrap.min.js"></script>';
+                
+                echo '<!-- Lightbox JS & Modal -->
+                <script src="./assets/vendor/lightbox/script.js"></script>
+                <div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+                        <div class="modal-content">
+                            <button type="button" class="btn-fullscreen-enlarge" aria-label="Enlarge fullscreen">
+                                <svg class="bi"><use href="#enlarge"></use></svg>
+                            </button>
+                            <button type="button" class="btn-fullscreen-exit d-none" aria-label="Exit fullscreen">
+                                <svg class="bi"><use href="#exit"></use></svg>
+                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-body">
+                                <div class="lightbox-content">
+                                    <!-- JS content here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>'; */
+            }
+        }
+    }
 }

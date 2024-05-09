@@ -211,7 +211,7 @@
 
 				$.ajax({
 					type: 'POST',
-					url: '<?= APP_PATH ?>panel/ajaxUploadImage',
+					url: '<?= $this->path(); ?>panel/ajaxUploadImage',
 					data: params,
 					contentType: false,
 					processData: false,
@@ -222,7 +222,7 @@
 							$('#formAlert').html('').append('<div class="alert alert-' + alert['status'] + ' px-2 py-1">' + alert['message'] + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 
 							if (alert['data'] !== undefined) {
-								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>[URL]images/blog/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?php echo APP_PATH; ?>public/images/blog/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
+								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>[URL]images/blog/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?= APP_PATH; ?>public/images/blog/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
 								$(".custom-file-label").html('');
 							}
 						} else {
@@ -243,7 +243,7 @@
 				if (confirm('Are you sure you want to delete?')) {
 					$.ajax({
 						type: "GET",
-						url: '<?= APP_PATH ?>panel/ajaxDeleteImage',
+						url: '<?= $this->path(); ?>panel/ajaxDeleteImage',
 						data: params,
 						cache: false,
 						contentType: false,
@@ -283,7 +283,7 @@
 				if (code.length === 0) {
 					result = '<div class="alert alert-info">The content is empty! Add content, use HTML tags and the Bootstrap library to format the text.</div>';
 				} else {
-					result = code.replace('[URL]', '<?= APP_PATH ?>');
+					result = code.replace('[URL]', '<?= APP_PATH; ?>');
 				}
 
                 $("#previewBody").html(result);

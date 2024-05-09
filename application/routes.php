@@ -54,6 +54,7 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/register/verified.php', [RegisterController::class, 'verifiedMethod']);
     $router->addRoute('/user.{id}.html', [UserController::class, 'index']);
     $router->addRoute('/gallery', [GalleryController::class, 'index']);
+    $router->addRoute('/gallery/ajaxLoadData', [GalleryController::class, 'ajaxLoadDataMethod']);
     $router->addRoute('/panel', [PanelController::class, 'index']);
     $router->addRoute('/panel/managePage', [PanelController::class, 'managePageMethod']);
     $router->addRoute('/panel/createPage', [PanelController::class, 'createPageMethod']);

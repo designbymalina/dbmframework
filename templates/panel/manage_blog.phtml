@@ -97,12 +97,12 @@
 				
 				$.ajax({
 					type: "GET",
-					url: '<?php echo APP_PATH; ?>panel/ajaxDeleteArticle',
+					url: '<?= $this->path(); ?>panel/ajaxDeleteArticle',
 					data: params,
 					success: function(response) {
 						if (response != 0) {
 							var alert = JSON.parse(response);
-							window.location.replace("<?php echo APP_PATH; ?>panel/manageBlog?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+							window.location.replace("<?= APP_PATH; ?>panel/manageBlog?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
 						} else {
 							alert('JavaScript: An unexpected response error occurred!');
 						}
