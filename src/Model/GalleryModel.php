@@ -20,10 +20,10 @@ class GalleryModel
         $this->database = $database;
     }
 
-    /* TEMPORARY - TO REMOVE! */
-    public function getGalleryPhotos(): ?array
+    /* TEMPORARY - TO REMOVE?! */
+    public function getGalleryPhotos(int $limit): ?array
     {
-        $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC"; // LIMIT 12
+        $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $limit";
 
         $this->database->queryExecute($query);
 
@@ -34,7 +34,7 @@ class GalleryModel
         return $this->database->fetchAllObject();
     }
 
-    public function getGalleryLoadData($limit, $start): ?array
+    public function getGalleryLoadData(int $limit, int $start): ?array
     {
         $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $start, $limit";
 

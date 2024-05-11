@@ -1,3 +1,7 @@
+<?php
+
+use App\Config\ConstantConfig;
+?>
 {% extends 'base.phtml' %}
 
 {% block head %}
@@ -8,7 +12,7 @@
 {% block content %}
     {% include '_include/navigation.phtml' %}
     {% include '_include/messages.phtml' %}
-    <!-- Breadcrumb -->
+<!-- Breadcrumb -->
     <section class="container">
         <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 small">
@@ -19,7 +23,7 @@
     <!-- Main Content - Blog index -->
     <main>
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-3 g-4 mb-4 lightboxGalleryGrid" data-masonry='{ "percentPosition": true }'>
+            <div id="loadDataGallery" class="row row-cols-1 row-cols-md-3 g-4 mb-4 lightboxGalleryGrid" data-masonry='{ "percentPosition": true }'>
                 {% foreach($gallery as $item): %}
                 
                     <div class="col text-center">
@@ -31,24 +35,18 @@
 
             </div>
         </div>
-    </main>
-
-    <!-- TODO! <section>
-        <div class="container">
-            <div id="load_data"></div>
-        </div>
         <div class="container" id="loadMessageContainer">
-		    <div class="row text-center">
-                <div id="load_data_message"></div>
+		    <div class="row text-center p-2">
+                <div id="loadDataMessage"></div>
             </div>
         </div>
-    </section> -->
+    </main>
 
 {% endblock %}
 
 {% block body %}
     <!-- Lightbox JS & Modal -->
-    <script src="{{ $this->path('assets/vendor/lightbox/script.js') }}"></script>
+    <script src="{{ $this->path('assets/vendor/lightbox/script.js') }}" id="?jsLightbox"></script>
     <div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen">
             <div class="modal-content">
@@ -67,14 +65,14 @@
             </div>
         </div>
     </div>
-    <!-- Masonry -->
+    <!-- Masonry with the Bootstrap grid system for images view -->
     <script src="{{ $this->path('assets/js/masonry.pkgd.min.js') }}"></script>
     <!-- AJAX Load Data -->
     <script src="{{ $this->path('assets/js/jquery.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            var limit = 6;
-            var start = 0;
+            var limit = <?= ConstantConfig::GALLERY_INDEX_ITEM_LIMIT; ?>;
+            var start = <?= ConstantConfig::GALLERY_INDEX_ITEM_LIMIT; ?>;
             var action = 'inactive';
 
             function loadDataToBox(limit, start) {
@@ -84,14 +82,14 @@
                     data: {limit:limit, start:start},
                     cache: false,
                     success: function(data) {
-                        $('#load_data').append(data);
+                        $('#loadDataGallery').append(data);
 
                         if (data == '') {
-                            $('#load_data_message').html('<span class="p-2 text-info">No data found.</span>');
-                            $('#loadMessageContainer').remove();
+                            $('#loadDataMessage').html('<span class="p-2 text-info">No data found.</span>');
+                            $('#loadMessageContainer').fadeOut(1000);
                             action = 'active';
                         } else {
-                            $('#load_data_message').html('<span class="p-2 text-success">Please wait...</span>');
+                            $('#loadDataMessage').html('<img src="<?= $this->path('images/loading.gif'); ?>" width="30" alt="Loading">');
                             action = "inactive";
                         }
                     }
@@ -104,7 +102,6 @@
             }
 
             $(window).scroll(function() {
-                // if ($(window).scrollTop() + $(window).height() > $("#load_data").height() && (action == 'inactive')) {
                 if (($(window).scrollTop() == $(document).height() - $(window).height()) && (action == 'inactive')) {
                     action = 'active';
                     start = start + limit;

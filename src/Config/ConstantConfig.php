@@ -7,6 +7,7 @@ namespace App\Config;
 class ConstantConfig
 {
     public const BLOG_INDEX_ITEM_LIMIT = 4; // number of elements on the blog home page
+    public const GALLERY_INDEX_ITEM_LIMIT = 6; // number of images on gallery, view start LIMIT x 2 (6x2)
 
     public const PATH_PAGE_IMAGES = '../public/images/page/'; // image path for pages on text files
     public const PATH_BLOG_IMAGES = '../public/images/blog/'; // image path for blog (database system)
