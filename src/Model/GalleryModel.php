@@ -20,7 +20,6 @@ class GalleryModel
         $this->database = $database;
     }
 
-    /* TEMPORARY - TO REMOVE?! */
     public function getGalleryPhotos(int $limit): ?array
     {
         $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $limit";
@@ -34,7 +33,7 @@ class GalleryModel
         return $this->database->fetchAllObject();
     }
 
-    public function getGalleryLoadData(int $limit, int $start): ?array
+    public function getGalleryLoadData(int $start, int $limit): ?array
     {
         $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $start, $limit";
 
@@ -45,18 +44,5 @@ class GalleryModel
         }
 
         return $this->database->fetchAllObject();
-    }
-
-    public function countPhotos(): ?array
-    {
-        $query = "SELECT COUNT(*) AS all_photos FROM dbm_gallery";
-
-        $this->database->queryExecute($query); // Zmien na querySQL()
-
-        if ($this->database->rowCount() == 0) {
-            return null;
-        }
-
-        return $this->database->fetch();
     }
 }

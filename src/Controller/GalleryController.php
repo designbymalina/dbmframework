@@ -48,45 +48,37 @@ class GalleryController extends BaseController
     /* @Route: "/gallery/ajaxLoadData" */
     public function ajaxLoadDataMethod(): void
     {
-        $limit = (int) $this->requestData('limit');
-        $start = (int) $this->requestData('start');
+        $limit = ConstantConfig::GALLERY_INDEX_ITEM_LIMIT;
+        $start = (int) $this->requestData('parameters');
 
         if (isset($limit, $start)) {
-            $queryGallery = $this->model->getGalleryLoadData($limit, $start);
+            $queryGallery = $this->model->getGalleryLoadData($start, $limit);
 
             if ($queryGallery) {
                 echo '<script src="./assets/js/masonry.pkgd.min.js"></script>';
 
                 foreach ($queryGallery as $item) {
                     echo '<div class="col text-center">';
-                    echo '<a class="gallery-item" href="images/gallery/photo/' . $item->filename . '">';
-                    echo '<img src="images/gallery/thumb/' . $item->filename . '" class="img-fluid" alt="' . $item->title . '">';
+                    echo '<a class="gallery-item" href="./images/gallery/photo/' . $item->filename . '" data-fancybox="fancyGallery" 
+                    data-captiontext="' . $item->title . '" data-captionlink="">';
+                    echo '<img src="./images/gallery/thumb/' . $item->filename . '" class="img-fluid" alt="' . $item->title . '">';
                     echo '</a>';
                     echo '</div>';
                 }
 
-                // TO DO! Lightbox reload?
-                //echo '<script src="./assets/js/jquery.min.js"></script>';
-                //echo '<script> $(document).ready(function() { $( "#jsLightbox" ).remove(); }); </script>'; // .lightbox-modal
-                //echo '<script src="./assets/vendor/lightbox/script.js"></script>';
-                /*echo '<div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered modal-fullscreen">
-                            <div class="modal-content">
-                                <button type="button" class="btn-fullscreen-enlarge" aria-label="Enlarge fullscreen">
-                                    <svg class="bi"><use href="#enlarge"></use></svg>
-                                </button>
-                                <button type="button" class="btn-fullscreen-exit d-none" aria-label="Exit fullscreen">
-                                    <svg class="bi"><use href="#exit"></use></svg>
-                                </button>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                <div class="modal-body">
-                                    <div class="lightbox-content">
-                                        <!-- JS content here -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';*/
+                echo "<script>
+                $('[data-fancybox=\"fancyGallery\"]').fancybox({
+                    protect: true,
+                    caption: function(instance, item) {
+                        var caption = $(this).data('captiontext') || '';
+                        var captionLink = $(this).data('captionlink') || '';
+                        if (item.type === 'image' && caption.length) {
+                            caption = captionLink.length > 8 ? '<a href=\"' + captionLink + '\" target=\"_blank\">' + caption + '</a>' : caption + '<br />';
+                        }
+                        return caption;
+                    }
+                });
+                </script>";
             }
         }
     }

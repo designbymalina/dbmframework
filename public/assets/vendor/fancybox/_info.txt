@@ -1,0 +1,6 @@
+
+Homepage:
+https://fancyapps.com/
+
+Download:
+https://github.com/fancyapps/fancybox

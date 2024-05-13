@@ -2,8 +2,9 @@
 {% extends 'base.phtml' %}
 
 {% block head %}
-    <!-- Lightbox CSS -->
-    <link href="{{ $this->path('assets/vendor/lightbox/style.css') }}" rel="stylesheet">
+    <!-- FancyBox CSS -->
+    <link href="{{ $this->path('assets/vendor/fancybox/jquery.fancybox.min.css') }}" rel="stylesheet">
+    <link href="{{ $this->path('assets/vendor/fancybox/style.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -20,16 +21,18 @@
     <!-- Main Content - Blog index -->
     <main>
         <div class="container">
-            <div id="loadDataGallery" class="row row-cols-1 row-cols-md-3 g-4 mb-4 lightboxGalleryGrid" data-masonry='{ "percentPosition": true }'>
+            <div id="loadFancyBoxGallery" class="row row-cols-1 row-cols-md-3 g-4 mb-4" data-masonry='{ "percentPosition": true }'>
                 {% foreach($gallery as $item): %}
                 
                     <div class="col text-center">
-                        <a class="gallery-item" href="{{ $this->path('images/gallery/photo/') . $item->filename; }}">
+                        <a class="gallery-item" href="{{ $this->path('images/gallery/photo/') . $item->filename; }}" data-fancybox="fancyGallery" data-captiontext="{{ $item->title }}" data-captionlink="">
                             <img src="{{ $this->path('images/gallery/thumb/') . $item->filename; }}" class="img-fluid" alt="{{ $item->title }}">
                         </a>
                     </div>
+
                 {% endforeach; %}
 
+                <div class="loadMore d-none" data-parameters="<?= ConstantConfig::GALLERY_INDEX_ITEM_LIMIT; ?>"></div>
             </div>
         </div>
         <div class="container" id="loadMessageContainer">
@@ -42,72 +45,66 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Lightbox JS & Modal -->
-    <script src="{{ $this->path('assets/vendor/lightbox/script.js') }}" id="?jsLightbox"></script>
-    <div class="modal fade lightbox-modal" id="lightbox-modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen">
-            <div class="modal-content">
-                <button type="button" class="btn-fullscreen-enlarge" aria-label="Enlarge fullscreen">
-                    <svg class="bi"><use href="#enlarge"></use></svg>
-                </button>
-                <button type="button" class="btn-fullscreen-exit d-none" aria-label="Exit fullscreen">
-                    <svg class="bi"><use href="#exit"></use></svg>
-                </button>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body">
-                    <div class="lightbox-content">
-                        <!-- JS content here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Masonry with the Bootstrap grid system for images view -->
     <script src="{{ $this->path('assets/js/masonry.pkgd.min.js') }}"></script>
-    <!-- AJAX Load Data -->
+    <!-- AJAX for FancyBox -->
     <script src="{{ $this->path('assets/js/jquery.min.js') }}"></script>
+    <script src="{{ $this->path('assets/vendor/fancybox/jquery.fancybox.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             var limit = <?= ConstantConfig::GALLERY_INDEX_ITEM_LIMIT; ?>;
-            var start = <?= ConstantConfig::GALLERY_INDEX_ITEM_LIMIT; ?>;
-            var action = 'inactive';
 
-            function loadDataToBox(limit, start) {
+            function loadDataToBox(start, limit) {
                 $.ajax({
-                    method: 'POST',
-                    url: '<?= $this->path(); ?>gallery/ajaxLoadData',
-                    data: {limit:limit, start:start},
-                    cache: false,
-                    success: function(data) {
-                        $('#loadDataGallery').append(data);
-
-                        if (data == '') {
-                            $('#loadDataMessage').html('<span class="p-2 text-info">No data found.</span>');
-                            $('#loadMessageContainer').fadeOut(1000);
-                            action = 'active';
+                    url: '<?= $this->path('gallery/ajaxLoadData') ?>',
+                    type: 'POST',
+                    data: {
+                        parameters: start,
+                    },
+                    success: function(response) {
+                        if (response) {
+                            $('#loadFancyBoxGallery').append(response);
                         } else {
-                            $('#loadDataMessage').html('<img src="<?= $this->path('images/loading.gif'); ?>" width="30" alt="Loading">');
-                            action = "inactive";
+                            $('#loadDataMessage').html('<span class="text-info">The End</span>').show();
+                            $('#loadMessageContainer').fadeOut(1000);
                         }
                     }
                 });
             }
-            
-            if (action == 'inactive') {
-                action = 'active';
-                loadDataToBox(limit, start);
-            }
 
             $(window).scroll(function() {
-                if (($(window).scrollTop() == $(document).height() - $(window).height()) && (action == 'inactive')) {
-                    action = 'active';
-                    start = start + limit;
+                if (($(window).scrollTop() == $(document).height() - $(window).height())) {
+                    $('#loadDataMessage').html('<img src="<?= $this->path('images/loading.gif'); ?>" height="30" alt="Loading">').show();
 
-                    setTimeout(function(){
-                        loadDataToBox(limit, start);
+                    setTimeout(function() {
+                        var start = $('.loadMore').data('parameters');
+
+                        loadDataToBox(start, limit);
+
+                        $('.loadMore').data('parameters', start + limit);
+                        $('#loadDataMessage').hide();
                     }, 1000);
                 }
             });
+        });
+    </script>
+    <!-- FancyBox -->
+    <script>
+        $('[data-fancybox="fancyGallery"]').fancybox({
+            protect: true,
+            thumbs: {
+                autoStart: false,
+            },
+            caption: function(instance, item) {
+                var caption = $(this).data('captiontext') || '';
+                var captionLink = $(this).data('captionlink') || '';
+
+                if (item.type === 'image' && caption.length) {
+					caption = captionLink.length > 8 ? '<a href="' + captionLink + '" target="_blank">' + caption + '</a>' : caption + '<br />' ;
+                }
+
+                return caption;
+            }
         });
     </script>
 {% endblock %}
