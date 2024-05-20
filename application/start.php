@@ -76,7 +76,7 @@ function htmlErrorHandler(string $message, string $file, string $line): void
 function configurationSettings(string $pathConfig): void
 {
     if (!file_exists($pathConfig)) {
-        die('CONFIGURATION! Rename the config.php.dist file to config.php and configure the applications to run the program.');
+        die('CONFIGURATION! Rename the .env.dist file to .env and configure the applications to run the program.');
     }
 }
 
