@@ -78,8 +78,6 @@ function configurationSettings(string $pathConfig): void
     if (!file_exists($pathConfig)) {
         die('CONFIGURATION! Rename the config.php.dist file to config.php and configure the applications to run the program.');
     }
-
-    require($pathConfig);
 }
 
 function autoloadingWithWithoutComposer(string $pathAutoload): void

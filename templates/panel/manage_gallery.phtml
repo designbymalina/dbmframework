@@ -103,7 +103,7 @@
 					success: function(response) {
 						if (response != 0) {
 							var alert = JSON.parse(response);
-							window.location.replace("<?= APP_PATH; ?>panel/manageGallery?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+							window.location.replace("<?= getenv('APP_URL'); ?>panel/manageGallery?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
 						} else {
 							alert('JavaScript: An unexpected response error occurred!');
 						}

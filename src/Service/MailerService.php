@@ -20,10 +20,10 @@ class MailerService
     {
         // Variables
         $error = false;
-        !empty($params['subject']) ? $subject = $params['subject'] : $subject = APP_NAME;
-        !empty($params['sender_name']) ? $sender_name = $params['sender_name'] : $sender_name = APP_NAME;
-        !empty($params['sender_email']) ? $sender_email = $params['sender_email'] : $sender_email = APP_EMAIL;
-        !empty($params['page_address']) ? $page_address = $params['page_address'] : $page_address = APP_PATH;
+        !empty($params['subject']) ? $subject = $params['subject'] : $subject = getenv('APP_NAME');
+        !empty($params['sender_name']) ? $sender_name = $params['sender_name'] : $sender_name = getenv('APP_NAME');
+        !empty($params['sender_email']) ? $sender_email = $params['sender_email'] : $sender_email = getenv('APP_EMAIL');
+        !empty($params['page_address']) ? $page_address = $params['page_address'] : $page_address = getenv('APP_URL');
         !empty($params['recipient_name']) ? $recipient_name = $params['recipient_name'] : $recipient_name = null;
         !empty($params['recipient_email']) ? $recipient_email = $params['recipient_email'] : $recipient_email = null;
         !empty($params['message_template']) ? $message_template = $params['message_template'] : $message_template = null;
@@ -49,12 +49,12 @@ class MailerService
             $mail->CharSet = "UTF-8";
 
             // PHPMailer optional SMTP
-            if (MAIL_SMTP === true) {
+            if (getenv('MAIL_SMTP') === true) {
                 $mail->IsSMTP(); // telling the class to use SMTP
-                $mail->Host = MAIL_HOST; // SMTP server
+                $mail->Host = getenv('MAIL_HOST'); // SMTP server
                 $mail->SMTPAuth = true; // enable SMTP authentication
-                $mail->Username = MAIL_USERNAME; // SMTP account username
-                $mail->Password = MAIL_PASSWORD; // SMTP account password
+                $mail->Username = getenv('MAIL_USERNAME'); // SMTP account username
+                $mail->Password = getenv('MAIL_PASSWORD'); // SMTP account password
             }
 
             // PHPMailer c.d.

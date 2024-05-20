@@ -51,7 +51,7 @@ class TemplateEngine extends TemplateFeature
         $cachedFile = self::PATH_CACHE . str_replace(array('/', '.phtml'), array('_', ''), $file . '.php');
         $pathFile = self::PATH_VIEW . str_replace('/', DS, $file);
 
-        if (!CACHE_ENABLED || !file_exists($cachedFile) || filemtime($cachedFile) < filemtime($pathFile)) {
+        if (!getenv('CACHE_ENABLED') || !file_exists($cachedFile) || filemtime($cachedFile) < filemtime($pathFile)) {
             $code = $this->includeFiles($file);
             $code = $this->compileCode($code);
 

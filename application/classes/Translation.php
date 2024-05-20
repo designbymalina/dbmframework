@@ -55,7 +55,7 @@ class Translation implements TranslationInterface
     private function language(): string
     {
         $cookieName = 'DbmLanguage';
-        $arrayLanguages = explode('|', APP_LANGUAGES);
+        $arrayLanguages = explode('|', getenv('APP_LANGUAGES'));
 
         !empty($arrayLanguages[0]) ? $language = $arrayLanguages[0] : $language = 'PL';
 

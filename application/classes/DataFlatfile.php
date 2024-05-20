@@ -88,7 +88,7 @@ class DataFlatfile implements DataFlatfileInterface
     private function replaceContent(string $content, string $sign = ''): string
     {
         $search = array("\n", "[URL]");
-        $replace = array("\n" . $sign, APP_PATH);
+        $replace = array("\n" . $sign, getenv('APP_URL'));
 
         return trim(str_replace($search, $replace, $content)) . "\n";
     }

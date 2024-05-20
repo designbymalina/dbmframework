@@ -43,7 +43,7 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 ## Instalacja i konfiguracja
 
 Pobierz DbM Framework i przenieś zawartość na serwer:  
-1. Przejdź do katalogu `/config/` i zmień nazwę pliku `config.php.dist` na `config.php`, następnie uzupełnij wymagane dane konfiguracji. Ustaw prawidłową ścieżkę katalogu głównego (adres domeny) w APP_PATH.
+1. Przejdź do katalogu głownego `/` i zmień nazwę (rozszerzenie) pliku `.env.dist` na `.env`, następnie uzupełnij wymagane dane konfiguracji. Ustaw prawidłową ścieżkę katalogu głównego (adres domeny) w APP_URL.
 2. Na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu `/public/` i ustawić prawidłową wartość argumentu RewriteBase. W katalogu /public/ w plku .htaccess ustawić RewriteBase / (katalog główny zostawić bez pliku .htaccess).  
 3. Jeżeli instalujesz aplikacje na serwerze lokalnym (localhost) utwórz katalog np. dbmframework (katalog główny), następnie skopiuj plik .htaccess z katalogu _Documents do katalogu głównego i ustaw prawidłową wartość argumentu RewriteBase. W katalogu głównym dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/.  
 

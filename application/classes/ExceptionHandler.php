@@ -18,7 +18,10 @@ class ExceptionHandler extends Exception
 {
     public function __construct(string $message, int $code, Throwable $previous = null)
     {
-        if (APP_ENV === 'development') {
+        $appEnv = getenv('APP_ENV');
+        $appPath = getenv('APP_URL');
+
+        if ($appEnv === 'development') {
             parent::__construct($message, $code, $previous);
 
             if (!empty($this->getTrace()[0])) {
@@ -33,10 +36,10 @@ class ExceptionHandler extends Exception
         } else {
             switch ($code) {
                 case 404:
-                    header('Location: ' . APP_PATH . 'errors/error-404.html');
+                    header('Location: ' . $appPath . 'errors/error-404.html');
                     break;
                 default:
-                    header("Location: " . APP_PATH . "errors/error.html?code=$code");
+                    header("Location: " . $appPath . "errors/error.html?code=$code");
             }
         }
     }

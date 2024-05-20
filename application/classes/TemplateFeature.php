@@ -148,7 +148,7 @@ class TemplateFeature
     public function outputHTML(string $data, $sign = ''): string
     {
         $data = htmlspecialchars_decode($data, ENT_QUOTES);
-        $data = str_replace('[URL]', APP_PATH, $data);
+        $data = str_replace('[URL]', getenv('APP_URL'), $data);
         $data = trim(str_replace("\n", "\n" . $sign, $data)) . "\n";
 
         return $data;
@@ -208,9 +208,10 @@ class TemplateFeature
         $param = array();
         $languages = array();
         $cookieName = 'DbmLanguage';
+        $appLanguages = getenv('APP_LANGUAGES');
 
-        if (!empty(APP_LANGUAGES)) {
-            $languages = explode('|', APP_LANGUAGES);
+        if (!empty($appLanguages)) {
+            $languages = explode('|', $appLanguages);
         }
 
         if (!empty($_GET['id'])) {

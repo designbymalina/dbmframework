@@ -24,14 +24,19 @@ class Database implements DatabaseInterface
 
     public function __construct()
     {
+        $dbHost = getenv('DB_HOST');
+        $dbName = getenv('DB_NAME');
+        $dbUser = getenv('DB_USER');
+        $dbPassword = getenv('DB_PASSWORD');
+
         try {
-            $dbDSN = "mysql:host=" . DB_HOST . ";dbname=" . DB_DATABASE;
+            $dbDSN = "mysql:host=" . $dbHost . ";dbname=" . $dbName;
             $dbOptions = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
             ];
 
-            $this->connect = new PDO($dbDSN, DB_USER, DB_PASSWORD, $dbOptions);
+            $this->connect = new PDO($dbDSN, $dbUser, $dbPassword, $dbOptions);
         } catch (PDOException $exception) {
             throw new ExceptionHandler($exception->getMessage(), $exception->getCode());
         }

@@ -30,7 +30,7 @@ class IndexController extends BaseController
     public function index()
     {
         // Option for render: blog/index.phtml
-        if (empty(DB_DATABASE)) {
+        if (empty(getenv('DB_NAME'))) {
             $this->redirect('./home');
         }
 

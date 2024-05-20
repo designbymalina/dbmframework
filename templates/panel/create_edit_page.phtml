@@ -192,7 +192,7 @@
 							$('#formAlert').html('').append('<div class="alert alert-' + alert['status'] + ' px-2 py-1">' + alert['message'] + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 
 							if (alert['data'] !== undefined) {
-								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>[URL]images/page/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?= APP_PATH; ?>public/images/page/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
+								$('#rowTable').prepend('<tr><td class="font-weight-bold text-">#new</td><td colspan="2"><div class="dbm-css-tooltip"><span>[URL]images/page/photo/' + alert['data'] + '</span><div class="tooltip-body"><img src="<?= getenv('APP_URL'); ?>public/images/page/thumb/' + alert['data'] + '" class="img-fluid" alt="Insert to content"></div></div></td></tr>');
 								$(".custom-file-label").html('');
 							}
 						} else {
@@ -248,7 +248,7 @@
 				if (code.length === 0) {
 					result = '<div class="alert alert-info">The content is empty! Add content, use HTML tags and the Bootstrap library to format the text.</div>';
 				} else {
-					result = code.replace('[URL]', '<?= APP_PATH; ?>');
+					result = code.replace('[URL]', '<?= getenv('APP_URL'); ?>');
 				}
 
                 $("#previewBody").html(result);
