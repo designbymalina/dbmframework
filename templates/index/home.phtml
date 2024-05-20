@@ -4,10 +4,7 @@
     <!-- Block head /home:example -->
 {% endblock %}
 
-{% block content %}
-    {% include '_include/navigation.phtml' %}
-    {% include '_include/messages.phtml' %}
-<!-- Main Content -->
+{% block content %}<!-- Main Content -->
     <main>
         <div class="container mt-5 px-4">
             <p class="fs-5">{{ $this->trans('index.lead') }}</p>
