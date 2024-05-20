@@ -21,7 +21,6 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
   - classes
   - interfaces
   - libraries
-- config
 - data
   - attachment
   - content (requires writing permissions)
