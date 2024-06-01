@@ -23,8 +23,8 @@ $dotEnv = new DotEnv($pathConfig);
 $dotEnv->load();
 
 ### CONSOLE COMMANDS
-// INFO! Ladujesz/includujesz tylko te Command (jedno), ktore chcesz wywolac.
-// Komenda: $ php console.php [ClassName?]
+// INFO! You load/include only Command (one) you want to invoke.
+// Command: $ php console.php [ClassName?]
 // include(BASE_DIRECTORY . 'src' . DIRECTORY_SEPARATOR . 'Command' . DIRECTORY_SEPARATOR . 'ExampleCommand.php');
 
 $command = new ExampleCommand();
