@@ -15,7 +15,7 @@ configurationSettings($pathConfig);
 autoloadingWithWithoutComposer($pathAutoload);
 
 ### START
-use App\Command\ExampleCommand;
+use App\Command\ConsoleCommand;
 use Dbm\Classes\DotEnv;
 
 // Environment Variables
@@ -23,9 +23,6 @@ $dotEnv = new DotEnv($pathConfig);
 $dotEnv->load();
 
 ### CONSOLE COMMANDS
-// INFO! You load/include only Command (one) you want to invoke.
-// Command: $ php console.php [ClassName?]
-// include(BASE_DIRECTORY . 'src' . DIRECTORY_SEPARATOR . 'Command' . DIRECTORY_SEPARATOR . 'ExampleCommand.php');
+// Command: $ php console.php ConsoleCommand executeCommand
 
-$command = new ExampleCommand();
-$command->executeCommand();
+new ConsoleCommand();

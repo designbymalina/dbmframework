@@ -7,8 +7,13 @@ namespace App\Command;
 /**
  * Klasa Command uzywane jest w application/console.php
  */
-class ExampleCommand
+class ConsoleCommand
 {
+    public function __construct()
+    {
+        $this->executeCommand();
+    }
+
     public function executeCommand(): void
     {
         echo $this->exampleCode();
