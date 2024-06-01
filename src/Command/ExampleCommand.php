@@ -16,6 +16,7 @@ class ExampleCommand
 
     private function exampleCode(): string
     {
-        return '<PIPCode>';
+        return "\033[42mOK! \033[0m \n";
+        //return "\033[41mError! \033[0m \n";
     }
 }
