@@ -23,6 +23,6 @@ $dotEnv = new DotEnv($pathConfig);
 $dotEnv->load();
 
 ### CONSOLE COMMANDS
-// Command: $ php console.php ConsoleCommand executeCommand
+// Command from folder: application> php console.php ConsoleCommand executeCommand
 
 new ConsoleCommand();
