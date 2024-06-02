@@ -5,15 +5,10 @@ declare(strict_types=1);
 namespace App\Command;
 
 /**
- * Klasa Command uzywane jest w application/console.php
+ * The Command class is used in application/console.php
  */
 class ConsoleCommand
 {
-    public function __construct()
-    {
-        $this->executeCommand();
-    }
-
     public function executeCommand(): void
     {
         echo $this->exampleCode();
@@ -22,6 +17,6 @@ class ConsoleCommand
     private function exampleCode(): string
     {
         return "\033[42mOK! \033[0m \n";
-        //return "\033[41mError! \033[0m \n";
+        //return "\033[41mERROR! \033[0m \n";
     }
 }
