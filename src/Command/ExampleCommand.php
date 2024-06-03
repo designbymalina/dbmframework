@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use Dbm\Interfaces\CommandInterface;
+
 /**
  * The Command class is used in application/console.php
  */
-class ConsoleCommand
+class ExampleCommand implements CommandInterface
 {
-    public function executeCommand(): void
+    public function execute(): void
     {
-        echo $this->exampleCode();
+        echo $this->exampleMethod();
     }
 
-    private function exampleCode(): string
+    private function exampleMethod(): string
     {
         return "\033[42mOK! \033[0m \n";
         //return "\033[41mERROR! \033[0m \n";

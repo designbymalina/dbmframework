@@ -22,27 +22,20 @@ $dotEnv = new DotEnv($pathConfig);
 $dotEnv->load();
 
 ### CONSOLE COMMANDS
-// Example command from folder: application> php console.php ConsoleCommand executeCommand
-
+// Example command from folder: application> php console.php Example (by CommandInterface)
 if (!empty($argv) && (count($argv) > 1)) {
     $argvClass = $argv[1];
-    !empty($argv[2]) ? $argvMethod = $argv[2] : $argvMethod = 'null';
+    $fileClass = BASE_DIRECTORY . 'src' . DS . 'Command' . DS . $argvClass. 'Command.php';
+    $class = 'App\\Command\\' . $argvClass . 'Command';
 
-    $fileClass = BASE_DIRECTORY . 'src' . DS . 'Command' . DS . $argvClass. '.php';
-    $class = "App\\Command\\" . $argvClass;
-
-    if (file_exists($fileClass) && method_exists($class, $argvMethod)) {
+    if (file_exists($fileClass)) {
         require_once($fileClass);
 
-        /* if (count($argv) > 3) { // method params
-            $param = $argv[3];
-        } */
-
         $method = new $class();
-        $method->$argvMethod();
+        $method->execute();
     } else {
-        echo "\033[43mNot found class '$argvClass' or method '$argvMethod'\033[0m \n";
+        echo "\033[43mNot found class '$argvClass'\033[0m \n";
     }
 } else {
-    echo "\033[43mINFO! Provide the call parameters. Example: php console.php execute\033[0m \n";
+    echo "\033[43mINFO! Provide the call parameters. Example: php console.php Example\033[0m \n";
 }
