@@ -151,15 +151,14 @@ class Router implements RouterInterface
     /* Method for localhost and application in catalog */
     private function matchDomain(string $uri): string
     {
-        $dir = dirname($_SERVER['PHP_SELF']);
-        $host = $_SERVER['HTTP_HOST'] . $dir;
-        $host = rtrim($host, '\\');
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $pathSegments = explode('/', ltrim($scriptName, '/'));
 
-        if (strpos($host, '.') === false) { // domain recognition by dot
-            $path = strstr($dir, 'public', true);
-            $uri = str_replace($path, '', $uri);
-
-            return '/' . $uri;
+        if (count($pathSegments) > 1) {
+            $basePath = strstr($scriptName, 'public', true);
+            $uri = '/' . ltrim(str_replace($basePath, '', $uri), '/');
+        } else {
+            $uri = $uri;
         }
 
         return $uri;

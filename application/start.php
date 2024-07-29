@@ -86,15 +86,20 @@ function autoloadingWithWithoutComposer(string $pathAutoload): void
         require($pathAutoload);
     } else {
         spl_autoload_register(function ($className) {
-            $arrayClassName = explode(DS, $className);
+            $arrayClassName = explode("\\", $className);
             $firstLocation = reset($arrayClassName);
 
-            switch ($firstLocation) {
-                case 'App':
-                    $className = str_replace('App', 'src', $className);
-                    break;
-                default:
-                    $className = str_replace('Dbm', 'application', $className);
+            $arrayClass = array_map(function ($value, $key) {
+                return $key == 1 ? strtolower($value) : $value;
+            }, $arrayClassName, array_keys($arrayClassName));
+
+            $className = implode(DS, $arrayClassName);
+            $classNameLower = implode(DS, $arrayClass);
+
+            if ($firstLocation === 'App') {
+                $className = str_replace('App', 'src', $className);
+            } else {
+                $className = str_replace('Dbm', 'application', $classNameLower);
             }
 
             require(BASE_DIRECTORY . $className . '.php');
