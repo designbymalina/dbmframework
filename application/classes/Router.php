@@ -157,8 +157,6 @@ class Router implements RouterInterface
         if (count($pathSegments) > 1) {
             $basePath = strstr($scriptName, 'public', true);
             $uri = '/' . ltrim(str_replace($basePath, '', $uri), '/');
-        } else {
-            $uri = $uri;
         }
 
         return $uri;
