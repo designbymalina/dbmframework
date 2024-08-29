@@ -17,7 +17,7 @@ ob_start();
 
 ### BASE PATH ###
 define('DS', DIRECTORY_SEPARATOR);
-define('BASE_DIRECTORY', str_replace('public' . DS, '', __DIR__ . DS));
+define('BASE_DIRECTORY', dirname(__DIR__) . DS);
 
 ### FUNCTIONS - application starting
 require(BASE_DIRECTORY . 'application' . DS . 'start.php');

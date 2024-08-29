@@ -31,7 +31,7 @@ function reportingErrorHandler(string $errLevel, string $errMessage, string $err
     $path = $dir . $file;
 
     if (!is_dir($dir)) {
-        mkdir($dir, 0744, true);
+        mkdir($dir, 0755, true);
     }
 
     $errorHandler = "DATE: $date, level: $errLevel\n File: $errFile on line $errLine\n Message: $errMessage\n";
@@ -76,7 +76,7 @@ function htmlErrorHandler(string $message, string $file, string $line): void
 function configurationSettings(string $pathConfig): void
 {
     if (!file_exists($pathConfig)) {
-        die('CONFIGURATION! Rename the .env.dist file to .env and configure the applications to run the program.');
+        die('CONFIGURATION! Configure the application to run the program, then rename the .env.dist file to .env.');
     }
 }
 

@@ -83,8 +83,10 @@ class Database implements DatabaseInterface
 
                 if ($type) {
                     if (!$reference) {
+                        // TODO! Check insert, update null item!? $this->statement->bindValue(':' . $key, $value, $type);
                         $this->statement->bindValue($key, $value, $type);
                     } else {
+                        // TODO! $this->statement->bindParam(':' . $key, $value, $type);
                         $this->statement->bindParam($key, $value, $type);
                     }
                 } else {

@@ -265,7 +265,7 @@ class TemplateFeature
      */
     public function htmlUser(DatabaseInterface $database, int $sessionUserId, $module = null): string
     {
-        $query = "SELECT user.login, user.avatar, user_details.fullname FROM dbm_user user"
+        $query = "SELECT user.login, user_details.avatar, user_details.fullname FROM dbm_user user"
             . " INNER JOIN dbm_user_details user_details ON user_details.user_id = user.id"
             . " WHERE user.id = :uid";
 
@@ -341,6 +341,4 @@ class TemplateFeature
 
         return $html;
     }
-
-    /*** BEGIN PANEL METHODS ***/
 }

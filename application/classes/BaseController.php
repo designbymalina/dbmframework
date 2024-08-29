@@ -30,13 +30,17 @@ class BaseController extends TemplateEngine implements BaseInterface
     // Request data
     public function requestData(string $fieldName): ?string
     {
-        if ($_SERVER['REQUEST_METHOD'] == "POST" || $_SERVER['REQUEST_METHOD'] == 'post') {
+        $method = strtolower($_SERVER['REQUEST_METHOD']);
+
+        if ($method === "post") {
             if (array_key_exists($fieldName, $_POST)) {
                 return trim($_POST[$fieldName]);
+            } elseif (array_key_exists($fieldName, $_FILES)) {
+                return $_FILES[$fieldName]['name'] ?? null;
             } elseif (array_key_exists($fieldName, $_GET)) {
                 return trim($_GET[$fieldName]);
             }
-        } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'get') {
+        } elseif ($method === 'get') {
             if (array_key_exists($fieldName, $_GET)) {
                 return trim($_GET[$fieldName]);
             }
@@ -56,7 +60,7 @@ class BaseController extends TemplateEngine implements BaseInterface
     // Get session
     public function getSession(string $sessionName): ?string
     {
-        if (isset($_SESSION['dbmUserId']) && !empty($sessionName)) {
+        if (!empty($_SESSION[$sessionName])) {
             return $_SESSION[$sessionName];
         }
 
