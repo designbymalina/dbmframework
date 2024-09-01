@@ -49,6 +49,8 @@ return function (DatabaseInterface $database) {
     $router->addRoute('/login/signin', [LoginController::class, 'signinMethod']);
     $router->addRoute('/login/logout', [LoginController::class, 'logoutMethod']);
     $router->addRoute('/account', [AccountController::class, 'index']);
+    $router->addRoute('/account/profileChange', [AccountController::class, 'profileChangeMethod']);
+    $router->addRoute('/account/passwordChange', [AccountController::class, 'passwordChangeMethod']);
     $router->addRoute('/register', [RegisterController::class, 'index']);
     $router->addRoute('/register/signup', [RegisterController::class, 'signupMethod']);
     $router->addRoute('/register/verified.php', [RegisterController::class, 'verifiedMethod']);

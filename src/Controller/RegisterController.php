@@ -74,8 +74,11 @@ class RegisterController extends BaseController
             if ($this->model->createAccount($queryParams)) {
                 $arraySend = [
                     'subject' => $translation->trans('register.mailer.subject'),
-                    'recipient_email' => $dataForm['email'],
+                    'sender_name' => getenv('APP_NAME'),
+                    'sender_email' => getenv('APP_EMAIL'),
                     'recipient_name' => $dataForm['login'],
+                    'recipient_email' => $dataForm['email'],
+                    'page_address' => getenv('APP_URL'),
                     'message_template' => "register-created-account.html",
                     'token' => $token,
                 ];

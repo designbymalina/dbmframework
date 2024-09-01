@@ -1,0 +1,19 @@
+<!-- Account menu -->
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="{{ $this->path('images/avatar/' . $avatar) }}" alt="avatar" class="rounded-circle img-fluid" style="width:150px">
+                            <h5 class="my-3">{{ $user->fullname }}</h5>
+                            <p class="text-muted mb-1">{{ $user->profession }}</p>
+                            <p class="text-muted mb-1">{{ $user->business }}</p>
+                            <p class="text-muted mb-2">{{ $user->address }}</p>
+                        </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush rounded-3">
+                                <p class="list-group-item list-group-item-info m-0 p-3 fw-bold text-uppercase">Konto użytkownika</p>
+                                <a href="{{ $this->path('account') }}" class="list-group-item list-group-item-action">Profil użytkownika</a>
+                                <a href="{{ $this->path('account/passwordChange') }}" class="list-group-item list-group-item-action">Zmiana hasła</a>
+                            </div>
+                        </div>
+                    </div>

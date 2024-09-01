@@ -106,7 +106,6 @@ CREATE TABLE `dbm_user` (
   `login` varchar(64) NOT NULL,
   `email` varchar(180) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `avatar` varchar(50) DEFAULT NULL,
   `roles` varchar(9) NOT NULL DEFAULT 'USER',
   `token` varchar(50) DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT 0,
@@ -117,33 +116,34 @@ CREATE TABLE `dbm_user` (
 -- Zrzut danych tabeli `dbm_user`
 --
 
-INSERT INTO `dbm_user` (`id`, `login`, `email`, `password`, `avatar`, `roles`, `token`, `verified`, `created`) VALUES
-(1, 'Malina', 'archie@mail.com', '$2y$10$jLrijUfi2MwqjulZkmt1EOMlb.85VSkmqAZFTrGFPoKjsGzcCk2NW', 'avatar-1.jpg', 'ADMIN', '50a9ead33e94f4b56cd9475483ce9105e8a5bf6f', 1, '2021-01-01 12:00:00'),
-(2, 'John', 'john@mail.com', '$2y$10$YENFQ6axxkDxPyvhEYLBX.ld46LupE6sO7to91glQL0ZxU9XyA.yK', 'avatar-2.png', 'USER', '545932a772cae4455b882a4cb6551c7ba0c7b6a3', 1, '2021-01-02 12:00:00'),
-(3, 'Lucy', 'lucy@mail.com', '$2y$10$YENFQ6axxkDxPyvhEYLBX.ld46LupE6sO7to91glQL0ZxU9XyA.yK', NULL, 'USER', 'ac8fe01e8de57f4c0d1d54cc7a2bcd871d3f7dee', 0, '2021-01-03 12:00:00');
+INSERT INTO `dbm_user` (`id`, `login`, `email`, `password`, `roles`, `token`, `verified`, `created`) VALUES
+(1, 'Malina', 'archie@mail.com', '$2y$10$30xGoLBAGXNwt5mSb2CU0uJ/hsrHlHVHCsWo3TF2wXGWVuqw3PR/m', 'ADMIN', '50a9ead33e94f4b56cd9475483ce9105e8a5bf6f', 1, '2021-01-01 12:00:00'),
+(2, 'John', 'john@mail.com', '$2y$10$YENFQ6axxkDxPyvhEYLBX.ld46LupE6sO7to91glQL0ZxU9XyA.yK', 'USER', '545932a772cae4455b882a4cb6551c7ba0c7b6a3', 1, '2021-01-02 12:00:00'),
+(3, 'Lucy', 'lucy@mail.com', '$2y$10$YENFQ6axxkDxPyvhEYLBX.ld46LupE6sO7to91glQL0ZxU9XyA.yK', 'USER', 'ac8fe01e8de57f4c0d1d54cc7a2bcd871d3f7dee', 0, '2021-01-03 12:00:00');
 
 -- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `dbm_user_details`
---
 
 CREATE TABLE `dbm_user_details` (
   `id` int(11) UNSIGNED NOT NULL,
   `user_id` int(11) UNSIGNED NOT NULL,
   `fullname` varchar(100) DEFAULT NULL,
   `profession` varchar(100) DEFAULT NULL,
-  `business` varchar(100) DEFAULT NULL
+  `phone` varchar(15) DEFAULT NULL,
+  `website` varchar(120) DEFAULT NULL,
+  `avatar` varchar(50) DEFAULT NULL,
+  `biography` text DEFAULT NULL,
+  `business` varchar(100) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `dbm_user_details`
 --
 
-INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `business`) VALUES
-(1, 1, 'Arthur  Malinowsky', 'Full Stack Developer', 'Design by Malina Ltd.'),
-(2, 2, 'John Doe', NULL, NULL),
-(3, 3, 'Lucy Johansson', NULL, NULL);
+INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `phone`, `website`, `avatar`, `biography`, `business`, `address`) VALUES
+(1, 1, 'Arthur Malinowski', 'Full Stack Developer', '+48 600 000 000', 'www.dbm.org.pl', 'avatar-1.jpg', 'This is the story of a designer and entrepreneur. A completely Polish, virtuous story about style and creativity, focused on the power of love for passion.', 'Design by Malina Ltd.', 'Raspberry Land, PL'),
+(2, 2, 'John Doe', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 3, 'Lucy Johansson', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indeksy dla zrzutów tabel

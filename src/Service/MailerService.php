@@ -16,40 +16,37 @@ use Exception;
 
 class MailerService
 {
-    public function sendMessage(array $params): void
+    public function sendMessage(array $params): bool
     {
         // Variables
-        $error = false;
-        !empty($params['subject']) ? $subject = $params['subject'] : $subject = getenv('APP_NAME');
-        !empty($params['sender_name']) ? $sender_name = $params['sender_name'] : $sender_name = getenv('APP_NAME');
-        !empty($params['sender_email']) ? $sender_email = $params['sender_email'] : $sender_email = getenv('APP_EMAIL');
-        !empty($params['page_address']) ? $page_address = $params['page_address'] : $page_address = getenv('APP_URL');
-        !empty($params['recipient_name']) ? $recipient_name = $params['recipient_name'] : $recipient_name = null;
-        !empty($params['recipient_email']) ? $recipient_email = $params['recipient_email'] : $recipient_email = null;
-        !empty($params['message_template']) ? $message_template = $params['message_template'] : $message_template = null;
-        !empty($params['attachment_filename']) ? $attachment_filename = $params['attachment_filename'] : $attachment_filename = null;
-        !empty($params['attachment_rename']) ? $attachment_rename = $params['attachment_rename'] : $attachment_rename = null;
-        !empty($params['token']) ? $token = $params['token'] : $token = null;
+        $isSend = true;
+
+        $subject = !empty($params['subject']) ? $params['subject'] : getenv('APP_NAME');
+        $senderName = !empty($params['sender_name']) ? $params['sender_name'] : getenv('APP_NAME');
+        $senderEmail = !empty($params['sender_email']) ? $params['sender_email'] : getenv('APP_EMAIL');
+        $recipientName = $params['recipient_name'] ?? null;
+        $recipientEmail = $params['recipient_email'] ?? null;
+        $messageTemplate = $params['message_template'] ?? null;
+        $attachmentFilename = $params['attachment_filename'] ?? null;
+        $attachmentSent = $params['attachment_sent'] ?? null;
 
         try {
             // Path to template message and filename attachment
-            $path_message = BASE_DIRECTORY . 'data' . DS . 'mailer' . DS . $message_template;
-            $path_attachment = BASE_DIRECTORY . 'data' . DS . 'attachment' . DS . $attachment_filename;
-
-            // Message subject
-            //$subject = "$subject ($statement)";
+            $pathMessage = BASE_DIRECTORY . 'data' . DS . 'mailer' . DS . $messageTemplate;
+            $pathAttachment = BASE_DIRECTORY . 'data' . DS . 'attachment' . DS . $attachmentFilename;
 
             // Message content, with $this->replaceContent()
-            $content = file_get_contents($path_message);
-            $replace = array($subject, $sender_name, $recipient_name, $page_address, null, $token);
-            $content = $this->replaceContent($content, $replace);
+            (file_exists($pathMessage))
+                ? $content = file_get_contents($pathMessage) : $content = nl2br($messageTemplate);
+
+            $content = $this->replaceContent($content, $params);
 
             // PHPMailer
             $mail = new PHPMailer(); // Passing true enables exceptions
             $mail->CharSet = "UTF-8";
 
             // PHPMailer optional SMTP
-            if (getenv('MAIL_SMTP') === true) {
+            if ((strtolower(getenv('MAIL_SMTP')) == 'true') && ($senderEmail == getenv('APP_EMAIL'))) {
                 $mail->IsSMTP(); // telling the class to use SMTP
                 $mail->Host = getenv('MAIL_HOST'); // SMTP server
                 $mail->SMTPAuth = true; // enable SMTP authentication
@@ -58,56 +55,60 @@ class MailerService
             }
 
             // PHPMailer c.d.
-            $mail->SetFrom($sender_email, $sender_name);
-            $mail->AddAddress($recipient_email, $recipient_name); // optional Name
+            $mail->SetFrom($senderEmail, $senderName);
+            $mail->AddAddress($recipientEmail, $recipientName); // optional Name
             $mail->Subject = $subject;
             //$mail->IsHTML(true); // option for Body with HTML
             //$mail->Body = "$content"; // option
             $mail->MsgHTML($content);
 
             // Add attachment
-            if (is_file($path_attachment)) {
-                $mail->addAttachment($path_attachment, $attachment_rename);
+            if (is_file($pathAttachment)) {
+                $mail->addAttachment($pathAttachment, $attachmentSent);
             }
 
             // Send message
             if (!$mail->send()) {
-                $error = "[PHPMailer] " . $mail->ErrorInfo;
+                $errorMessage = "[PHPMailer] " . $mail->ErrorInfo;
             }
         } catch (Exception $exception) {
-            $error = "[Exception] " . $exception->getMessage();
+            $errorMessage = "[Exception] " . $exception->getMessage();
         }
 
         ### Error logger
-        if ($error !== false) {
-            $this->errorLogger($error);
+        if (isset($errorMessage)) {
+            $isSend = false;
+            $this->errorLogger($errorMessage);
         }
+
+        return $isSend;
     }
 
-    /*
-     * Replace message code: subject, sender_name, recipient_name, page_address, attachment, token
-     */
     private function replaceContent(string $content, array $replace = []): string
     {
-        $string = array('{subject}', '{sender_name}', '{recipient_name}', '{page_address}', '{attachment}', '{token}');
-        $result = str_replace($string, $replace, $content);
+        $string = [];
+        $arrayKeys = array_keys($replace);
 
-        return $result;
+        foreach ($arrayKeys as $item) {
+            $string[] = '{' . $item . '}';
+        }
+
+        return str_replace($string, $replace, $content);
     }
 
-    private function errorLogger(mixed $error): void
+    private function errorLogger($error): void
     {
         $dir = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'mailer' . DS;
 
         if (!is_dir($dir)) {
-            mkdir($dir, 0744, true);
+            mkdir($dir, 0755, true);
         }
 
         if (is_array($error)) {
             $error = json_encode($error);
         }
 
-        $path = $dir . date('ym') . '_error.log';
+        $path = $dir . date('Ymd') . '_error.log';
 
         $data = "TIME: " . date('Y-m-d H:i:s');
         $data .= "\r\n    REQUEST: " . json_encode($_REQUEST);

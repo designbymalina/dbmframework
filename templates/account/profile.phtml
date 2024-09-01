@@ -1,0 +1,129 @@
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+    {% !empty($user->avatar) ? $avatar = $user->avatar : $avatar = 'no-avatar.png'; %}
+    <!-- Breadcrumb -->
+    <section class="container">
+        <nav class="bg-light rounded-3 px-3 py-2 mb-4" aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 small">
+                <li class="breadcrumb-item"><a href="{{ $this->path() }}" class="link-secondary">Strona główna</a></li>
+                <li class="breadcrumb-item active">Konto użytkownika - Edycja profilu</li>
+            </ol>
+        </nav>
+    </section>
+    <!-- Main Content -->
+    <main>
+        <div class="container mb-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    {% include '_include/account_menu.phtml' %}
+                </div>
+                <div class="col-lg-8">
+                    <h1 class="h3">Edycja profilu</h1>
+                    <hr>
+                    <form action="{{ $this->path('account/profileChange') }}" method="POST" enctype="multipart/form-data" id="uploadForm" class="dbm-form-primary">
+                        <div class="row">
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="formGroupExampleInput" class="form-label">Login</label>
+                                <div class="form-control bg-light">{% if (!empty($form['login'])) : %}{{ $form['login'] }}{% endif %}</div>
+                            </div>
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="formGroupExampleInput" class="form-label">E-mail</label>
+                                <div class="form-control bg-light">{% if (!empty($form['email'])) : %}{{ $form['email'] }}{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="fieldFullname" class="form-label">Imię i nazwisko</label>
+                                <input type="text" name="dbm_fullname" value="{% if (!empty($form['fullname'])) : %}{{ $form['fullname'] }}{% endif %}" class="form-control" id="fieldFullname" placeholder="Imię i nazwisko">
+                                {% if (!empty($form['error_fullname'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_fullname'] }}</div>
+                                {% endif; %}
+                            </div>
+                            <div class="col-12 col-sm-6 mb-3">
+                            <label for="fieldProfession" class="form-label">Profesja</label>
+                                <input type="text" name="dbm_profession" value="{% if (!empty($form['profession'])) : %}{{ $form['profession'] }}{% endif %}" class="form-control" id="fieldProfession" placeholder="Profesja">
+                                {% if (!empty($form['error_profession'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_profession'] }}</div>
+                                {% endif; %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="fieldPhone" class="form-label">Telefon</label>
+                                <input type="text" name="dbm_phone" value="{% if (!empty($form['phone'])) : %}{{ $form['phone'] }}{% endif %}" class="form-control" id="fieldPhone" placeholder="Telefon">
+                                {% if (!empty($form['error_phone'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_phone'] }}</div>
+                                {% endif; %}
+                            </div>
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="fieldBusiness" class="form-label">Nazwa firmy lub biznesu</label>
+                                <input type="text" name="dbm_business" value="{% if (!empty($form['business'])) : %}{{ $form['business'] }}{% endif %}" class="form-control" id="fieldBusiness" placeholder="Nazwa firmy lub biznesu">
+                                {% if (!empty($form['error_business'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_business'] }}</div>
+                                {% endif; %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="fieldWebsite" class="form-label">Strona internetowa</label>
+                                <input type="text" name="dbm_website" value="{% if (!empty($form['website'])) : %}{{ $form['website'] }}{% endif %}" class="form-control" id="fieldWebsite" placeholder="Strona internetowa">
+                                {% if (!empty($form['error_website'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_website'] }}</div>
+                                {% endif; %}
+                            </div>
+                            <div class="col-12 col-sm-6 mb-3">
+                                <label for="fieldAddress" class="form-label">Siedziba firmy lub biznesu</label>
+                                <input type="text" name="dbm_address" value="{% if (!empty($form['address'])) : %}{{ $form['address'] }}{% endif %}" class="form-control" id="fieldAddress" placeholder="Siedziba firmy lub biznesu">
+                                {% if (!empty($form['error_address'])): %}
+                                    <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_address'] }}</div>
+                                {% endif; %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fieldBiography" class="form-label">Biografia</label>
+                            <textarea name="dbm_biography" id="fieldBiography" class="form-control" rows="2" minlength="10">{% if (!empty($form['biography'])) : %}{{ $form['biography'] }}{% endif %}</textarea>
+                            {% if (!empty($form['error_biography'])): %}
+                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_biography'] }}</div>
+                            {% endif; %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="fileAvatar" class="form-label"><span>Awatar</span>, <small>np. avatar-1.jpg, optymalne wymiary 315x315 pikseli.</small></label>
+                            <div class="input-group">
+                                <input type="file" name="dbm_avatar" id="fileAvatar" class="form-control" accept="image/*" aria-label="Browser">
+                            </div>
+                            <div id="progressBar" class="progress mt-1 d-none" role="progressbar" aria-label="Animated striped" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+                            </div>
+                            {% if (!empty($form['error_avatar'])): %}
+                                <div class="text-danger small" id="errorAvatar"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_avatar'] }}</div>
+                            {% endif; %}
+						</div>
+                        <input type="submit" class="btn btn-primary dbm-btn-primary" value="Edytuj profil">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+{% block body %}
+    <script src="{{ $this->path('assets/js/jquery.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#uploadForm').on('submit', function() {
+                let file = $('#fileAvatar').val();
+
+                if (file.length !== 0 ) {
+                    setTimeout(() => {
+                        $("#errorAvatar").addClass('d-none');
+                        $("#progressBar").removeClass('d-none');
+                    }, 500);
+                }
+            });
+        });
+    </script>
+{% endblock %}
