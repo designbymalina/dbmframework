@@ -20,32 +20,36 @@ class TemplateFeature
     /*
      * Path generator
      */
-    public function path(string $file = null): string
+    public function path(?string $file = null): string
     {
-        $pathResult = '';
+        $basePath = '';
         $divider = '/';
-        $requestUri = $_SERVER['REQUEST_URI'];
-        $dir = dirname($_SERVER['PHP_SELF']);
-        $pathFile = !empty($file) ? trim($file) : '';
+        $dirPublic = 'public';
+        $dirName = dirname($_SERVER['PHP_SELF']);
 
-        if (strpos($dir, 'public')) { // for localhost (application in catalog)
-            $pathPublic = substr($requestUri, strlen(strstr($dir, 'public', true)));
-        } else {
-            $pathPublic = $requestUri;
-        }
+        $file = $this->sanitizePath($file);
 
-        $arrayRequestPath = explode($divider, $pathPublic);
-        $countDir = (int) count($arrayRequestPath) - 1;
+        if (strpos($dirName, $dirPublic) !== false) {  // dla localhost (aplikacja w katalogu)
+            $requestUri = $_SERVER['REQUEST_URI'];
 
-        if ($countDir > 0) {
-            for ($i = 0; $i < $countDir; $i++) {
-                $pathResult .= '..' . $divider;
+            $publicPath = substr($requestUri, strlen(strstr($dirName, $dirPublic, true)));
+            $arrayRequestPath = explode($divider, $publicPath);
+            $countDir = count($arrayRequestPath) - 1;
+
+            if ($countDir > 0) {
+                $basePath = str_repeat('..' . $divider, $countDir);
+            } else {
+                $basePath = '.' . $divider;
             }
         } else {
-            $pathResult .= '.' . $divider;
+            $basePath = $divider;
         }
 
-        return $pathResult . $pathFile;
+        if (!empty($file)) {
+            return $basePath . ltrim($file, '/');
+        }
+
+        return $basePath;
     }
 
     /*
@@ -340,5 +344,20 @@ class TemplateFeature
         $html .= $sign . '</ul>' . "\n";
 
         return $html;
+    }
+
+    /*
+     * Zabezpieczenia scieżki plikow przed manipulowaniem w sposób niebezpieczny
+     */
+    private function sanitizePath(?string $path): string
+    {
+        if (is_null($path)) {
+            return '';
+        }
+
+        $path = str_replace(['../', '..\\'], '', $path); // Usuwanie "directory traversal"
+        $path = preg_replace('/[\x00-\x1F\x7F]/', '', $path); // Usuniecie znakow kontrolnych oraz null byte
+
+        return $path;
     }
 }
