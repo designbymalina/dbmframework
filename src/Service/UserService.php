@@ -99,7 +99,7 @@ class UserService
         return $this->model->updatePassword($sqlUpdate);
     }
 
-    private function deleteFile(string $file): void
+    private function deleteFile(?string $file): void
     {
         $filePath = 'images/avatar/' . $file;
 

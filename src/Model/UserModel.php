@@ -65,7 +65,7 @@ class UserModel
             $query .= ", avatar = :avatar";
         }
 
-        $query .= " WHERE id = :id";
+        $query .= " WHERE user_id = :id";
 
         return $this->database->queryExecute($query, $data);
     }

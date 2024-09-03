@@ -47,19 +47,19 @@ class UserForm
             $errors['error_avatar'] = $this->doUploadImage();
         }
 
-        if (isset($formData['fullname']) && !preg_match('/^[\pL \'-]*$/u', $formData['fullname'])) {
+        if (!empty($formData['fullname']) && !preg_match('/^[\pL \'-]*$/u', $formData['fullname'])) {
             $errors['error_fullname'] = 'Proszę wprowadzić poprawnie imię i nazwisko.';
         }
 
-        if (isset($formData['phone']) && !preg_match('/^(\d{3}\s?\d{3}\s?\d{3}|\+?\d{2}\s?\d{3}\s?\d{3}\s?\d{3})$/', $formData['phone'])) {
+        if (!empty($formData['phone']) && !preg_match('/^(\d{3}\s?\d{3}\s?\d{3}|\+?\d{2}\s?\d{3}\s?\d{3}\s?\d{3})$/', $formData['phone'])) {
             $errors['error_phone'] = 'Proszę wprowadzić poprawny numer telefonu: 9-cyfrowy lub 12-znakowy numer w formacie międzynarodowym.';
         }
 
-        if (isset($formData['website']) && filter_var($formData['website'], FILTER_VALIDATE_URL)) {
+        if (!empty($formData['website']) && filter_var($formData['website'], FILTER_VALIDATE_URL)) {
             $errors['error_website'] = 'Proszę wprowadzić poprawny adres strony internetowej.';
         }
 
-        if (isset($formData['profession']) && !preg_match('/^[\pL \'-]*$/u', $formData['profession'])) {
+        if (!empty($formData['profession']) && !preg_match('/^[\pL \'-]*$/u', $formData['profession'])) {
             $errors['error_profession'] = 'Proszę wprowadzić poprawnie profesje.';
         }
 
