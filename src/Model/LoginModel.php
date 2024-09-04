@@ -74,6 +74,6 @@ class LoginModel
             return self::VALIDATION_PASSWORD;
         }
 
-        return $result->id;
+        return (string) $result->id;
     }
 }

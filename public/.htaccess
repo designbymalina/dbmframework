@@ -17,10 +17,10 @@ deny from all
 
  # If the above doesn't work you might need to set the `RewriteBase` directive manually
  # Rewrite Base; Configure the path, example for localhost in dbmframework folder: /dbmframework/public/
- # RewriteBase /dbmframework/public/
+ RewriteBase /
  
  # Rewrite Rule Request
- RewriteCond %{REQUEST_FILENAME} !-d
  RewriteCond %{REQUEST_FILENAME} !-f
- RewriteRule ^(.+)$ index.php [QSA,L]
+ RewriteCond %{REQUEST_FILENAME} !-d
+ RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
