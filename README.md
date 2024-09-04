@@ -1,7 +1,7 @@
 # DbM Framework
 
 DbM Framework PHP MVC Simple CMS, Version 2  
-Aplikacja stworzona w PHP 7.4, wersja v2.3.7 przetestowana w PHP 8.3  
+Aplikacja stworzona w PHP 7.4, wersja v2.3.7 Release przetestowana w PHP 8.3  
 Wszystkie prawa autorskie zastrzeżone przez Design by Malina (DbM)  
 Strona WWW: [www.dbm.org.pl](http://www.dbm.org.pl)  
 
