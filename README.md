@@ -21,7 +21,7 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 
 ## Struktura
 
-- application (rdzeń aplikacji)
+- application (rdzeń aplikacji i serce frameworka)
   - classes
   - interfaces
   - libraries
