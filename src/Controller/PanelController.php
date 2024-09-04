@@ -496,7 +496,6 @@ class PanelController extends BaseController
 
     public function toolsLogsMethod()
     {
-        $contentPreview = null;
         $action = $this->requestData('action');
         $file = $this->requestData('file');
         $pathFile = self::DIR_LOG . $file;
@@ -510,16 +509,14 @@ class PanelController extends BaseController
             }
         }
 
-        $contentFiles = array_diff(scandir(self::DIR_LOG), array('..', '.', 'mailer'));
-
-        $meta = array(
-            'meta.title' => 'errorLogs',
-        );
+        if (is_dir(self::DIR_LOG)) {
+            $contentFiles = array_diff(scandir(self::DIR_LOG), array('..', '.', 'mailer'));
+        }
 
         $this->render('panel/logs.phtml', [
-            'meta' => $meta,
-            'files' => $contentFiles,
-            'preview' => $contentPreview,
+            'meta' => ['meta.title' => 'errorLogs'],
+            'files' => $contentFiles ?? null,
+            'preview' => $contentPreview ?? null,
         ]);
     }
 

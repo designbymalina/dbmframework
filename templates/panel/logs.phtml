@@ -34,6 +34,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="overflow-auto" style="max-height:600px;">
+                                        {% if (!empty($files)) : %}
                                         <ul class="list-group">
                                             {% foreach ($files as $file): %}
                                             <li class="list-group-item d-flex justify-content-between align-items-center px-1 py-0">
@@ -43,6 +44,11 @@
                                             {% endforeach; %}
 
                                         </ul>
+                                        {% else : %}
+                                        <div class="alert alert-info">No errors log!</div>
+
+                                        {% endif; %}
+
                                     </div>
                                 </div>
                             </div>
