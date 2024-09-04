@@ -17,8 +17,7 @@ DbM Framework to lekki, szybki i funkcjonalny framework oparty na wzorcu archite
 
 ## Warunki wstępne
 
-Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące komponenty: [PHP](http://php.net), [MySQL](https://www.mysql.com), [Apache](https://httpd.apache.org) lub skorzystać z kontenerów [Docker](https://www.docker.com/).  
-W przypadku Docker, możesz użyć gotowego obrazu dla PHP, MySQL oraz Apache, aby skonfigurować środowisko.
+Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące komponenty: [PHP](http://php.net), [MySQL](https://www.mysql.com), [Apache](https://httpd.apache.org) lub skorzystać z kontenerów [Docker](https://www.docker.com/). W przypadku Docker, możesz użyć gotowego obrazu dla PHP, MySQL oraz Apache, aby skonfigurować środowisko.
 
 ## Struktura
 
