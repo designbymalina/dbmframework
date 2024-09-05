@@ -1,5 +1,5 @@
 --
--- Baza danych: `dbm_cms`
+-- Baza danych: dbm_cms. Ustaw COLLATE na utf8mb4_unicode_ci (dla międzynarodowych zastosowań) lub na przykład dla języka polskiego COLLATE utf8mb4_polish_ci co umożliwi sortowanie uwzględniające polskie znaki diakrytyczne.
 --
 
 -- --------------------------------------------------------
@@ -9,9 +9,9 @@
 --
 
 CREATE TABLE `dbm_article` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `section_id` int(11) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `section_id` int UNSIGNED NOT NULL,
   `meta_title` varchar(150) NOT NULL,
   `meta_description` varchar(255) NOT NULL,
   `meta_keywords` varchar(255) NOT NULL,
@@ -19,13 +19,13 @@ CREATE TABLE `dbm_article` (
   `page_content` text NOT NULL,
   `image_thumb` varchar(50) DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'new',
-  `visit` int(11) NOT NULL DEFAULT 0,
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  `visit` int NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `dbm_article`
+-- Dumping data for table `dbm_article`
 --
 
 INSERT INTO `dbm_article` (`id`, `user_id`, `section_id`, `meta_title`, `meta_description`, `meta_keywords`, `page_header`, `page_content`, `image_thumb`, `status`, `visit`, `created`, `modified`) VALUES
@@ -42,15 +42,15 @@ INSERT INTO `dbm_article` (`id`, `user_id`, `section_id`, `meta_title`, `meta_de
 --
 
 CREATE TABLE `dbm_article_sections` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
   `section_name` varchar(100) NOT NULL,
   `section_description` text NOT NULL,
   `section_keywords` varchar(255) NOT NULL,
   `image_thumb` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `dbm_article_sections`
+-- Dumping data for table `dbm_article_sections`
 --
 
 INSERT INTO `dbm_article_sections` (`id`, `section_name`, `section_description`, `section_keywords`, `image_thumb`) VALUES
@@ -66,19 +66,19 @@ INSERT INTO `dbm_article_sections` (`id`, `section_name`, `section_description`,
 --
 
 CREATE TABLE `dbm_gallery` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `filename` varchar(50) NOT NULL,
   `title` varchar(50) NOT NULL,
-  `description` text DEFAULT NULL,
-  `views` int(11) NOT NULL DEFAULT 0,
-  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Active, 0=Inactive',
-  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  `description` text,
+  `views` int NOT NULL DEFAULT '0',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
+  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `dbm_gallery`
+-- Dumping data for table `dbm_gallery`
 --
 
 INSERT INTO `dbm_gallery` (`id`, `user_id`, `filename`, `title`, `description`, `views`, `status`, `created`, `modified`) VALUES
@@ -102,18 +102,18 @@ INSERT INTO `dbm_gallery` (`id`, `user_id`, `filename`, `title`, `description`, 
 --
 
 CREATE TABLE `dbm_user` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
   `login` varchar(64) NOT NULL,
   `email` varchar(180) NOT NULL,
   `password` varchar(128) NOT NULL,
   `roles` varchar(9) NOT NULL DEFAULT 'USER',
   `token` varchar(50) DEFAULT NULL,
-  `verified` tinyint(1) NOT NULL DEFAULT 0,
-  `created` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `dbm_user`
+-- Dumping data for table `dbm_user`
 --
 
 INSERT INTO `dbm_user` (`id`, `login`, `email`, `password`, `roles`, `token`, `verified`, `created`) VALUES
@@ -123,21 +123,25 @@ INSERT INTO `dbm_user` (`id`, `login`, `email`, `password`, `roles`, `token`, `v
 
 -- --------------------------------------------------------
 
+--
+-- Struktura tabeli dla tabeli `dbm_user_details`
+--
+
 CREATE TABLE `dbm_user_details` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `fullname` varchar(100) DEFAULT NULL,
   `profession` varchar(100) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   `website` varchar(120) DEFAULT NULL,
   `avatar` varchar(50) DEFAULT NULL,
-  `biography` text DEFAULT NULL,
+  `biography` text,
   `business` varchar(100) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Zrzut danych tabeli `dbm_user_details`
+-- Dumping data for table `dbm_user_details`
 --
 
 INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `phone`, `website`, `avatar`, `biography`, `business`, `address`) VALUES
@@ -184,58 +188,58 @@ ALTER TABLE `dbm_user_details`
   ADD KEY `user_id` (`user_id`);
 
 --
--- AUTO_INCREMENT dla zrzuconych tabel
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT dla tabeli `dbm_article`
+-- AUTO_INCREMENT for table `dbm_article`
 --
 ALTER TABLE `dbm_article`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT dla tabeli `dbm_article_sections`
+-- AUTO_INCREMENT for table `dbm_article_sections`
 --
 ALTER TABLE `dbm_article_sections`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT dla tabeli `dbm_gallery`
+-- AUTO_INCREMENT for table `dbm_gallery`
 --
 ALTER TABLE `dbm_gallery`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT dla tabeli `dbm_user`
+-- AUTO_INCREMENT for table `dbm_user`
 --
 ALTER TABLE `dbm_user`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT dla tabeli `dbm_user_details`
+-- AUTO_INCREMENT for table `dbm_user_details`
 --
 ALTER TABLE `dbm_user_details`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Ograniczenia dla zrzutów tabel
+-- Constraints for dumped tables
 --
 
 --
--- Ograniczenia dla tabeli `dbm_article`
+-- Constraints for table `dbm_article`
 --
 ALTER TABLE `dbm_article`
   ADD CONSTRAINT `FK_DBMArticleSection` FOREIGN KEY (`section_id`) REFERENCES `dbm_article_sections` (`id`),
   ADD CONSTRAINT `FK_DbMArticleUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
 
 --
--- Ograniczenia dla tabeli `dbm_gallery`
+-- Constraints for table `dbm_gallery`
 --
 ALTER TABLE `dbm_gallery`
   ADD CONSTRAINT `FK_DbMGalleryUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
 
 --
--- Ograniczenia dla tabeli `dbm_user_details`
+-- Constraints for table `dbm_user_details`
 --
 ALTER TABLE `dbm_user_details`
   ADD CONSTRAINT `FK_DbMUserDetails` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
