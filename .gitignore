@@ -1,5 +1,4 @@
-###> framework ### 
-/config/config.php
+###> framework ###
 /var/
 /vendor/
 ###< framework ###

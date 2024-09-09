@@ -1,7 +1,7 @@
 # DbM Framework
 
 DbM Framework PHP MVC Simple CMS, Version 2  
-Aplikacja stworzona w PHP 7.4, wersja v2.3.7 Release przetestowana w PHP 8.3  
+Aplikacja stworzona w PHP 7.4, wersja v2.3.7 przetestowana w PHP 8.3  
 Wszystkie prawa autorskie zastrzeżone przez Design by Malina (DbM)  
 Strona WWW: [www.dbm.org.pl](http://www.dbm.org.pl)  
 
@@ -43,7 +43,7 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 - var / log / mailer and var / cache (tworzone automatycznie, wymagają uprawnień do zapisu)
 - vendor (zarezerwowany dla Composera)
 
-## Instalacja i konfiguracja
+## Instalacja manualna i konfiguracja
 
 Pobierz aplikacje DbM Framework, rozpakuj plik i przenieś zawartość na serwer:  
 1. Na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu `/public/` i ustawić prawidłową wartość argumentu RewriteBase. W katalogu /public/ w pliku .htaccess ustawić RewriteBase / (katalog główny zostawić bez pliku .htaccess). W zależności od serwera do uruchomienia aplikacji może być wymagane wyłączenie ograniczenia listy plików zawartych w strukturze katalogu open_basedir w konfiguracji PHP.
@@ -55,19 +55,35 @@ Aplikacja posiada mechanizm wysyłania wiadomości e-mail. Mechanizm wymaga uży
 
 Zaawansowane opcje konfiguracji znajdują się w pliku ConstantConfig.php. Jeśli nie ma potrzeby ich zmiany pozostaw domyślne ustawienia.
 
-### Composer
+### Instalacja z pomocą Composera
 
-Możesz użyć Composera do załadowania wybranych pakietów, ich aktualizacji itp. (patrz do composer.json).  
-Aby korzystać z Composera wykonaj polecenie, które utworzy "autoloading" oraz pobierze i zainstaluje pakiety w najnowszej dostępnej wersji:
+Możesz użyć narzędzia Composer do załadowania wybranych pakietów, ich aktualizacji itp. (sprawdź plik `composer.json`).  
+Aby skorzystać z Composera przejdź do katalogu, w którym chcesz zainstalować projekt i wykonaj poniższe kroki:
 
-```shell
-$ composer install
+1. **Sklonuj repozytorium:**
+
+```bash
+git clone https://github.com/artimman/dbmframework.git
 ```
+
+2. **Przejdź do katalogu z projektem (możesz zmienić nazwę katalogu):**
+
+```bash
+cd dbmframework
+```
+
+3. **Uruchom instalację zależności:**
+
+```bash
+composer install
+```
+
+Te kroki utworzą autoloading oraz pobiorą i zainstalują wszystkie wymagane pakiety w najnowszej dostępnej wersji. 
 
 ### Data FlatFile .txt (dane w plikach tekstowych)
 
 - `data/content/` dane w plikach tekstowych, nadaj plikom prawa do zapisu
-- `data/mailer/` szablon, pliki do wysyłania wiadomości e-mail
+- `data/mailer/` szablony do wysyłania wiadomości e-mail
 
 ### Database (baza danych nie jest wymagana do uruchomienia aplikacji)
 
