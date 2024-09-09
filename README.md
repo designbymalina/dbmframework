@@ -45,7 +45,8 @@ Aby rozpocząć prace we frameworku, musisz mieć zainstalowane następujące ko
 
 ## Instalacja manualna i konfiguracja
 
-Pobierz aplikacje DbM Framework, rozpakuj plik i przenieś zawartość na serwer:  
+Aby zainstalować aplikację DbM Framework manualnie, postępuj zgodnie z poniższymi krokami:  
+
 1. Na serwerze zdalnym w domenie - domenę należy skierować na adres katalogu `/public/` i ustawić prawidłową wartość argumentu RewriteBase. W katalogu /public/ w pliku .htaccess ustawić RewriteBase / (katalog główny zostawić bez pliku .htaccess). W zależności od serwera do uruchomienia aplikacji może być wymagane wyłączenie ograniczenia listy plików zawartych w strukturze katalogu open_basedir w konfiguracji PHP.
 2. Jeżeli instalujesz aplikacje na serwerze lokalnym (localhost) lub w katalogu domeny utwórz katalog np. `dbmframework` (katalog główny), następnie skopiuj plik .htaccess z katalogu _Documents do katalogu głównego i ustaw prawidłową wartość argumentu RewriteBase. W katalogu głównym dla pliku .htaccess ustaw RewriteBase /dbmframework/, w katalogu /public/ w pliku .htaccess ustaw RewriteBase /dbmframework/public/.
 3. Przejdź do katalogu głównego i skonfiguruj plik konfiguracyjny `.env.dist`. Ustaw prawidłową ścieżkę katalogu głównego (adres domeny, katalog) w APP_URL. Ustaw działanie aplikacji na środowisko produkcyjne (production) i uzupełnij pozostałe parametry konfiguracji. Konfiguracje 'Mailer settings' można pominąć podając tylko parametr MAIL_SMTP=false. Ważne, aby podać poprawny adres e-mail w APP_EMAIL. Po zakończeniu konfiguracji aplikacji zmień nazwę (rozszerzenie) pliku `.env.dist` na `.env`.
@@ -53,11 +54,13 @@ Pobierz aplikacje DbM Framework, rozpakuj plik i przenieś zawartość na serwer
 
 Aplikacja posiada mechanizm wysyłania wiadomości e-mail. Mechanizm wymaga użycia biblioteki PHPMailer, aby załadować bibliotekę należy użyć narzędzia zarządzania pakietami Composer, ewentualnie można skopiować zawartość katalogu _Documents/Composer/ oraz plik composer.lock do katalogu głównego (biblioteka powinna być załadowana za pomocą Composera, kopiowanie katalogu vendor nie jest wskazane). Katalog `/vendor/` jest zastrzeżony dla menedżera zależności Composer.  
 
-Zaawansowane opcje konfiguracji znajdują się w pliku ConstantConfig.php. Jeśli nie ma potrzeby ich zmiany pozostaw domyślne ustawienia.
+Zaawansowane opcje konfiguracji znajdują się w pliku ConstantConfig.php. Jeśli nie ma potrzeby ich zmiany pozostaw domyślne ustawienia.  
+
+Instalacja manualna czyni nasz framework niezależnym od innych narzędzi, wyposażonym w własny autoloading. Wykonanie polecenia `composer install` utworzy autoloading Composera i zainstaluje wybrane pakiety, np. do wysyłania wiadomości e-mail oraz pakiety deweloperskie. Po wykonaniu komendy Framework będzie współpracował z Composerem.  
 
 ### Instalacja z pomocą Composera
 
-Możesz użyć narzędzia Composer do załadowania pakietów, ich aktualizacji itp. (sprawdź plik `composer.json`). Aby skorzystać z Composera przejdź do katalogu, w którym chcesz zainstalować projekt i wykonaj poniższe kroki:
+Jeśli preferujesz instalację za pomocą Composera lub projekt wymaga instalacji pakietów, wykonaj poniższe kroki:
 
 1. **Sklonuj repozytorium:**
 
@@ -77,7 +80,7 @@ cd dbmframework
 composer install
 ```
 
-Te kroki utworzą autoloading oraz pobiorą i zainstalują wszystkie wymagane pakiety w najnowszej dostępnej wersji. W przypadku instalacji manualnej w każdej chwili możesz uruchomić instalację zależności poleceniem `composer install`, które utworzy autoloading i zainstaluje wybrane pakiety, np. do wysyłania wiadomości e-mail oraz pakiety deweloperskie.
+Te kroki utworzą autoloading Composera oraz pobiorą i zainstalują wszystkie wymagane pakiety w najnowszej dostępnej wersji.  
 
 ### Data FlatFile .txt (dane w plikach tekstowych)
 
