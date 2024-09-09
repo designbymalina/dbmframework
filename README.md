@@ -57,8 +57,7 @@ Zaawansowane opcje konfiguracji znajdują się w pliku ConstantConfig.php. Jeśl
 
 ### Instalacja z pomocą Composera
 
-Możesz użyć narzędzia Composer do załadowania wybranych pakietów, ich aktualizacji itp. (sprawdź plik `composer.json`).  
-Aby skorzystać z Composera przejdź do katalogu, w którym chcesz zainstalować projekt i wykonaj poniższe kroki:
+Możesz użyć narzędzia Composer do załadowania pakietów, ich aktualizacji itp. (sprawdź plik `composer.json`). Aby skorzystać z Composera przejdź do katalogu, w którym chcesz zainstalować projekt i wykonaj poniższe kroki:
 
 1. **Sklonuj repozytorium:**
 
@@ -78,7 +77,7 @@ cd dbmframework
 composer install
 ```
 
-Te kroki utworzą autoloading oraz pobiorą i zainstalują wszystkie wymagane pakiety w najnowszej dostępnej wersji. 
+Te kroki utworzą autoloading oraz pobiorą i zainstalują wszystkie wymagane pakiety w najnowszej dostępnej wersji. W przypadku instalacji manualnej w każdej chwili możesz uruchomić instalację zależności poleceniem `composer install`, które utworzy autoloading i zainstaluje wybrane pakiety, np. do wysyłania wiadomości e-mail oraz pakiety deweloperskie.
 
 ### Data FlatFile .txt (dane w plikach tekstowych)
 
