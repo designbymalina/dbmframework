@@ -161,4 +161,10 @@ class BaseController extends TemplateEngine implements BaseInterface
 
         return $data->roles;
     }
+
+    // Generowanie tokena CSRF
+    public function csrfToken(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
 }

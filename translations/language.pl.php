@@ -35,6 +35,7 @@ return [
     'alert.unexpected_error' => "Wystąpił nieoczekiwany błąd!",
     'alert.unexpected_error_try_again' => "Wystąpił nieoczekiwany błąd! Spróbuj ponownie lub zgłoś błąd administracji.",
     'alert.no_content' => "Brak zawartości, ale pracujemy nad tym.",
+    'alert.invalid_csrf_token' => "Nieprawidłowy token CSRF! Żądanie zostało przerwane, aby zapobiec naruszeniu zabezpieczeń. Proszę spróbować ponownie.",
     // Navigation template
     'navbar.main_navigation' => "Główna nawigacja",
     'navbar.toggle_navigation' => "Przełącznik nawigacji",

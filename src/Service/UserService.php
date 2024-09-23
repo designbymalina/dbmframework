@@ -11,16 +11,17 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Form\UserForm;
+use App\Model\UserModel;
 
 class UserService
 {
     private $model;
     private $form;
 
-    public function __construct($model)
+    public function __construct(UserModel $model)
     {
         $this->model = $model;
-        $this->form = new UserForm($model);
+        $this->form = new UserForm();
     }
 
     public function isPostRequest()

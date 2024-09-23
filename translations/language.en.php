@@ -35,6 +35,7 @@ return [
     'alert.unexpected_error' => "An unexpected error occurred!",
     'alert.unexpected_error_try_again' => "An unexpected error occurred! Please try again or report an administration error.",
     'alert.no_content' => "No content, but we're working on it.",
+    'alert.invalid_csrf_token' => "Invalid CSRF token! Request aborted to prevent a security breach. Please try again.",
     // Navigation template
     'navbar.main_navigation' => "Main navigation",
     'navbar.toggle_navigation' => "Navigation Toggle",

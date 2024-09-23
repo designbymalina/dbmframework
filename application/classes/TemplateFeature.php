@@ -159,6 +159,14 @@ class TemplateFeature
     }
 
     /*
+     * Sanitize data before displaying it
+     */
+    public function sanitize(string $data): string
+    {
+        return htmlspecialchars($data ?? '', ENT_QUOTES, 'UTF-8');
+    }
+
+    /*
      * Visit counter
      */
     public function counterVisits(): string

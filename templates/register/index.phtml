@@ -18,7 +18,7 @@
                                             <label class="form-label mb-1" for="form_login">{{ $this->trans('username') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_3"><i class="bi bi-person"></i></span>
-                                                <input type="text" name="dbm_login" value="{% if (!empty($form['login'])): echo $form['login']; endif; %}" id="form_login" class="form-control" placeholder="{{ $this->trans('your_login') }}" minlength="2" maxlength="30" required>
+                                                <input type="text" name="dbm_login" value="{% if (!empty($form['login'])): echo $this->sanitize($form['login']); endif; %}" id="form_login" class="form-control" placeholder="{{ $this->trans('your_login') }}" minlength="2" maxlength="30" required>
                                             </div>
                                             {% if (!empty($form['error_login'])): %}
                                                 <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_login'] }}</div>
@@ -28,7 +28,7 @@
                                             <label class="form-label mb-1" for="form_email">{{ $this->trans('email') }}</label>
                                             <div class="input-group">
                                                 <span class="input-group-text" id="basic_addon_1">@</span>
-                                                <input type="email" name="dbm_email" value="{% if (!empty($form['email'])): echo $form['email']; endif; %}" id="form_email" class="form-control" placeholder="{{ $this->trans('email_address') }}" required>
+                                                <input type="email" name="dbm_email" value="{% if (!empty($form['email'])): echo $this->sanitize($form['email']); endif; %}" id="form_email" class="form-control" placeholder="{{ $this->trans('email_address') }}" required>
                                             </div>
                                             {% if (!empty($form['error_email'])): %}
                                                 <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_email'] }}</div>
@@ -56,6 +56,7 @@
                                         </div>
                                         <div class="d-grid gap-2 mb-2 mt-4 text-center">
                                             <button type="submit" class="btn btn-primary btn-block text-uppercase fw-bold dbm-btn-primary">{{ $this->trans('create_account') }}</button>
+                                            <input type="hidden" name="csrf_token" value="{% if (!empty($form['token'])): echo $form['token']; endif; %}">
                                         </div>
                                     </form>
                                 </div>

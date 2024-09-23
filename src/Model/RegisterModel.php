@@ -23,6 +23,32 @@ class RegisterModel
         $this->translation = $translation;
     }
 
+    public function checkLogin(string $login): bool
+    {
+        $query = "SELECT login FROM dbm_user WHERE login = '$login' LIMIT 1";
+
+        $stmt = $this->database->querySql($query);
+
+        if ($stmt->rowCount() == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function checkEmail(string $email): bool
+    {
+        $query = "SELECT email FROM dbm_user WHERE email = '$email' LIMIT 1";
+
+        $stmt = $this->database->querySql($query);
+
+        if ($stmt->rowCount() == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function createAccount(array $data): bool
     {
         $query = "INSERT INTO dbm_user (login, email, password, token)"
@@ -67,67 +93,5 @@ class RegisterModel
         }
 
         return $message;
-    }
-
-    public function validateRegisterForm(string $login, string $email, string $password, string $confirmation): array
-    {
-        $translation = $this->translation;
-        $data = [];
-
-        if (empty($login)) {
-            $data['error_login'] = $translation->trans('register.alert.login_required');
-        } elseif (!preg_match("/^[a-z\d_]{2,30}$/i", $login)) {
-            $data['error_login'] = $translation->trans('register.alert.login_pattern');
-        } elseif ($this->checkLogin($login)) {
-            $data['error_login'] = $translation->trans('register.alert.login_exist');
-        }
-
-        if (empty($email)) {
-            $data['error_email'] = $translation->trans('register.alert.email_required');
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $data['error_email'] = $translation->trans('register.alert.email_filter');
-        } elseif ($this->checkEmail($email)) {
-            $data['error_email'] = $translation->trans('register.alert.email_exist');
-        }
-
-        if (empty($password)) {
-            $data['error_password'] = $translation->trans('register.alert.password_required');
-        } elseif (!preg_match("/^(?=.*[0-9])(?=.*[A-Z]).{6,30}$/", $password)) {
-            $data['error_password'] = $translation->trans('register.alert.password_pattern');
-        }
-
-        if (empty($confirmation)) {
-            $data['error_confirmation'] = $translation->trans('register.alert.password_confirmation_required');
-        } elseif ($password !== $confirmation) {
-            $data['error_confirmation'] = $translation->trans('register.alert.password_confirmation_different');
-        }
-
-        return $data;
-    }
-
-    private function checkLogin(string $login): bool
-    {
-        $query = "SELECT login FROM dbm_user WHERE login = '$login' LIMIT 1";
-
-        $stmt = $this->database->querySql($query);
-
-        if ($stmt->rowCount() == 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private function checkEmail(string $email): bool
-    {
-        $query = "SELECT email FROM dbm_user WHERE email = '$email' LIMIT 1";
-
-        $stmt = $this->database->querySql($query);
-
-        if ($stmt->rowCount() == 0) {
-            return false;
-        }
-
-        return true;
     }
 }

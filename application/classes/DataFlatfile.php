@@ -76,7 +76,7 @@ class DataFlatfile implements DataFlatfileInterface
 
         $arrayFilled = [];
 
-        foreach($arrayKeys as $key => $value) {
+        foreach ($arrayKeys as $key => $value) {
             if (array_key_exists($key, $arrayValues)) {
                 $arrayFilled[$value] = $arrayValues[$key];
             }

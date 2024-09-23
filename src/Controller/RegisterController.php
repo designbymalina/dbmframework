@@ -9,21 +9,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Form\RegisterForm;
 use App\Model\RegisterModel;
-use App\Service\MailerService;
+use App\Service\RegisterService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
 class RegisterController extends BaseController
 {
     private $model;
+    private $form;
+    private $service;
 
     public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
 
-        $model = new RegisterModel($database, $this->translation);
-        $this->model = $model;
+        $this->model = new RegisterModel($database, $this->translation);
+        $this->form = new RegisterForm($this->model, $this->translation);
+        $this->service = new RegisterService($this->model, $this->translation);
     }
 
     /* @Route: "/register" */
@@ -33,33 +37,33 @@ class RegisterController extends BaseController
             $this->redirect("./account");
         }
 
-        $translation = $this->translation;
+        $csrfToken = $this->csrfToken();
+        $this->setSession('csrf_token', $csrfToken);
 
-        $meta = [
-            'meta.title' => $translation->trans('register.title') . ' - ' . $translation->trans('website.name'),
-            'meta.description' => $translation->trans('register.description'),
-            'meta.keywords' => $translation->trans('register.keywords'),
-        ];
+        // Pobieramy meta dane z RegisterService
+        $meta = $this->service->getMeta();
 
         $this->render('register/index.phtml', [
             'meta' => $meta,
-            'form' => [],
+            'form' => ['token' => $csrfToken],
         ]);
     }
 
     /* @Route: "/register/signup" */
     public function signupMethod()
     {
-        $translation = $this->translation;
+        $csrfToken = $this->requestData('csrf_token');
 
-        $dataForm = [
-            'login' => $this->requestData('dbm_login'),
-            'email' => $this->requestData('dbm_email'),
-            'password' => $this->requestData('dbm_password'),
-            'confirmation' => $this->requestData('dbm_confirmation'),
-        ];
+        if (!$this->form->validateCsrfToken($this->getSession('csrf_token'), $csrfToken)) {
+            $this->setFlash("messageDanger", $this->translation->trans('alert.invalid_csrf_token'));
+            $this->redirect("./register");
+            return;
+        }
 
-        $errorValidate = $this->model->validateRegisterForm(
+        // Pobieranie danych z formularza
+        $dataForm = $this->getRequestData();
+
+        $errorValidate = $this->form->validateRegisterForm(
             $dataForm['login'],
             $dataForm['email'],
             $dataForm['password'],
@@ -67,39 +71,17 @@ class RegisterController extends BaseController
         );
 
         if (empty($errorValidate)) {
-            $password = password_hash($dataForm['password'], PASSWORD_DEFAULT);
-            $token = bin2hex(random_bytes(20));
-            $queryParams = [':login' => $dataForm['login'], ':email' => $dataForm['email'], ':password' => $password, ':token' => $token];
-
-            if ($this->model->createAccount($queryParams)) {
-                $arraySend = [
-                    'subject' => $translation->trans('register.mailer.subject'),
-                    'sender_name' => getenv('APP_NAME'),
-                    'sender_email' => getenv('APP_EMAIL'),
-                    'recipient_name' => $dataForm['login'],
-                    'recipient_email' => $dataForm['email'],
-                    'page_address' => getenv('APP_URL'),
-                    'message_template' => "register-created-account.html",
-                    'token' => $token,
-                ];
-
-                $send = new MailerService();
-                $send->sendMessage($arraySend);
-
-                $this->setFlash("messageSuccess", $translation->trans('register.alert.account_created'));
+            if ($this->service->handleRegistration($dataForm)) {
+                $this->setFlash("messageSuccess", $this->translation->trans('register.alert.account_created'));
                 $this->redirect("./login");
             } else {
-                $this->setFlash("messageDanger", $translation->trans('alert.unexpected_error_try_again'));
-                $this->redirect("./index");
+                $this->setFlash("messageDanger", $this->translation->trans('alert.unexpected_error_try_again'));
+                $this->redirect("./register");
             }
         } else {
+            // Wyswietlanie bledow walidacji
+            $meta = $this->service->getMeta();
             $dataForm = array_merge($dataForm, $errorValidate);
-
-            $meta = [
-                'meta.title' => $translation->trans('register.title') . ' - ' . $translation->trans('website.name'),
-                'meta.description' => $translation->trans('register.description'),
-                'meta.keywords' => $translation->trans('register.keywords'),
-            ];
 
             $this->render('register/index.phtml', [
                 'meta' => $meta,
@@ -115,5 +97,17 @@ class RegisterController extends BaseController
 
         $this->setFlash($verifiedAccount['type'], $verifiedAccount['message']);
         $this->redirect("./login");
+    }
+
+    // Metoda do pobierania danych formularza
+    private function getRequestData(): array
+    {
+        return [
+            'login' => $this->requestData('dbm_login'),
+            'email' => $this->requestData('dbm_email'),
+            'password' => $this->requestData('dbm_password'),
+            'confirmation' => $this->requestData('dbm_confirmation'),
+            'token' => $this->requestData('csrf_token'),
+        ];
     }
 }
