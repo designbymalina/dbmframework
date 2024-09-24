@@ -10,19 +10,21 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\BlogModel;
+use App\Service\BlogService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
 class BlogController extends BaseController
 {
     private $model;
+    private $service;
 
     public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
 
-        $model = new BlogModel($database);
-        $this->model = $model;
+        $this->model = new BlogModel($database);
+        $this->service = new BlogService($this->translation);
     }
 
     /* @Route: "/blog" */
@@ -34,18 +36,10 @@ class BlogController extends BaseController
     /* @Route: "/blog/sections" */
     public function sectionsMethod(): void
     {
-        $translation = $this->translation;
         $allSections = $this->model->getSections();
 
-        $meta = [
-            'meta.title' => $translation->trans('blog.sections.title'),
-            'meta.description' => $translation->trans('blog.sections.description'),
-            'meta.keywords' => $translation->trans('blog.sections.keywords'),
-            'sections' => $allSections,
-        ];
-
         $this->render('blog/sections.phtml', [
-            'meta' => $meta,
+            'meta' => $this->service->getMetaIndex($allSections),
             'sections' => $allSections,
         ]);
     }
@@ -61,14 +55,8 @@ class BlogController extends BaseController
             $querySectionArticles = $translation->trans('alert.no_content');
         }
 
-        $meta = [
-            'meta.title' => $querySection['section_name'],
-            'meta.description' => $querySection['section_description'],
-            'meta.keywords' => $querySection['section_keywords'],
-        ];
-
         $this->render('blog/section.phtml', [
-            'meta' => $meta,
+            'meta' => $this->service->getMetaSection($querySection),
             'section' => $querySection,
             'articles' => $querySectionArticles,
         ]);
@@ -79,14 +67,8 @@ class BlogController extends BaseController
     {
         $queryArticle = $this->model->getJoinArticle($id);
 
-        $meta = [
-            'meta.title' => $queryArticle->meta_title,
-            'meta.description' => $queryArticle->meta_description,
-            'meta.keywords' => $queryArticle->meta_keywords,
-        ];
-
         $this->render('blog/article.phtml', [
-            'meta' => $meta,
+            'meta' => $this->service->getMetaArticle($queryArticle),
             'article' => $queryArticle,
         ]);
     }

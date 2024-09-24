@@ -11,19 +11,21 @@ namespace App\Controller;
 
 use App\Config\ConstantConfig;
 use App\Model\BlogModel;
+use App\Service\IndexService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
 class IndexController extends BaseController
 {
     private $model;
+    private $service;
 
-    public function __construct(DatabaseInterface $database)
+    public function __construct(?DatabaseInterface $database = null)
     {
         parent::__construct($database);
 
-        $model = new BlogModel($database);
-        $this->model = $model;
+        $this->model = new BlogModel($database);
+        $this->service = new IndexService($this->translation);
     }
 
     /* @Route: "/" */
@@ -31,29 +33,28 @@ class IndexController extends BaseController
     {
         // Option for render: blog/index.phtml
         if (empty(getenv('DB_NAME'))) {
+            $this->setFlash('messageInfo', 'Brak połączenia z bazą danych.');
             $this->redirect('./home');
         }
-
-        $translation = $this->translation;
-
-        $meta = [
-            'meta.title' => $translation->trans('index.title'),
-            'meta.description' => $translation->trans('index.description'),
-            'meta.keywords' => $translation->trans('index.keywords'),
-        ];
 
         $articlesLimit = $this->model->getJoinArticlesLimit(ConstantConfig::BLOG_INDEX_ITEM_LIMIT);
 
         // OPTIONS to Choose: 1. index/index.phtml, 2. page/index.phtml, 3. blog/index.phtml
         $this->render('blog/index.phtml', [
-            'meta' => $meta,
+            'meta' => $this->service->getMetaIndex(),
             'articles' => $articlesLimit,
         ]);
+    }
+
+    /* @Route: "/home" */
+    public function home()
+    {
+        $this->render("index/home.phtml");
     }
 
     /* @Route: "/link.html" */
     public function linkMethod()
     {
-        $this->render('index/index.phtml', []);
+        $this->render('index/index.phtml');
     }
 }

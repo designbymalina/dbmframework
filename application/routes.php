@@ -9,33 +9,30 @@
 
 declare(strict_types=1);
 
-use App\Controller\AboutController;
 use App\Controller\AccountController;
 use App\Controller\AuthenticationController;
 use App\Controller\BlogController;
-use App\Controller\ContactController;
 use App\Controller\GalleryController;
-use App\Controller\HomeController;
 use App\Controller\IndexController;
 use App\Controller\PageController;
 use App\Controller\PanelController;
 use App\Controller\PanelGalleryController;
-use App\Controller\RegulationController;
+use App\Controller\SubpageController;
 use App\Controller\UserController;
 use Dbm\Classes\Router;
 use Dbm\Interfaces\DatabaseInterface;
 
-return function (DatabaseInterface $database) {
+return function (?DatabaseInterface $database) {
     $uri = $_SERVER['REQUEST_URI'];
 
     $router = new Router($database);
 
     $router->addRoute('/', [IndexController::class, 'index']);
+    $router->addRoute('/home', [IndexController::class, 'home']);
     $router->addRoute('/link.html', [IndexController::class, 'linkMethod']);
-    $router->addRoute('/home', [HomeController::class, 'index']);
-    $router->addRoute('/about.html', [AboutController::class, 'index']);
-    $router->addRoute('/contact.html', [ContactController::class, 'index']);
-    $router->addRoute('/regulation.html', [RegulationController::class, 'index']);
+    $router->addRoute('/about.html', [SubpageController::class, 'about']);
+    $router->addRoute('/contact.html', [SubpageController::class, 'contact']);
+    $router->addRoute('/regulation.html', [SubpageController::class, 'regulation']);
     $router->addRoute('/page', [PageController::class, 'index']);
     $router->addRoute('/page/site', [PageController::class, 'siteMethod']);
     $router->addRoute('/{#}.site.html', [PageController::class, 'siteMethod']);

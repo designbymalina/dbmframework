@@ -19,7 +19,7 @@ class BaseController extends TemplateEngine implements BaseInterface
 {
     private $database;
 
-    public function __construct(DatabaseInterface $database)
+    public function __construct(?DatabaseInterface $database = null)
     {
         $this->database = $database;
 

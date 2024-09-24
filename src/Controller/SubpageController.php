@@ -11,12 +11,10 @@ namespace App\Controller;
 
 use App\Model\PageModel;
 use App\Service\PageService;
-
-;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
-class PageController extends BaseController
+class SubpageController extends BaseController
 {
     private $model;
     private $service;
@@ -25,21 +23,12 @@ class PageController extends BaseController
     {
         parent::__construct($database);
 
-        $this->model = new PageModel();
+        $this->model = new PageModel($database);
         $this->service = new PageService($this->model);
     }
 
-    /* @Route: "/page" */
-    public function index()
-    {
-        $this->render('page/index.phtml', [
-            'meta' => $this->service->getMetaPage(),
-            'content' => $this->model->Content(),
-        ]);
-    }
-
-    /* @Route: "/page/site" or for example "/website-title.site.html" */
-    public function siteMethod()
+    /* @Route: "/about.html" */
+    public function about()
     {
         $this->render('page/site.phtml', [
             'meta' => $this->service->getMetaPage(),
@@ -47,10 +36,19 @@ class PageController extends BaseController
         ]);
     }
 
-    /* @Route: website-title.offer.html */
-    public function offerMethod()
+    /* @Route: "/contact.html" */
+    public function contact()
     {
-        $this->render('page/offer.phtml', [
+        $this->render('page/site.phtml', [
+            'meta' => $this->service->getMetaPage(),
+            'content' => $this->model->Content(),
+        ]);
+    }
+
+    /* @Route: "/regulation.html" */
+    public function regulation()
+    {
+        $this->render('page/site.phtml', [
             'meta' => $this->service->getMetaPage(),
             'content' => $this->model->Content(),
         ]);

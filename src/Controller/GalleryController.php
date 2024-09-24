@@ -11,36 +11,30 @@ namespace App\Controller;
 
 use App\Config\ConstantConfig;
 use App\Model\GalleryModel;
+use App\Service\GalleryService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
 class GalleryController extends BaseController
 {
     private $model;
+    private $service;
 
     public function __construct(DatabaseInterface $database)
     {
         parent::__construct($database);
 
-        $model = new GalleryModel($database);
-        $this->model = $model;
+        $this->model = new GalleryModel($database);
+        $this->service = new GalleryService($this->translation);
     }
 
     /* @Route: "/gallery" */
     public function index()
     {
-        $translation = $this->translation;
-
-        $meta = [
-            'meta.keywords' => $translation->trans('gallery.keywords'),
-            'meta.description' => $translation->trans('gallery.description'),
-            'meta.title' => $translation->trans('gallery.title'),
-        ];
-
         $queryGallery = $this->model->getGalleryPhotos(ConstantConfig::GALLERY_INDEX_ITEM_LIMIT);
 
         $this->render('gallery/index.phtml', [
-            'meta' => $meta,
+            'meta' => $this->service->getMetaIndex(),
             'gallery' => $queryGallery,
         ]);
     }

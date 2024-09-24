@@ -46,7 +46,7 @@ use Dbm\Classes\DotEnv;
 
 (new DotEnv($pathConfig))->load();
 
-$database = new Database();
+(!empty(getenv('DB_NAME'))) ? $database = new Database() : $database = null;
 
 $routes = require(BASE_DIRECTORY . 'application' . DS . 'routes.php');
 $routes($database);

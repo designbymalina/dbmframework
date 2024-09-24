@@ -30,8 +30,13 @@ class PanelController extends BaseController
 
     private $model;
 
-    public function __construct(DatabaseInterface $database)
+    public function __construct(?DatabaseInterface $database = null)
     {
+        if (empty(getenv('DB_NAME'))) {
+            $this->setFlash('messageInfo', 'Brak połączenia z bazą danych.');
+            $this->redirect('./home');
+        }
+
         if (!$this->getSession(getenv('APP_SESSION_KEY'))) {
             $this->redirect("./login");
         }
@@ -63,7 +68,7 @@ class PanelController extends BaseController
         }
 
         $meta = array(
-            'meta.title' => $translation->trans('website.name') . ' - Panel Administracyjny',
+            'meta.title' => $translation->trans('website.name') . ' - Panel',
         );
 
         $this->render('panel/admin.phtml', [

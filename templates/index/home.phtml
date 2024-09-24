@@ -4,9 +4,12 @@
     <!-- Block head /home:example -->
 {% endblock %}
 
-{% block content %}<!-- Main Content -->
+{% block content %}
+    {% include '_include/messages.phtml' %}
+
+    <!-- Main Content -->
     <main>
-        <div class="container mt-5 px-4">
+        <div class="container mt-4 px-4">
             <p class="fs-5">{{ $this->trans('index.lead') }}</p>
             <div class="row row-cols-1 row-cols-lg-2 g-4 py-4">
                 <div class="feature col">

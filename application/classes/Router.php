@@ -21,9 +21,9 @@ class Router implements RouterInterface
     private const ADDRESS_DIVIDER = '.';
 
     protected $routes = [];
-    private $database;
+    private ?DatabaseInterface $database;
 
-    public function __construct(DatabaseInterface $database)
+    public function __construct(?DatabaseInterface $database = null)
     {
         $this->database = $database;
     }
