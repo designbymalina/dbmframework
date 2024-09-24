@@ -62,7 +62,7 @@
                                             <div class="col-sm-6">
                                                 <label for="form_user" class="font-weight-bold">Article user</label>
                                                 <?php
-                                                    !empty($fields->uid) ? $uid = $fields->uid : $uid = intval($this->getSession('dbmUserId'));
+                                                    !empty($fields->uid) ? $uid = $fields->uid : $uid = intval($this->getSession(getenv('APP_SESSION_KEY')));
                                                     echo $this->htmlSelect($users, 'user', $uid, 'asc', 'required');
                                                 ?>
                                                 <div class="text-danger small"><?php if (!empty($validate['errorUser'])) : echo $validate['errorUser']; endif; ?></div>

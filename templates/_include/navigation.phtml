@@ -47,11 +47,11 @@
                 </ul>
                 <div class="d-flex text-white">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="width:100%">
-                        <li class="nav-item dropdown{% if ($this->getSession('dbmUserId')): %}<?= ' no-arrow' ?>{% endif %}">
+                        <li class="nav-item dropdown{% if ($this->getSession(getenv('APP_SESSION_KEY'))): %}<?= ' no-arrow' ?>{% endif %}">
                             <a class="nav-link dropdown-toggle ?link-light" href="#" id="navbarAccount" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php 
-                                    if ($this->getSession('dbmUserId')) { 
-                                        echo $this->htmlUser($this->getDatabase(), $this->getSession('dbmUserId'));
+                                    if ($this->getSession(getenv('APP_SESSION_KEY'))) { 
+                                        echo $this->htmlUser($this->getDatabase(), $this->getSession(getenv('APP_SESSION_KEY')));
                                     } else { 
                                         echo $this->trans('navbar.nav.account');
                                         echo '<i class="bi bi-person ms-2"></i>';
@@ -59,8 +59,8 @@
                                 ?>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarAccount">
-                                <?php if ($this->getSession('dbmUserId')) { ?>
-                                    <?php if ($this->userPermissions($this->getSession('dbmUserId')) === 'ADMIN') { ?>
+                                <?php if ($this->getSession(getenv('APP_SESSION_KEY'))) { ?>
+                                    <?php if ($this->userPermissions($this->getSession(getenv('APP_SESSION_KEY'))) === 'ADMIN') { ?>
                                         <li><a class="dropdown-item" href="<?= $this->path('panel') ?>">Panel administracyjny</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     <?php } ?>

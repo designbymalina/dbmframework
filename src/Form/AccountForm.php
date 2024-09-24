@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Service\DbmUploadImageService;
+use App\Utility\UploadImageUtility;
 
-class UserForm
+class AccountForm
 {
     public function validatePasswordForm(object $userData, array $formData): array
     {
@@ -70,7 +70,7 @@ class UserForm
     private function doUploadImage(): ?string
     {
         if (strtolower($_SERVER['REQUEST_METHOD']) === 'post' && isset($_FILES['dbm_avatar']) && !empty($_FILES['dbm_avatar']['name'])) {
-            $uploadImage = new DbmUploadImageService();
+            $uploadImage = new UploadImageUtility();
             $uploadImage->setTargetDir('images/avatar/');
             $uploadImage->setAllowedTypes(['image/jpeg', 'image/png']);
             $uploadImage->setMaxFileSize(1048576);

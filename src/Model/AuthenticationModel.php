@@ -12,8 +12,11 @@ namespace App\Model;
 use Dbm\Interfaces\DatabaseInterface;
 use Dbm\Interfaces\TranslationInterface;
 
-class RegisterModel
+class AuthenticationModel
 {
+    private const VALIDATION_LOGIN = 'loginNotFound';
+    private const VALIDATION_PASSWORD = 'passwordNotMatched';
+
     private $database;
     private $translation;
 
@@ -93,5 +96,24 @@ class RegisterModel
         }
 
         return $message;
+    }
+
+    public function checkIsUserCorrect(array $params, string $password): string
+    {
+        $query = "SELECT * FROM dbm_user WHERE (login=:login OR email=:email) AND verified=true LIMIT 1";
+
+        $this->database->queryExecute($query, $params);
+
+        if ($this->database->rowCount() == 0) {
+            return self::VALIDATION_LOGIN;
+        }
+
+        $result = $this->database->fetchObject();
+
+        if (!password_verify($password, $result->password)) {
+            return self::VALIDATION_PASSWORD;
+        }
+
+        return (string) $result->id;
     }
 }

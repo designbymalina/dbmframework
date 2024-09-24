@@ -11,7 +11,7 @@ namespace App\Model;
 
 use Dbm\Interfaces\DatabaseInterface;
 
-class UserModel
+class AccountModel
 {
     private $database;
 

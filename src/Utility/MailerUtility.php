@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Utility;
 
 use PHPMailer\PHPMailer\PHPMailer;
 // use PHPMailer\PHPMailer\Exception; // as PHPMailerException; // Not used
 // use PHPMailer\PHPMailer\SMTP; // Not used
 use Exception;
 
-class MailerService
+class MailerUtility
 {
     public function sendMessage(array $params): bool
     {
@@ -43,15 +43,17 @@ class MailerService
 
             // PHPMailer
             $mail = new PHPMailer(); // Passing true enables exceptions
-            $mail->CharSet = "UTF-8";
+            $mail->CharSet = "UTF-8"; // set encoding
 
             // PHPMailer optional SMTP
             if ((strtolower(getenv('MAIL_SMTP')) == 'true') && ($senderEmail == getenv('APP_EMAIL'))) {
                 $mail->IsSMTP(); // telling the class to use SMTP
-                $mail->Host = getenv('MAIL_HOST'); // SMTP server
                 $mail->SMTPAuth = true; // enable SMTP authentication
-                $mail->Username = getenv('MAIL_USERNAME'); // SMTP account username
-                $mail->Password = getenv('MAIL_PASSWORD'); // SMTP account password
+                $mail->Host = getenv('MAIL_HOST'); // SMTP server
+                $mail->Username = getenv('MAIL_USERNAME'); // SMTP username
+                $mail->Password = getenv('MAIL_PASSWORD'); // SMTP password
+                $mail->SMTPSecure = getenv('MAIL_SECURE'); // enable 'tls' (PHPMailer::ENCRYPTION_STARTTLS) or 'ssl' encryption
+                $mail->Port = getenv('MAIL_PORT'); // TCP port to connect
             }
 
             // PHPMailer c.d.

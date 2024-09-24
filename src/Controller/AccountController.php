@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\AccountModel;
 use App\Model\UserModel;
+use App\Service\AccountService;
 use App\Service\UserService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
@@ -21,21 +23,21 @@ class AccountController extends BaseController
 
     public function __construct(DatabaseInterface $database)
     {
-        if (!$this->getSession('dbmUserId')) {
+        if (!$this->getSession(getenv('APP_SESSION_KEY'))) {
             $this->redirect("./login");
         }
 
         parent::__construct($database);
 
-        $this->model = new UserModel($database);
-        $this->service = new UserService($this->model);
+        $this->model = new AccountModel($database);
+        $this->service = new AccountService($this->model);
     }
 
     /* @Route: "/account" */
     public function index()
     {
         $translation = $this->translation;
-        $id = (int) $this->getSession('dbmUserId');
+        $id = (int) $this->getSession(getenv('APP_SESSION_KEY'));
         $userAccount = $this->model->userAccount($id);
 
         $this->render('account/index.phtml', [
@@ -47,7 +49,7 @@ class AccountController extends BaseController
     /* @Route: "/account/profileChange" */
     public function profileChangeMethod()
     {
-        $id = (int) $this->getSession('dbmUserId');
+        $id = (int) $this->getSession(getenv('APP_SESSION_KEY'));
         $userAccount = $this->model->userAccount($id);
         $dataForm = $this->service->prepareProfileFormData($this, $userAccount);
 
@@ -77,7 +79,7 @@ class AccountController extends BaseController
     /* @Route: "/account/passwordChange" */
     public function passwordChangeMethod()
     {
-        $id = (int) $this->getSession('dbmUserId');
+        $id = (int) $this->getSession(getenv('APP_SESSION_KEY'));
         $userAccount = $this->model->userAccount($id);
         $dataForm = $this->service->preparePasswordFormData($this);
 

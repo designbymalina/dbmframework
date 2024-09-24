@@ -78,6 +78,7 @@ class BaseController extends TemplateEngine implements BaseInterface
     // Destroy whole sessions
     public function destroySession(): void
     {
+        session_unset();
         session_destroy();
     }
 

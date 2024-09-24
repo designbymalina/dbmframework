@@ -10,23 +10,24 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Model\RegisterModel;
+use App\Model\AuthenticationModel;
+use App\Utility\MailerUtility;
 use Dbm\Interfaces\TranslationInterface;
 
-class RegisterService
+class AuthenticationService
 {
     private $model;
-    private $mailer;
     private $translation;
+    private $mailer;
 
-    public function __construct(RegisterModel $model, TranslationInterface $translation)
+    public function __construct(AuthenticationModel $model, TranslationInterface $translation)
     {
         $this->model = $model;
         $this->translation = $translation;
-        $this->mailer = new MailerService();
+        $this->mailer = new MailerUtility();
     }
 
-    public function getMeta(): array
+    public function getMetaRegister(): array
     {
         return [
             'meta.title' => $this->translation->trans('register.title') . ' - ' . $this->translation->trans('website.name'),
@@ -53,6 +54,15 @@ class RegisterService
         }
 
         return false;
+    }
+
+    public function getMetaLogin(): array
+    {
+        return [
+            'meta.title' => $this->translation->trans('login.title') . ' - ' . $this->translation->trans('website.name'),
+            'meta.description' => $this->translation->trans('login.description'),
+            'meta.keywords' => $this->translation->trans('login.keywords'),
+        ];
     }
 
     private function sendRegistrationEmail(string $login, string $email, string $token): void

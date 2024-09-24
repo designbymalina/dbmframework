@@ -13,8 +13,8 @@ namespace App\Controller;
 
 use App\Config\ConstantConfig;
 use App\Model\PanelModel;
-use App\Service\DbmImageUploadService;
-use App\Service\MethodService;
+use App\Utility\MethodsUtility;
+use App\Utility\ResizeUploadImageUtility;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 use DateTime;
@@ -32,13 +32,13 @@ class PanelController extends BaseController
 
     public function __construct(DatabaseInterface $database)
     {
-        if (!$this->getSession('dbmUserId')) {
+        if (!$this->getSession(getenv('APP_SESSION_KEY'))) {
             $this->redirect("./login");
         }
 
         parent::__construct($database);
 
-        $userId = (int) $this->getSession('dbmUserId');
+        $userId = (int) $this->getSession(getenv('APP_SESSION_KEY'));
 
         if ($this->userPermissions($userId) !== 'ADMIN') {
             $this->redirect("./");
@@ -530,7 +530,7 @@ class PanelController extends BaseController
             $fileName = $_FILES["file"]["name"];
             $fileTempName = $_FILES["file"]["tmp_name"];
 
-            $imageUpload = new DbmImageUploadService();
+            $imageUpload = new ResizeUploadImageUtility();
             $arrayResult = $imageUpload->createImages($fileTempName, $fileName, $pathImage);
 
             echo json_encode($arrayResult);
@@ -549,8 +549,8 @@ class PanelController extends BaseController
         $pathPhoto = $pathImage . 'photo/' . $file;
         $pathThumb = $pathImage . 'thumb/' . $file;
 
-        $methodService = new MethodService();
-        $deleteImages = $methodService->fileMultiDelete([$pathPhoto, $pathThumb]);
+        $methodUtility = new MethodsUtility();
+        $deleteImages = $methodUtility->fileMultiDelete([$pathPhoto, $pathThumb]);
 
         if ($deleteImages !== null) {
             echo json_encode(['status' => "danger", 'message' => $deleteImages]);
@@ -564,8 +564,8 @@ class PanelController extends BaseController
         $file = $this->requestData('file');
         $pathFile = self::DIR_CONTENT . $file;
 
-        $methodService = new MethodService();
-        $deleteFile = $methodService->fileMultiDelete($pathFile);
+        $methodUtility = new MethodsUtility();
+        $deleteFile = $methodUtility->fileMultiDelete($pathFile);
 
         if ($deleteFile !== null) {
             echo json_encode(['status' => "danger", 'message' => $deleteFile]);
@@ -602,7 +602,7 @@ class PanelController extends BaseController
             $fileName = $_FILES["file"]["name"];
             $fileTempName = $_FILES["file"]["tmp_name"];
 
-            $imageUpload = new DbmImageUploadService();
+            $imageUpload = new ResizeUploadImageUtility();
             $arrayResult = $imageUpload->createImages($fileTempName, $fileName, ConstantConfig::PATH_SECTION_IMAGES);
 
             echo json_encode($arrayResult);
@@ -615,8 +615,8 @@ class PanelController extends BaseController
     {
         $file = $this->requestData('file');
 
-        $methodService = new MethodService();
-        $deleteImages = $methodService->fileMultiDelete(
+        $methodUtility = new MethodsUtility();
+        $deleteImages = $methodUtility->fileMultiDelete(
             [ConstantConfig::PATH_SECTION_IMAGES . 'photo/' . $file, ConstantConfig::PATH_SECTION_IMAGES . 'thumb/' . $file]
         );
 

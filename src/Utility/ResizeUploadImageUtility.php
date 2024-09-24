@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Utility;
 
-class DbmImageUploadService
+class ResizeUploadImageUtility
 {
     public const DIR_ORIGINAL = 'original/';
     public const DIR_PHOTO = 'photo/';

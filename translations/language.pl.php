@@ -65,7 +65,7 @@ return [
     'login.keywords' => "login, logowanie, zaloguj się",
     'login.message.login_required' => "Login jest wymagany!",
     'login.message.password_required' => "Hasło jest wymagane!",
-    'login.message.login_incorrect' => "Nieprawidłowy login lub konto nie aktywne!",
+    'login.message.login_incorrect' => "Nieprawidłowy login lub konto jest nieaktywne!",
     'login.message.password_incorrect' => "Niepoprawne hasło!",
     'login.message.logged_in' => "Jesteś zalogowany(-a) w systemie.",
     'login.message.logged_out' => "Nastąpiło poprawne wylogowanie.",

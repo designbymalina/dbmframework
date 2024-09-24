@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Utility;
 
-class DbmUploadImageService
+class UploadImageUtility
 {
     private string $targetDir = "uploads/";
     private array $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];

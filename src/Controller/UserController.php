@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\UserModel;
+use App\Model\AccountModel;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
@@ -21,7 +21,7 @@ class UserController extends BaseController
     {
         parent::__construct($database);
 
-        $model = new UserModel($database);
+        $model = new AccountModel($database);
         $this->model = $model;
     }
 

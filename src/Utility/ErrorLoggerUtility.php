@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Utility;
 
-class ErrorLoggerService
+class ErrorLoggerUtility
 {
     private const DIR_ERRORS = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'logger' . DS;
 

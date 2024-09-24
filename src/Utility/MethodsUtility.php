@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Utility;
 
-class MethodService
+class MethodsUtility
 {
     public function fileMultiDelete($images): ?string
     {
