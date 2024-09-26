@@ -69,23 +69,4 @@ class PanelGalleryModel
 
         return $this->database->queryExecute($query, [':id' => $id]);
     }
-
-    public function validateFormGallery(string $title, string $photoStatus, string $photoMessage): array
-    {
-        $data = [];
-
-        if (empty($title)) {
-            $data['errorTitle'] = "The title field is required!";
-        } elseif ((mb_strlen($title) < 3) || (mb_strlen($title) > 65)) {
-            $data['errorTitle'] = "The header must contain from 3 to 65 characters!";
-        }
-
-        if ($photoStatus == 'Warning') {
-            $data['errorPhoto'] = "The photo field is required!";
-        } elseif ($photoStatus == 'danger') {
-            $data['errorPhoto'] = $photoMessage;
-        }
-
-        return $data;
-    }
 }

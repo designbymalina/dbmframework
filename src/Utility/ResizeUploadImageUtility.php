@@ -3,9 +3,11 @@
  * DbM Framework
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl
+ * Author: Design by Malina
  *
- * DbmImageUploadService{}
- * Author: Arthur Malinowsky (Design by Malina)
+ * Info: Class need extension PHP GD.
+ * For function transliterator_transliterate() PECL intl >= 2.0.0;
+ * alternatively, you can use $safeFilename = $this->transliteratorSanitizeFilename($imageName);
  */
 
 declare(strict_types=1);
@@ -30,7 +32,7 @@ class ResizeUploadImageUtility
      * @param int $minWidth
      * @param int $maxLength
      *
-     * @return array
+     * @return array with keys: status, message, filename - where filename is optional if the result is successful
      */
     public function createImages(
         string $fileTempName,
@@ -172,5 +174,17 @@ class ResizeUploadImageUtility
         }
 
         return $result;
+    }
+
+    /**
+     * Option for function: transliterator_transliterate()
+     */
+    private function transliteratorSanitizeFilename(string $fileName): string
+    {
+        $safeFilename = iconv('UTF-8', 'ASCII//TRANSLIT', $fileName);
+        $safeFilename = preg_replace('/[^A-Za-z0-9-]+/', '-', $safeFilename);
+        $safeFilename = strtolower($safeFilename);
+
+        return trim($safeFilename, '-');
     }
 }

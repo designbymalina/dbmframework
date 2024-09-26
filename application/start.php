@@ -7,7 +7,7 @@
  * Contact: biuro@dbm.org.pl
 */
 
-function reportingErrorHandler(string $errLevel, string $errMessage, string $errFile, string $errLine): void
+function reportingErrorHandler(int $errLevel, string $errMessage, string $errFile, int $errLine): void
 {
     $basename = 'index';
     $uri = $_SERVER["REQUEST_URI"];
@@ -45,7 +45,7 @@ function reportingErrorHandler(string $errLevel, string $errMessage, string $err
     }
 }
 
-function htmlErrorHandler(string $message, string $file, string $line): void
+function htmlErrorHandler(string $message, string $file, int $line): void
 {
     ob_end_clean();
 

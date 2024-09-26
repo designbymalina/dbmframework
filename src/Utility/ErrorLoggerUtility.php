@@ -3,36 +3,43 @@
  * DbM Framework
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl
- *
- * TODO! ErrorLoger. Quick version, to be developed.
  */
 
 declare(strict_types=1);
 
 namespace App\Utility;
 
+use Exception;
+
 class ErrorLoggerUtility
 {
     private const DIR_ERRORS = BASE_DIRECTORY . 'var' . DS . 'log' . DS . 'logger' . DS;
 
-    public function log(string $message, string $level = 'ERROR'): void
+    public function log(string $message, string $level = 'error'): void
     {
         if (!is_dir(self::DIR_ERRORS)) {
             !mkdir(self::DIR_ERRORS, 0777, true);
         }
 
-        $logEntry = date('Y-m-d H:i:s') . " [$level] " . $message . PHP_EOL;
+        $logEntry = "DATE: " . date('Y-m-d H:i:s') . ", level: $level" . "\n";
+
+        if ($level === 'exception') {
+            $logEntry .= $message;
+        } else {
+            $logEntry .= " Message: " . $message . "\n";
+        }
+
         $filePath = self::DIR_ERRORS . date('Ymd') . '_error.log';
 
         file_put_contents($filePath, $logEntry, FILE_APPEND);
     }
 
-    public function logException(\Exception $exception): void
+    public function logException(Exception $exception): void
     {
-        $logMessage = "Exception: " . $exception->getMessage() . " in " . $exception->getFile()
-            . " on line " . $exception->getLine() . "\nStack trace:\n" . $exception->getTraceAsString();
+        $logMessage = " Exception: " . $exception->getMessage() . " in " . $exception->getFile()
+            . " on line " . $exception->getLine() . "\nStack trace:\n" . $exception->getTraceAsString() . "\n";
 
-        $this->log($logMessage, 'EXCEPTION');
+        $this->log($logMessage, 'exception');
     }
 }
 
