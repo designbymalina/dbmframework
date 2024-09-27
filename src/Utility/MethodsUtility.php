@@ -37,4 +37,13 @@ class MethodsUtility
 
         return null;
     }
+
+    public function scanDirectory(string $directory, int $sort = 0, array $arraySkip = ['..', '.']): ?array
+    {
+        if (is_dir($directory)) {
+            return array_diff(scandir($directory, $sort), $arraySkip);
+        }
+
+        return null;
+    }
 }

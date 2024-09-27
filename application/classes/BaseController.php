@@ -22,9 +22,7 @@ class BaseController extends TemplateEngine implements BaseInterface
     public function __construct(?DatabaseInterface $database = null)
     {
         $this->database = $database;
-
-        $translation = new Translation();
-        $this->translation = $translation;
+        $this->translation = new Translation();
     }
 
     // Request data
@@ -168,4 +166,18 @@ class BaseController extends TemplateEngine implements BaseInterface
     {
         return bin2hex(random_bytes(32));
     }
+
+    /* TODO! Można dopisać dodatkowe zabezpieczenie dla penelu administracyjnego
+    public function isValidSession(int $userId): bool
+    {
+        // Pobranie rekordu użytkownika z bazy danych (przykład)
+        $userSession = $database->getUserSession($userId);
+
+        // Sprawdzenie, czy sesja istnieje i nie wygasła
+        if (!$userSession || $userSession['session_expiry'] < time()) {
+            return false; // Sesja nie jest ważna (nie istnieje lub wygasła)
+        }
+
+        return true; // Sesja jest ważna
+    } */
 }

@@ -51,20 +51,27 @@ class Translation implements TranslationInterface
         return array();
     }
 
-    /* Get language */
+    /* Get language. You can use ?lang=off to clear cookie. */
     private function language(): string
     {
         $cookieName = 'DbmLanguage';
-        $arrayLanguages = explode('|', getenv('APP_LANGUAGES'));
+        $appLanguages = getenv('APP_LANGUAGES');
 
-        !empty($arrayLanguages[0]) ? $language = $arrayLanguages[0] : $language = 'PL';
+        if ($appLanguages === false || !is_string($appLanguages)) {
+            $appLanguages = 'PL';
+        }
+
+        $arrayLanguages = explode('|', $appLanguages);
+        $language = !empty($arrayLanguages[0]) ? $arrayLanguages[0] : 'PL';
 
         if (isset($_GET['lang'])) {
-            $language = $_GET['lang'];
-            setcookie($cookieName, $language, time() + 24 * 3600);
+            $lang = strtolower($_GET['lang']);
 
-            if (strtolower($_GET['lang']) === 'off') {
+            if ($lang === 'off') {
                 setcookie($cookieName, '', time() - 3600);
+            } else {
+                $language = $_GET['lang'];
+                setcookie($cookieName, $language, time() + 24 * 3600);
             }
         } elseif (isset($_COOKIE[$cookieName])) {
             $language = $_COOKIE[$cookieName];

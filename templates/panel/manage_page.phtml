@@ -94,8 +94,7 @@
 					data: params,
 					success: function(response) {
 						if (response != 0) {
-							var alert = JSON.parse(response);
-							window.location.replace("<?= $this->path(); ?>panel/managePage?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+							window.location.replace("{{ $this->path() }}panel/managePage");
 						} else {
 							alert('JavaScript: An unexpected response error occurred!');
 						}

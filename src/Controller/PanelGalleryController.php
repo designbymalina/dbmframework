@@ -10,26 +10,16 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\PanelGalleryService;
-use Dbm\Classes\BaseController;
+use Dbm\Classes\AdminBaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
-class PanelGalleryController extends BaseController
+class PanelGalleryController extends AdminBaseController
 {
     private $galleryService;
 
     public function __construct(DatabaseInterface $database)
     {
-        if (!$this->getSession(getenv('APP_SESSION_KEY'))) {
-            $this->redirect("./login");
-        }
-
         parent::__construct($database);
-
-        $userId = (int) $this->getSession(getenv('APP_SESSION_KEY'));
-
-        if ($this->userPermissions($userId) !== 'ADMIN') {
-            $this->redirect("./");
-        }
 
         $this->galleryService = new PanelGalleryService($database);
     }

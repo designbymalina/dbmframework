@@ -4,7 +4,8 @@
  * All code copyright Design by Malina
  * DbM: www.dbm.org.pl
  *
- * INFO! Rozbij PanelController na wiecej kontrolerow panelu!
+ * INFO! Rozbij PanelController na wiecej kontrolerow panelu i zoptymalizuj kod!
+ * Przenies powtarzalny kod konstruktora, sprawdzenie sesji itp. do jednej klasy np. AdminBaseController?
  */
 
 declare(strict_types=1);
@@ -15,42 +16,24 @@ use App\Config\ConstantConfig;
 use App\Model\PanelModel;
 use App\Utility\MethodsUtility;
 use App\Utility\ResizeUploadImageUtility;
-use Dbm\Classes\BaseController;
+use Dbm\Classes\AdminBaseController;
 use Dbm\Interfaces\DatabaseInterface;
 use DateTime;
 
-class PanelController extends BaseController
+class PanelController extends AdminBaseController
 {
     private const DIR_CONTENT = BASE_DIRECTORY . 'data/content/';
     private const DIR_LOG = BASE_DIRECTORY . 'var/log/';
-    private const DIR_IMG_PAGE = BASE_DIRECTORY . 'public/images/page/photo/';
     private const DIR_IMG_BLOG = BASE_DIRECTORY . 'public/images/blog/photo/';
     private const DIR_IMG_SECTION = BASE_DIRECTORY . 'public/images/blog/category/photo/';
-    private const SPLIT = "<!--@-->";
 
     private $model;
 
     public function __construct(?DatabaseInterface $database = null)
     {
-        if (empty(getenv('DB_NAME'))) {
-            $this->setFlash('messageInfo', 'Brak połączenia z bazą danych.');
-            $this->redirect('./home');
-        }
-
-        if (!$this->getSession(getenv('APP_SESSION_KEY'))) {
-            $this->redirect("./login");
-        }
-
         parent::__construct($database);
 
-        $userId = (int) $this->getSession(getenv('APP_SESSION_KEY'));
-
-        if ($this->userPermissions($userId) !== 'ADMIN') {
-            $this->redirect("./");
-        }
-
-        $model = new PanelModel($database);
-        $this->model = $model;
+        $this->model = new PanelModel($database);
     }
 
     public function index()
@@ -76,115 +59,6 @@ class PanelController extends BaseController
             'files' => $contentFiles,
             'articles' => $arrayArticles,
         ]);
-    }
-
-    public function managePageMethod()
-    {
-        if ($this->requestData('action') == 'delete') { // TEMP? Look for a better solution!
-            $this->setFlash('message' . ucfirst($this->requestData('status')), $this->requestData('message'));
-        }
-
-        $contentFiles = array_diff(scandir(self::DIR_CONTENT), array('..', '.'));
-
-        $meta = array(
-            'meta.title' => 'managePageMethod',
-        );
-
-        $this->render('panel/manage_page.phtml', [
-            'meta' => $meta,
-            'files' => $contentFiles,
-            'dir' => self::DIR_CONTENT,
-        ]);
-    }
-
-    public function createOrEditPageMethod()
-    {
-        $file = $this->requestData('file');
-        $imageFiles = array_diff(scandir(self::DIR_IMG_PAGE), array('..', '.'));
-
-        if (!empty($file)) {
-            $filePath = self::DIR_CONTENT . $file;
-            $fileContent = file_get_contents($filePath);
-            $fileFields = explode(self::SPLIT, $fileContent);
-            $keywords = trim($fileFields[0]);
-            $description = trim($fileFields[1]);
-            $title = trim($fileFields[2]);
-            $content = trim($fileFields[3]);
-
-            $meta = [
-                'meta.title' => "Page editing - Dashboard DbM Framework",
-            ];
-
-            $page = [
-                'header' => "Editing page",
-                'action' => "editPage",
-                'submit' => '<i class="fa fa-edit mr-2"></i>Edit',
-                'images' => $imageFiles,
-                'file' => $file,
-            ];
-
-            $fields = (object) [
-                'keywords' => $keywords,
-                'description' => $description,
-                'title' => $title,
-                'content' => $content,
-            ];
-        } else {
-            $meta = [
-                'meta.title' => "Page create - Dashboard DbM Framework",
-            ];
-
-            $page = [
-                'header' => "Create page",
-                'action' => "createPage",
-                'submit' => '<i class="fas fa-plus mr-2"></i>Create',
-                'images' => $imageFiles,
-                'file' => null,
-                'accordion' => true,
-            ];
-        }
-
-        $this->render('panel/create_edit_page.phtml', [
-            'meta' => $meta,
-            'page' => $page,
-            'fields' => !empty($fields) ? $fields : null,
-        ]);
-    }
-
-    public function createPageMethod()
-    {
-        $fileName = $this->requestData('filename');
-        $filePath = self::DIR_CONTENT . $fileName . '.txt';
-
-        if (empty($this->requestData('filename'))) {
-            $this->setFlash('messageDanger', 'Complete the file name field');
-        } elseif (file_exists($filePath)) {
-            $this->setFlash('messageWarning', 'A file with the given name already exists. You can edit the content of the page.');
-        } else {
-            $fileName = $fileName . '.txt';
-            $fileContent = $this->requestData('keywords') . "\n" . self::SPLIT . "\n" . $this->requestData('description')
-                . "\n" . self::SPLIT . "\n" . $this->requestData('title') . "\n" . self::SPLIT . "\n" . $this->requestData('content');
-
-            $handle = fopen($filePath, 'w');
-            fwrite($handle, $fileContent);
-            fclose($handle);
-            chmod($filePath, 0777);
-
-            $this->setFlash('messageSuccess', 'The new page has been successfully created.');
-        }
-
-        $this->redirect("./panel/createOrEditPage", ['file' => $fileName]);
-    }
-
-    public function editPageMethod()
-    {
-        $filePath = self::DIR_CONTENT . $this->requestData('file');
-        $fileContent = $this->requestData('keywords') . "\n" . self::SPLIT . "\n" . $this->requestData('description')
-            . "\n" . self::SPLIT . "\n" . $this->requestData('title') . "\n" . self::SPLIT . "\n" . $this->requestData('content');
-        file_put_contents($filePath, $fileContent);
-
-        $this->setFlash('messageSuccess', 'The page has been successfully edited.');
-        $this->redirect("./panel/createOrEditPage", ['file' => $this->requestData('file')]);
     }
 
     public function manageBlogMethod()
@@ -561,21 +435,6 @@ class PanelController extends BaseController
             echo json_encode(['status' => "danger", 'message' => $deleteImages]);
         } else {
             echo json_encode(['status' => "success", 'message' => "The image has been successfully deleted."]);
-        }
-    }
-
-    public function ajaxDeleteFileMethod(): void
-    {
-        $file = $this->requestData('file');
-        $pathFile = self::DIR_CONTENT . $file;
-
-        $methodUtility = new MethodsUtility();
-        $deleteFile = $methodUtility->fileMultiDelete($pathFile);
-
-        if ($deleteFile !== null) {
-            echo json_encode(['status' => "danger", 'message' => $deleteFile]);
-        } else {
-            echo json_encode(['status' => "success", 'message' => "The file has been successfully deleted."]);
         }
     }
 

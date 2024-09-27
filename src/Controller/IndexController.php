@@ -53,7 +53,7 @@ class IndexController extends BaseController
     }
 
     /* @Route: "/link.html" */
-    public function linkMethod()
+    public function link()
     {
         $this->render('index/index.phtml');
     }
