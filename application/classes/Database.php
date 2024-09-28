@@ -142,4 +142,47 @@ class Database implements DatabaseInterface
     {
         return $this->connect->lastInsertId();
     }
+
+    /**
+     * Method for building an INSERT query with 'null' value filtering
+     *
+     * How to use:
+     * public function insertMethod(array $data): bool
+     * [$columns, $placeholders, $filteredData] = $this->database->buildInsertQuery($data);
+     * $query = "INSERT INTO table_name ($columns) VALUES ($placeholders)";
+     * return $this->database->queryExecute($query, $filteredData);
+     */
+    public function buildInsertQuery(array $data): array
+    {
+        $filteredData = array_filter($data, function ($value) {
+            return !is_null($value);
+        });
+
+        $columns = implode(", ", array_keys($filteredData));
+        $placeholders = ':' . implode(", :", array_keys($filteredData));
+
+        return [$columns, $placeholders, $filteredData];
+    }
+
+    /**
+     * Method for building an UPDATE query with 'null' value filtering
+     *
+     * How to use:
+     * public function updateSection($data): bool
+     * [$setClause, $filteredData] = $this->database->buildUpdateQuery($data);
+     * $query = "UPDATE table_name SET $setClause WHERE id=:id";
+     * return $this->database->queryExecute($query, $filteredData);
+     */
+    public function buildUpdateQuery(array $data): array
+    {
+        $filteredData = array_filter($data, function ($value) {
+            return !is_null($value);
+        });
+
+        $setClause = implode(", ", array_map(function ($key) {
+            return "$key=:$key";
+        }, array_keys($filteredData)));
+
+        return [$setClause, $filteredData];
+    }
 }

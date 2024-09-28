@@ -89,12 +89,11 @@
 				
 				$.ajax({
 					type: 'GET',
-					url: '<?= $this->path(); ?>panel/ajaxDeleteSection',
+					url: '{{ $this->path() }}panel/ajaxDeleteSection',
 					data: params,
 					success: function(response) {
 						if (response != 0) {
-							var alert = JSON.parse(response);
-							window.location.replace("<?= $this->path(); ?>panel/manageBlogSections?action=delete" + "&status=" + alert['status'] + '&message=' + alert['message']);
+                            window.location.replace("{{ $this->path() }}panel/manageBlogSections");
 						} else {
 							alert('JavaScript: An unexpected response error occurred!');
 						}

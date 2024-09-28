@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="form_image"><span class="font-weight-bold">Article main image</span>, optionally select and insert one of the uploaded images, only the image name with extension.</label>
-                                            <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($fields->image)) : echo $fields->image; endif; ?>" maxlength="40" readonly>
+                                            <input type="text" name="image" id="formImage" class="form-control" placeholder="set the main image from button Images" value="<?php if (!empty($fields->image)) : echo $fields->image; endif; ?>" maxlength="40" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -117,6 +117,10 @@
 				</div>
 				<div class="modal-body">
 					<div class="table-responsive" style="max-height:245px">
+						<?php 
+						print_r($images);
+						?>
+
 						<table class="table table-striped table-sm">
 						<thead class="table-dark">
 						<tr>
@@ -139,9 +143,9 @@
 								</div>
 							</td>
 							<td class="text-right">
-								<button class="btn btn-primary btn-sm setImageMain" title="Insert main image" data-text="<?= $image; ?>"><i class="fas fa-image"></i></button>
-								<button class="btn btn-primary btn-sm ml-md-1 setImage" title="Insert image address" data-text="<?= '[URL]images/blog/photo/' . $image; ?>"><i class="fas fa-link"></i></button>
-								<button class="btn btn-danger btn-sm ml-md-1 deleteImage" title="Delete" data-fid="<?= $i; ?>" data-file="<?= $image; ?>"><i class="fas fa-trash-alt"></i></button>
+								<button class="btn btn-primary btn-sm setImageMain" title="Set main image" data-text="<?= $image; ?>"><i class="fas fa-image"></i></button>
+								<button class="btn btn-primary btn-sm ml-md-1 setImage" title="Insert image address in content" data-text="<?= '[URL]images/blog/photo/' . $image; ?>"><i class="fas fa-link"></i></button>
+								<button class="btn btn-danger btn-sm ml-md-1 deleteImage" title="Delete" data-fid="<?= $i; ?>" data-file="<?= $image; ?>" data-type="article"><i class="fas fa-trash-alt"></i></button>
 							</td>
 						</tr>
 						<?php $i++; ?>
@@ -171,7 +175,7 @@
 							</div>
 							<div class="form-group">
 								<button type="button" name="submit" class="btn btn-primary float-right" id="uploadImage"><i class="fas fa-upload mr-3"></i>Upload image</button>
-								<input type="hidden" name="type" id="formType" value="blog">
+								<input type="hidden" name="type" id="formType" value="article">
 							</div>
 						</form>
 					</div>
@@ -211,7 +215,7 @@
 
 				$.ajax({
 					type: 'POST',
-					url: '<?= $this->path(); ?>panel/ajaxUploadImage',
+					url: '{{ $this->path() }}panel/ajaxUploadImage',
 					data: params,
 					contentType: false,
 					processData: false,
@@ -238,7 +242,8 @@
 			$('.deleteImage').click(function () {
 				var fid = $(this).attr("data-fid");
 				var file = $(this).attr("data-file");
-				var params = 'file=' + file + '&type=blog';
+				var type = $(this).attr("data-type");
+				var params = 'file=' + file + '&type=' + type;
 
 				if (confirm('Are you sure you want to delete?')) {
 					$.ajax({
@@ -273,7 +278,24 @@
 			});
 
 			$('.setImage').click(function() {
-				$("#formContent").append($(this).attr("data-text"));
+				const textToInsert = $(this).attr("data-text");
+				const textarea = $("#formContent")[0];
+				const startPos = textarea.selectionStart;
+				const endPos = textarea.selectionEnd;
+				const currentText = textarea.value;
+
+				if (startPos === null || startPos === 0 && endPos === 0) {
+					textarea.value = currentText + textToInsert;
+				} else {
+					const beforeCursor = currentText.substring(0, startPos);
+					const afterCursor = currentText.substring(endPos);
+
+					textarea.value = beforeCursor + textToInsert + afterCursor;
+					textarea.selectionStart = textarea.selectionEnd = startPos + textToInsert.length;
+				}
+
+				textarea.focus();
+
 				$('#imagesModal').modal('hide');
 			});
 

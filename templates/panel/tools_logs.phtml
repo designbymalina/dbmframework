@@ -1,9 +1,5 @@
 {% extends 'base_panel.phtml' %}
 
-{% block head %}
-	<!-- Head: Error Logs -->
-{% endblock %}
-
 {% block content %}<!-- Page Wrapper -->
     <div id="wrapper">
         {% include '_include/panel_sidebar.phtml' %}
@@ -18,9 +14,23 @@
                     <div class="d-sm-flex align-items-center justify-content-between">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb bg-transparent">
-                                <li class="breadcrumb-item active" aria-current="page"><h1 class="h3 mb-0 text-gray-800">Error logs</h1></li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    {% if (!empty($type)): %}
+                                    <h1 class="h3 mb-0 text-gray-800"><a href="{{ $this->path() }}panel/toolsLogs" class="text-dark">Error Log</a> / {{ $title }}</h1>
+                                    {% else: %}
+                                    <h1 class="h3 mb-0 text-gray-800">{{ $title }}</h1>
+                                    {% endif; %}
+                                </li>
                             </ol>
                         </nav>
+                        <div class="btn-toolbar mb-3 mb-sm-0" role="toolbar" aria-label="Toolbar with button groups">
+                            {% if (empty($_GET['type'])) : %}
+                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                                <a href="toolsLogs?type=logger" class="btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-exchange-alt text-white-50 mr-2"></i>Check logger</a>
+                                <a href="toolsLogs?type=mailer" class="btn btn-sm btn-primary shadow-sm font-weight-bold"><i class="fas fa-exchange-alt text-white-50 mr-2"></i>Check mailing logs</a>
+                            </div>
+                            {% endif; %}
+                        </div>
                     </div>
                     <!-- Content Row -->
                     <div class="row">
@@ -35,19 +45,19 @@
                                 <div class="card-body">
                                     <div class="overflow-auto" style="max-height:600px;">
                                         {% if (!empty($files)) : %}
+
                                         <ul class="list-group">
-                                            {% foreach ($files as $file): %}
+                                            {% foreach ($files as $file) : %}
                                             <li class="list-group-item d-flex justify-content-between align-items-center px-1 py-0">
-                                                <a href="{{ $this->path('panel/toolsLogs') }}?file={{ $file }}" class="text-info text-decoration-none">{{ $file }}</a>
-                                                <a href="{{ $this->path('panel/toolsLogs') }}?action=delete&amp;file={{ $file }}" class="badge badge-danger badge-pill">Delete</a>
+                                                <a href="{{ $link }}file={{ $file }}" class="text-info text-decoration-none">{{ $file }}</a>
+                                                <a href="{{ $link }}action=delete&amp;file={{ $file }}" class="badge badge-danger badge-pill">Delete</a>
                                             </li>
                                             {% endforeach; %}
-
+                                            
                                         </ul>
                                         {% else : %}
-                                        <div class="alert alert-info">No errors log!</div>
-
-                                        {% endif; %}
+                                            <div class="alert alert-info">No logs.</div>
+                                        {% endif %}
 
                                     </div>
                                 </div>
@@ -58,12 +68,12 @@
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 text-primary font-weight-bold">Preview{% if (!empty($_GET['file'])): %}: <span class="font-weight-normal">{{ $_GET['file'] }}</span>{% endif; %}</h6>
+                                    <h6 class="m-0 text-primary font-weight-bold">Preview{% if (!empty($item)) : %}: <span class="font-weight-normal">{{ $item }}</span>{% endif; %}</h6>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="overflow-auto" style="max-height:600px;">
-                                        <p>{{ $preview }}</p>
+                                        <p class="m-0" style="white-space:pre-wrap;">{{ $preview }}</p>
                                     </div>
                                 </div>
                             </div>

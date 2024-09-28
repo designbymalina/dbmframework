@@ -46,4 +46,21 @@ class MethodsUtility
 
         return null;
     }
+
+    public function contentPreview(string $pathFile): ?string
+    {
+        if (is_file($pathFile) && file_exists($pathFile) && (filesize($pathFile) > 0)) {
+            $contentPreview = file_get_contents($pathFile);
+            $contentPreview = str_replace(["\n"], ["<br>"], $contentPreview);
+        }
+
+        return $contentPreview ?? null;
+    }
+
+    public function deleteFile(string $filePath): void
+    {
+        if (is_file($filePath) && file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
 }

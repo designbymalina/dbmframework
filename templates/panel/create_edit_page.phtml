@@ -238,7 +238,24 @@
 			});
 
 			$('.setImage').click(function() {
-				$("#formContent").append($(this).attr("data-text"));
+				const textToInsert = $(this).attr("data-text");
+				const textarea = $("#formContent")[0];
+				const startPos = textarea.selectionStart;
+				const endPos = textarea.selectionEnd;
+				const currentText = textarea.value;
+
+				if (startPos === null || startPos === 0 && endPos === 0) {
+					textarea.value = currentText + textToInsert;
+				} else {
+					const beforeCursor = currentText.substring(0, startPos);
+					const afterCursor = currentText.substring(endPos);
+
+					textarea.value = beforeCursor + textToInsert + afterCursor;
+					textarea.selectionStart = textarea.selectionEnd = startPos + textToInsert.length;
+				}
+
+				textarea.focus();
+
 				$('#imagesModal').modal('hide');
 			});
 

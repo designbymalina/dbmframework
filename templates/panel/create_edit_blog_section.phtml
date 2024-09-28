@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="form_image"><span class="font-weight-bold">Section main image</span>, optionally select and insert one of the uploaded images, only the image name with extension.</label>
-                                    <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($fields->image)) : echo $fields->image; endif; ?>" maxlength="40" readonly>
+                                    <input type="text" name="image" id="formImage" class="form-control" placeholder="insert the image-name.jpg" value="<?php if (!empty($fields->image)) : echo $fields->image; endif; ?>" maxlength="40" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="form_description" class="font-weight-bold">Description</label>
@@ -103,7 +103,7 @@
 							</td>
 							<td class="text-right">
 								<button class="btn btn-primary btn-sm setImageMain" title="Insert main image" data-text="<?= $image ?>"><i class="fas fa-image"></i></button>
-								<button class="btn btn-danger btn-sm ml-md-1 deleteImage" title="Delete" data-fid="<?= $i ?>" data-file="<?= $image ?>"><i class="fas fa-trash-alt"></i></button>
+								<button class="btn btn-danger btn-sm ml-md-1 deleteImage" title="Delete" data-fid="<?= $i ?>" data-file="<?= $image ?>" data-type="section"><i class="fas fa-trash-alt"></i></button>
 							</td>
 						</tr>
 						<?php $i++; ?>
@@ -133,6 +133,7 @@
 							</div>
 							<div class="form-group">
 								<button type="button" name="submit" class="btn btn-primary float-right" id="uploadImage"><i class="fas fa-upload mr-3"></i>Upload image</button>
+								<input type="hidden" name="type" id="formType" value="section">
 							</div>
 						</form>
 					</div>
@@ -172,7 +173,7 @@
 
 				$.ajax({
 					type: 'POST',
-					url: '<?= $this->path(); ?>panel/ajaxUploadImageSection',
+					url: '{{ $this->path() }}panel/ajaxUploadImage',
 					data: params,
 					contentType: false,
 					processData: false,
@@ -199,12 +200,13 @@
 			$('.deleteImage').click(function () {
 				var fid = $(this).attr("data-fid");
 				var file = $(this).attr("data-file");
-				var params = 'file=' + file + '&type=blog';
+				var type = $(this).attr("data-type");
+				var params = 'file=' + file + '&type=' + type;
 
 				if (confirm('Are you sure you want to delete?')) {
 					$.ajax({
 						type: "GET",
-						url: '<?= $this->path(); ?>panel/ajaxDeleteImageSection',
+						url: '{{ $this->path() }}panel/ajaxDeleteImage',
 						data: params,
 						cache: false,
 						contentType: false,

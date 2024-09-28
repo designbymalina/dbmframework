@@ -23,6 +23,10 @@ function reportingErrorHandler(int $errLevel, string $errMessage, string $errFil
                 $basename = $match[1];
             }
         }
+
+        $basename = preg_replace('/[\/\\\\\:\*\?\"\<\>\|\=\&]/', '_', $basename);
+        $basename = preg_replace('/\s+/', '_', $basename);
+        $basename = preg_replace('/[^\w\.\-]/', '', $basename);
     }
 
     $date = date('Y-m-d H:i:s');
