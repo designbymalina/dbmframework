@@ -69,8 +69,8 @@ class AuthenticationService
     {
         $arraySend = [
             'subject' => $this->translation->trans('register.mailer.subject'),
-            'sender_name' => trim(getenv('APP_NAME'), '"'),
-            'sender_email' => trim(getenv('APP_EMAIL'), '"'),
+            'sender_name' => getenv('APP_NAME'),
+            'sender_email' => getenv('APP_EMAIL'),
             'recipient_name' => $login,
             'recipient_email' => $email,
             'page_address' => getenv('APP_URL'),

@@ -39,8 +39,8 @@
                                     <div class="col-sm-6">
                                         <label for="formContent" class="font-weight-bold">Status</label>
                                         <?php
-                                            !empty($fields->status) ? $status = $fields->status : $status = 0;
-                                            echo $this->htmlSelect([0 => 'Inactive', 1 => 'Active'], 'status', $status, 'asc', 'required');
+                                            !empty($fields->status) ? $status = $fields->status : $status = 'inactive';
+                                            echo $this->htmlSelect(['active' => 'Active', 'inactive' => 'Inactive'], 'status', $status, 'asc', 'required');
                                         ?>
                                     </div>
                                     <div class="col-sm-6">

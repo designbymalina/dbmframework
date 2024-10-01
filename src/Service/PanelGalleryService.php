@@ -110,7 +110,7 @@ class PanelGalleryService
         return $this->model->insertPhoto($sqlInsert);
     }
 
-    public function editUpdatePhoto(int $id, string $title, string $description, int $status): bool
+    public function editUpdatePhoto(int $id, string $title, string $description, string $status): bool
     {
         $datetime = new DateTime();
         $dateNow = $datetime->format('Y-m-d H:i:s');

@@ -21,9 +21,9 @@ class MailerUtility
         // Variables
         $isSend = true;
 
-        $subject = !empty($params['subject']) ? $params['subject'] : trim(getenv('APP_NAME'), '"');
-        $senderName = !empty($params['sender_name']) ? $params['sender_name'] : trim(getenv('APP_NAME'), '"');
-        $senderEmail = !empty($params['sender_email']) ? $params['sender_email'] : trim(getenv('APP_EMAIL'), '"');
+        $subject = !empty($params['subject']) ? $params['subject'] : getenv('APP_NAME');
+        $senderName = !empty($params['sender_name']) ? $params['sender_name'] : getenv('APP_NAME');
+        $senderEmail = !empty($params['sender_email']) ? $params['sender_email'] : getenv('APP_EMAIL');
         $recipientName = $params['recipient_name'] ?? null;
         $recipientEmail = $params['recipient_email'] ?? null;
         $messageTemplate = $params['message_template'] ?? null;
@@ -46,7 +46,7 @@ class MailerUtility
             $mail->CharSet = "UTF-8"; // set encoding
 
             // PHPMailer optional SMTP
-            if ((strtolower(getenv('MAIL_SMTP')) == 'true') && ($senderEmail == trim(getenv('APP_EMAIL'), '"'))) {
+            if ((strtolower(getenv('MAIL_SMTP')) == 'true') && ($senderEmail == getenv('APP_EMAIL'))) {
                 $mail->IsSMTP(); // telling the class to use SMTP
                 $mail->SMTPAuth = true; // enable SMTP authentication
                 $mail->Host = getenv('MAIL_HOST'); // SMTP server

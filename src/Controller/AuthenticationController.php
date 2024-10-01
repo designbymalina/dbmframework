@@ -13,6 +13,7 @@ use App\Form\AuthenticationForm;
 use App\Model\AuthenticationModel;
 use App\Service\AuthenticationService;
 use Dbm\Classes\BaseController;
+use Dbm\Classes\RememberMe;
 use Dbm\Interfaces\DatabaseInterface;
 
 class AuthenticationController extends BaseController
@@ -20,6 +21,7 @@ class AuthenticationController extends BaseController
     private $model;
     private $form;
     private $service;
+    private $remember;
 
     public function __construct(DatabaseInterface $database)
     {
@@ -28,6 +30,7 @@ class AuthenticationController extends BaseController
         $this->model = new AuthenticationModel($database, $this->translation);
         $this->form = new AuthenticationForm($this->model, $this->translation);
         $this->service = new AuthenticationService($this->model, $this->translation);
+        $this->remember = new RememberMe($database);
     }
 
     /* @Route: "/register" */
@@ -126,17 +129,23 @@ class AuthenticationController extends BaseController
         }
 
         $translation = $this->translation;
-
         $dataForm = $this->getLoginRequestData();
 
         $errorValidate = $this->form->validateLoginForm($dataForm['login'], $dataForm['password']);
 
         if (!empty($errorValidate['user_id'])) {
-            session_regenerate_id(true);
+            if (!empty($dataForm['remember_me']) && is_string($dataForm['remember_me'])) {
+                $this->remember->createRememberMe((int) $errorValidate['user_id']);
+            }
 
-            $this->setSession(getenv('APP_SESSION_KEY'), $errorValidate['user_id']);
-            $this->setFlash("messageSuccess", $translation->trans('login.message.logged_in'));
-            $this->redirect("./account");
+            if (session_regenerate_id(true)) {
+                $this->setSession(getenv('APP_SESSION_KEY'), $errorValidate['user_id']);
+                $this->setFlash("messageSuccess", $translation->trans('login.message.logged_in'));
+                $this->redirect("./account");
+            } else {
+                $this->setFlash("messageDanger", $translation->trans('alert.unexpected_error'));
+                $this->redirect("./login");
+            }
         } else {
             $dataForm = array_merge($dataForm, $errorValidate);
             $meta = $this->service->getMetaLogin();
@@ -151,10 +160,12 @@ class AuthenticationController extends BaseController
     /* @Route: "/login/logout" */
     public function logoutMethod(): void
     {
-        $translation = $this->translation;
+        if ($this->remember->checkRememberMe($this) === true) {
+            $this->remember->removeRememberMe($this);
+        }
 
-        $this->unsetSession(getenv('APP_SESSION_KEY'));
-        $this->setFlash("messageSuccess", $translation->trans('login.message.logged_out'));
+        $this->destroySession();
+        $this->setFlash("messageSuccess", $this->translation->trans('login.message.logged_out'));
         $this->redirect('./');
     }
 
@@ -180,6 +191,7 @@ class AuthenticationController extends BaseController
         return [
             'login' => $this->requestData('dbm_login'),
             'password' => $this->requestData('dbm_password'),
+            'remember_me' => $this->requestData('dbm_remember_me'),
             'token' => $this->requestData('csrf_token'),
             'error_login' => '',
             'error_password' => '',

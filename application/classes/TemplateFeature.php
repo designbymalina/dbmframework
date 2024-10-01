@@ -305,7 +305,7 @@ class TemplateFeature
     /*
      * Creating field "select"
      */
-    public function htmlSelect(array $options, string $name, int $item = null, string $sort = null, string $style = null): string
+    public function htmlSelect(array $options, string $name, string $item = null, string $sort = null, string $style = null): string
     {
         if (strtolower($sort) === 'asc') {
             asort($options);
@@ -322,7 +322,7 @@ class TemplateFeature
         foreach ($options as $key => $value) {
             $html .= '    <option value="' . $key . '"';
 
-            if ($item === $key) {
+            if ($item == $key) {
                 $html .= ' selected';
             }
 

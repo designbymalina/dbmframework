@@ -93,7 +93,7 @@ class PanelGalleryController extends AdminBaseController
         $id = (int) $this->requestData('id');
         $title = $this->requestData('title');
         $description = $this->requestData('description');
-        $status = (int) $this->requestData('status');
+        $status = $this->requestData('status');
 
         if ($this->galleryService->editUpdatePhoto($id, $title, $description, $status)) {
             $this->setFlash('messageSuccess', 'The photo has been successfully edited.');

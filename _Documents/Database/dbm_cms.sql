@@ -17,8 +17,8 @@ CREATE TABLE `dbm_article` (
   `meta_keywords` varchar(255) NOT NULL,
   `page_header` varchar(150) NOT NULL,
   `page_content` text NOT NULL,
-  `image_thumb` varchar(50) DEFAULT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'new',
+  `image_thumb` varchar(50) DEFAULT NULL,  
+  `status` enum('active','inactive','new') NOT NULL DEFAULT 'new',
   `visit` int NOT NULL DEFAULT '0',
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT NULL
@@ -72,7 +72,7 @@ CREATE TABLE `dbm_gallery` (
   `title` varchar(50) NOT NULL,
   `description` text,
   `views` int NOT NULL DEFAULT '0',
-  `status` tinyint NOT NULL DEFAULT '1' COMMENT '1=Active, 0=Inactive',
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -132,7 +132,7 @@ CREATE TABLE `dbm_user_details` (
   `user_id` int UNSIGNED NOT NULL,
   `fullname` varchar(100) DEFAULT NULL,
   `profession` varchar(100) DEFAULT NULL,
-  `phone` varchar(15) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `website` varchar(120) DEFAULT NULL,
   `avatar` varchar(50) DEFAULT NULL,
   `biography` text,
@@ -150,6 +150,18 @@ INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `phon
 (3, 3, 'Lucy Johansson', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
+-- Struktura tabeli dla tabeli `dbm_remember_me`
+--
+
+CREATE TABLE `dbm_remember_me` (
+  `id` int NOT NULL,
+  `user_id` int UNSIGNED NOT NULL, 
+  `selector` varchar(50) NOT NULL,
+  `validator` varchar(100) NOT NULL,
+  `expiry` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
 -- Indeksy dla zrzutów tabel
 --
 
@@ -158,9 +170,11 @@ INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `phon
 --
 ALTER TABLE `dbm_article`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `section_id` (`section_id`),
-  ADD KEY `user_id` (`user_id`);
-
+  ADD KEY `FK_DbMArticleUser` (`user_id`),
+  ADD KEY `FK_DbMArticleSection` (`section_id`),
+  ADD INDEX `IDX_DbMArticleSection` (`section_id`),
+  ADD INDEX `IDX_DbMArticleUser` (`user_id`);
+  
 --
 -- Indeksy dla tabeli `dbm_article_sections`
 --
@@ -172,20 +186,31 @@ ALTER TABLE `dbm_article_sections`
 --
 ALTER TABLE `dbm_gallery`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `FK_DbMGalleryUser` (`user_id`),
+  ADD INDEX `IDX_DbMGalleryUser` (`user_id`);
 
 --
 -- Indeksy dla tabeli `dbm_user`
 --
 ALTER TABLE `dbm_user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UNIQUE_LOGIN` (`login`),
+  ADD UNIQUE KEY `UNIQUE_EMAIL` (`email`);
 
 --
 -- Indeksy dla tabeli `dbm_user_details`
 --
 ALTER TABLE `dbm_user_details`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `FK_DbMUserDetails` (`user_id`),
+  ADD INDEX `IDX_DbMUserDetails` (`user_id`);
+  
+--
+-- Indeksy dla tabeli `dbm_remember_me`
+--
+ALTER TABLE `dbm_remember_me`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_DbMRememberUser` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -222,6 +247,12 @@ ALTER TABLE `dbm_user_details`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `dbm_remember_me`
+--
+ALTER TABLE `dbm_remember_me`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  
+--
 -- Constraints for dumped tables
 --
 
@@ -229,18 +260,24 @@ ALTER TABLE `dbm_user_details`
 -- Constraints for table `dbm_article`
 --
 ALTER TABLE `dbm_article`
-  ADD CONSTRAINT `FK_DBMArticleSection` FOREIGN KEY (`section_id`) REFERENCES `dbm_article_sections` (`id`),
-  ADD CONSTRAINT `FK_DbMArticleUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
+  ADD CONSTRAINT `FK_DbMArticleSection` FOREIGN KEY (`section_id`) REFERENCES `dbm_article_sections` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_DbMArticleUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `dbm_gallery`
 --
 ALTER TABLE `dbm_gallery`
-  ADD CONSTRAINT `FK_DbMGalleryUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
+  ADD CONSTRAINT `FK_DbMGalleryUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `dbm_user_details`
 --
 ALTER TABLE `dbm_user_details`
-  ADD CONSTRAINT `FK_DbMUserDetails` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`);
+  ADD CONSTRAINT `FK_DbMUserDetails` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  
+--
+-- Constraints for table `dbm_remember_me`
+--
+ALTER TABLE `dbm_remember_me`
+  ADD CONSTRAINT `FK_DbMRememberUser` FOREIGN KEY (`user_id`) REFERENCES `dbm_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;

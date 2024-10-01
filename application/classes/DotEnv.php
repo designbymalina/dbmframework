@@ -1,12 +1,10 @@
 <?php
 /*
- * Application: DbM Framework v2.1
+ * Application: DbM Framework v2
  * Author: Arthur Malinowsky (Design by Malina)
  * License: MIT
  * Web page: www.dbm.org.pl
  * Contact: biuro@dbm.org.pl
- *
- * PHP-DotEnv: https://github.com/devcoder-xyz/php-dotenv
 */
 
 declare(strict_types=1);
@@ -47,15 +45,31 @@ class DotEnv
                 continue;
             }
 
+            if (strpos($line, '=') === false) {
+                continue;
+            }
+
             list($name, $value) = explode('=', $line, 2);
+
             $name = trim($name);
             $value = trim($value);
 
+            $value = $this->cleanQuotes($value);
+
             if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
                 putenv(sprintf('%s=%s', $name, $value));
-
                 $_ENV[$name] = $value;
+                $_SERVER[$name] = $value;
             }
         }
+    }
+
+    private function cleanQuotes(string $value): string
+    {
+        if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+            (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+            return substr($value, 1, -1);
+        }
+        return $value;
     }
 }

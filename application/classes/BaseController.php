@@ -18,11 +18,21 @@ use Dbm\Interfaces\DatabaseInterface;
 class BaseController extends TemplateEngine implements BaseInterface
 {
     private $database;
+    private $remember;
 
     public function __construct(?DatabaseInterface $database = null)
     {
         $this->database = $database;
         $this->translation = new Translation();
+
+        if (!empty(getenv('DB_NAME'))) {
+            $stmt = $this->database->querySql("SHOW TABLES LIKE 'dbm_remember_me'");
+
+            if ($stmt->rowCount() > 0) {
+                $this->remember = new RememberMe($this->database, $this);
+                $this->remember->checkRememberMe($this);
+            }
+        }
     }
 
     // Request data
@@ -78,6 +88,34 @@ class BaseController extends TemplateEngine implements BaseInterface
     {
         session_unset();
         session_destroy();
+    }
+
+    // Set cookie, $expiry = 86400 = 1 day
+    public function setCookie(string $cookieName, string $cookieValue, int $expiry = 86400, bool $secure = true, bool $httpOnly = true): void
+    {
+        if (!empty($cookieName) && !empty($cookieValue)) {
+            setcookie($cookieName, $cookieValue, time() + $expiry, '/', '', $secure, $httpOnly);
+            $_COOKIE[$cookieName] = $cookieValue;
+        }
+    }
+
+    // Get cookie
+    public function getCookie(string $cookieName): ?string
+    {
+        if (isset($_COOKIE[$cookieName])) {
+            return $_COOKIE[$cookieName];
+        }
+
+        return null;
+    }
+
+    // Unset cookie
+    public function unsetCookie(string $cookieName): void
+    {
+        if (isset($_COOKIE[$cookieName])) {
+            setcookie($cookieName, '', time() - 3600, '/', '', true, true);
+            unset($_COOKIE[$cookieName]);
+        }
     }
 
     // Set flash message

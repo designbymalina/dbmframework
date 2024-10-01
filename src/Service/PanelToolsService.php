@@ -38,7 +38,7 @@ class PanelToolsService
 
             if ($type == 'mailer') {
                 $title = 'Mailing Error Log';
-            } else if ($type == 'logger') {
+            } elseif ($type == 'logger') {
                 $title = 'Logger Error Log';
             }
         }

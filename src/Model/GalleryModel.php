@@ -22,7 +22,7 @@ class GalleryModel
 
     public function getGalleryPhotos(int $limit): ?array
     {
-        $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $limit";
+        $query = "SELECT * FROM dbm_gallery WHERE status='Active' ORDER BY id DESC LIMIT $limit";
 
         $this->database->queryExecute($query);
 
@@ -35,7 +35,7 @@ class GalleryModel
 
     public function getGalleryLoadData(int $start, int $limit): ?array
     {
-        $query = "SELECT * FROM dbm_gallery WHERE status=true ORDER BY id DESC LIMIT $start, $limit";
+        $query = "SELECT * FROM dbm_gallery WHERE status='Active' ORDER BY id DESC LIMIT $start, $limit";
 
         $this->database->queryExecute($query);
 

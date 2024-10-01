@@ -7,6 +7,13 @@
  * Contact: biuro@dbm.org.pl
 */
 
+function setupErrorHandling(): void
+{
+    error_reporting(E_ALL);
+    ini_set('display_errors', getenv('APP_ENV') === 'production' ? '0' : '1');
+    set_error_handler('reportingErrorHandler');
+}
+
 function reportingErrorHandler(int $errLevel, string $errMessage, string $errFile, int $errLine): void
 {
     $basename = 'index';
@@ -109,4 +116,17 @@ function autoloadingWithWithoutComposer(string $pathAutoload): void
             require(BASE_DIRECTORY . $className . '.php');
         });
     }
+}
+
+function initializeSession(): void
+{
+    $isProduction = getenv('APP_ENV') === 'production';
+
+    session_start([
+        'cookie_lifetime' => 0,              // Cookie lifespan (it has an influence on class RememberMe)
+        'cookie_secure' => $isProduction,    // Cookie only available via HTTPS
+        'cookie_httponly' => true,           // Cookie not available via JavaScript
+        'use_strict_mode' => true,           // Enforcing Strict Session Mode
+        'use_only_cookies' => true,          // Only cookies for storing sessions
+    ]);
 }
