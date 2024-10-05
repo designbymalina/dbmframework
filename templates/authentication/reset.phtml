@@ -1,0 +1,45 @@
+{% extends 'base.phtml' %}
+
+{% block content %}
+    {% include '_include/navigation.phtml' %}
+    {% include '_include/messages.phtml' %}
+<!-- Main Content -->
+    <section class="h-100 dbm-form-gradient-1">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-xl-10">
+                    <div class="card rounded-3 text-black">
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <form action="{{ $this->path('reset/pass') }}" method="POST" class="dbm-form-primary">
+                                        <h4>{{ $this->trans('reset.header') }}</h4>
+                                        <p>{{ $this->trans('reset.subheader_fill') }}</p>
+                                        <div class="form-outline mb-2">
+                                            <label class="form-label mb-1" for="form_email">{{ $this->trans('email') }}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">@</span>
+                                                <input type="email" name="dbm_email" id="form_email" value="{% if (!empty($form['email'])): echo $this->sanitize($form['email']); endif; %}" class="form-control" placeholder="{{ $this->trans('email_address') }}" required>
+                                            </div>
+                                            {% if (!empty($form['error_email'])): %}
+                                                <div class="text-danger small"><i class="bi bi-info-circle-fill me-2 small"></i>{{ $form['error_email'] }}</div>
+                                            {% endif; %}
+                                        </div>
+                                        <div class="d-grid gap-2 mb-3 text-center">
+                                            <button type="submit" class="btn btn-primary btn-block text-uppercase fw-bold">{{ $this->trans('reset_password') }}</button>
+                                            <input type="hidden" name="csrf_token" value="{% if (!empty($form['token'])): echo $form['token']; endif; %}">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center position-relative dbm-background-1">
+                                {% include '_include/authentication_information.phtml' %} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

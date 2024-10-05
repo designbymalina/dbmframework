@@ -116,4 +116,41 @@ class AuthenticationModel
 
         return (string) $result->id;
     }
+
+    public function getResetPassword(array $data): ?object
+    {
+        $query = "SELECT * FROM dbm_reset_password WHERE token = :token LIMIT 1";
+
+        $this->database->queryExecute($query, $data);
+
+        if ($this->database->rowCount() == 0) {
+            return null;
+        }
+
+        return $this->database->fetchObject();
+    }
+
+    public function insertResetPassword(array $data): bool
+    {
+        [$columns, $placeholders, $filteredData] = $this->database->buildInsertQuery($data);
+        $query = "INSERT INTO dbm_reset_password ($columns) VALUES ($placeholders)";
+
+        return $this->database->queryExecute($query, $filteredData);
+    }
+
+    public function deleteResetPassword(): bool
+    {
+        $expires = date('Y-m-d H:i:s', strtotime("+1 week"));
+        $query = "DELETE FROM dbm_reset_password WHERE expires<:expires";
+
+        return $this->database->queryExecute($query, [':expires' => $expires]);
+    }
+
+    public function updateUserPassword(array $data): bool
+    {
+        [$setClause, $filteredData] = $this->database->buildUpdateQuery($data);
+        $query = "UPDATE dbm_user SET $setClause WHERE email=:email";
+
+        return $this->database->queryExecute($query, $filteredData);
+    }
 }

@@ -154,11 +154,22 @@ INSERT INTO `dbm_user_details` (`id`, `user_id`, `fullname`, `profession`, `phon
 --
 
 CREATE TABLE `dbm_remember_me` (
-  `id` int NOT NULL,
+  `id` int UNSIGNED NOT NULL,
   `user_id` int UNSIGNED NOT NULL, 
   `selector` varchar(50) NOT NULL,
   `validator` varchar(100) NOT NULL,
   `expiry` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Struktura tabeli dla tabeli `dbm_reset_password`
+--
+
+CREATE TABLE `dbm_reset_password` (
+  `id` int UNSIGNED NOT NULL,
+  `email` varchar(180) NOT NULL,
+  `token` varchar(100) NOT NULL,
+  `expires` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -211,6 +222,12 @@ ALTER TABLE `dbm_user_details`
 ALTER TABLE `dbm_remember_me`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK_DbMRememberUser` (`user_id`);
+  
+--
+-- Indeksy dla tabeli `dbm_reset_password`
+--
+ALTER TABLE `dbm_reset_password`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -250,8 +267,14 @@ ALTER TABLE `dbm_user_details`
 -- AUTO_INCREMENT for table `dbm_remember_me`
 --
 ALTER TABLE `dbm_remember_me`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
   
+--
+-- AUTO_INCREMENT for table `dbm_reset_password`
+--
+ALTER TABLE `dbm_reset_password`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- Constraints for dumped tables
 --

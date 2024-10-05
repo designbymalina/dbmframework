@@ -38,10 +38,13 @@ return function (?DatabaseInterface $database) {
     $router->addRoute('/regulation.html', [SubpageController::class, 'regulation']);
     $router->addRoute('/register', [AuthenticationController::class, 'register']);
     $router->addRoute('/register/signup', [AuthenticationController::class, 'signupMethod']);
-    $router->addRoute('/register/verified.php', [AuthenticationController::class, 'verifiedMethod']);
+    $router->addRoute('/register/verified', [AuthenticationController::class, 'verifiedMethod']);
     $router->addRoute('/login', [AuthenticationController::class, 'login']);
     $router->addRoute('/login/signin', [AuthenticationController::class, 'signinMethod']);
     $router->addRoute('/login/logout', [AuthenticationController::class, 'logoutMethod']);
+    $router->addRoute('/reset', [AuthenticationController::class, 'resetMethod']);
+    $router->addRoute('/reset/pass', [AuthenticationController::class, 'resetPassMethod']);
+    $router->addRoute('/reset/password', [AuthenticationController::class, 'resetPasswordMethod']);
     $router->addRoute('/account', [AccountController::class, 'index']);
     $router->addRoute('/account/profileChange', [AccountController::class, 'profileChangeMethod']);
     $router->addRoute('/account/passwordChange', [AccountController::class, 'passwordChangeMethod']);

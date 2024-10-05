@@ -27,15 +27,19 @@ class AuthenticationForm
         $this->model = $model;
     }
 
-    public function validateCsrfToken(string $sessionToken, string $formToken): bool
+    public function validateCsrfToken(string $sessionToken, ?string $formToken): ?bool
     {
-        return hash_equals($sessionToken, $formToken);
+        if (is_string($formToken)) {
+            return hash_equals($sessionToken, $formToken);
+        }
+
+        return null;
     }
 
     public function validateRegisterForm(string $login, string $email, string $password, string $confirmation): array
     {
-        $translation = $this->translation;
         $data = [];
+        $translation = $this->translation;
 
         if (empty($login)) {
             $data['error_login'] = $translation->trans('register.alert.login_required');
@@ -94,6 +98,42 @@ class AuthenticationForm
                     $data['user_id'] = trim($correctUser);
                 }
             }
+        }
+
+        return $data;
+    }
+
+    public function validateResetForm(string $email): array
+    {
+        $data = [];
+        $translation = $this->translation;
+
+        if (empty($email)) {
+            $data['error_email'] = $translation->trans('register.alert.email_required');
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $data['error_email'] = $translation->trans('register.alert.email_filter');
+        } elseif (!$this->model->checkEmail($email)) {
+            $data['error_no_email'] = $translation->trans('reset.alert.email_not_exist');
+        }
+
+        return $data;
+    }
+
+    public function validateResetPasswordForm(array $formData): array
+    {
+        $data = [];
+        $translation = $this->translation;
+
+        if (empty($formData['password'])) {
+            $data['error_password'] = $translation->trans('register.alert.password_required');
+        } elseif (!preg_match("/^(?=.*[0-9])(?=.*[A-Z]).{6,30}$/", $formData['password'])) {
+            $data['error_password'] = $translation->trans('register.alert.password_pattern');
+        }
+
+        if (empty($formData['password_repeat'])) {
+            $data['error_password_repeat'] = $translation->trans('register.alert.password_confirmation_required');
+        } elseif ($formData['password'] !== $formData['password_repeat']) {
+            $data['error_password_repeat'] = $translation->trans('register.alert.password_confirmation_different');
         }
 
         return $data;

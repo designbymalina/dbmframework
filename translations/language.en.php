@@ -31,6 +31,7 @@ return [
     'repeat_password' => "Repeat password",
     'create_account' => "Create account",
     'your_login' => "Your login",
+    'reset_password' => "Reset Password",
     // Alerts
     'alert.unexpected_error' => "An unexpected error occurred!",
     'alert.unexpected_error_try_again' => "An unexpected error occurred! Please try again or report an administration error.",
@@ -92,6 +93,19 @@ return [
     'register.alert.token_expired' => "User not found or token expired!",
     'register.alert.no_token' => "No token provided!",
     'register.mailer.subject' => "Account has been created",
+    // Reset template (html)
+    'reset.title' => "Reset Password",
+    'reset.description' => "Enter your email address. We'll send you an email with instructions on how to reset your password.",
+    'reset.keywords' => "reset password, new password",
+    'reset.header' => "Reset Password",
+    'reset.subheader_fill' => "Enter your email address, where we'll send you an email with instructions on how to reset your password.",
+    'reset.subheader_create' => "Reset your password and secure your account.",
+    'reset.alert.email_not_exist' => "The email address you entered does not exist.",
+    'reset.alert.token_expires' => "The password reset token has expired or is invalid.",
+    'reset.alert.send_reset_password' => "If you have an account with us, we will send you an email with a link you must click to reset your password.",
+    'reset.alert.updated_success' => "The password for your account on our website has been changed! Log in to continue.",
+    'reset.alert.failed_send_reset_instructions' => "The email containing password reset instructions for email address %s could not be sent.",
+    'reset.mailer.subject' => "Resetting password",
     // AccountController
     'account.title' => "User Account",
     // BlogController

@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\AccountModel;
-use App\Model\UserModel;
 use App\Service\AccountService;
-use App\Service\UserService;
 use Dbm\Classes\BaseController;
 use Dbm\Interfaces\DatabaseInterface;
 
