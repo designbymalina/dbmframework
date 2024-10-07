@@ -138,8 +138,8 @@ class AuthenticationService
     {
         $arraySend = [
             'subject' => $this->translation->trans('reset.mailer.subject'),
-            'sender_name' => getenv('APP_NAME'),
-            'sender_email' => getenv('APP_EMAIL'),
+            'sender_name' => getenv('MAIL_FROM_NAME'),
+            'sender_email' => getenv('MAIL_FROM_EMAIL'),
             'recipient_email' => $email,
             'page_address' => getenv('APP_URL'),
             'message_template' => "reset-password.html",
@@ -154,8 +154,8 @@ class AuthenticationService
     {
         $arraySend = [
             'subject' => $this->translation->trans('register.mailer.subject'),
-            'sender_name' => getenv('APP_NAME'),
-            'sender_email' => getenv('APP_EMAIL'),
+            'sender_name' => getenv('MAIL_FROM_NAME'),
+            'sender_email' => getenv('MAIL_FROM_EMAIL'),
             'recipient_name' => $login,
             'recipient_email' => $email,
             'page_address' => getenv('APP_URL'),

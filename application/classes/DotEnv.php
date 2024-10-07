@@ -55,6 +55,7 @@ class DotEnv
             $value = trim($value);
 
             $value = $this->cleanQuotes($value);
+            $value = $this->resolveReferences($value);
 
             if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
                 putenv(sprintf('%s=%s', $name, $value));
@@ -64,6 +65,12 @@ class DotEnv
         }
     }
 
+    /**
+     * Clean the quotes from the value if present.
+     *
+     * @param string $value
+     * @return string
+     */
     private function cleanQuotes(string $value): string
     {
         if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
@@ -72,4 +79,37 @@ class DotEnv
         }
         return $value;
     }
+
+    /**
+     * Replace variable references like ${VAR} with their respective values.
+     *
+     * @param string $value
+     * @return string
+     */
+    private function resolveReferences(string $value): string
+    {
+        return preg_replace_callback('/\${([A-Z0-9_]+)}/', function ($matches) {
+            $varName = $matches[1];
+            return $_ENV[$varName] ?? $_SERVER[$varName] ?? $matches[0];
+        }, $value);
+    }
+
+    /* TO TEST!
+     * Convert boolean-like values (true/false strings) to actual booleans.
+     *
+     * @param string $value
+     * @return bool|string
+     *
+    public function convertToBoolean(string $value)
+    {
+        $lowerValue = strtolower($value);
+
+        if (($lowerValue === 'false') || ($lowerValue === null)) {
+            return false; // will work for false and null and gives "null"
+        } elseif (($lowerValue === 'true') || ($lowerValue === '1')) {
+            return true; // gives 1 (type string)
+        }
+
+        return $value;
+    } */
 }

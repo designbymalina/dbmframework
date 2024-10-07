@@ -150,24 +150,17 @@ class PanelGalleryService
         return ['status' => 'danger', 'message' => 'An unexpected error occurred!'];
     }
 
-    private function processPhotoUpload($file): array
+    private function processPhotoUpload(array $file): array
     {
-        if (empty($file) || !isset($file["name"], $file["tmp_name"])) {
-            return ['status' => 'danger', 'message' => 'Unexpected error! File not uploaded.'];
-        }
-
-        $fileName = $file["name"];
-        $fileTempName = $file["tmp_name"];
-
-        if (empty($fileName)) {
-            return ['status' => 'danger', 'message' => 'The photo field is required!'];
-        }
-
         try {
-            $imageUpload = new ResizeUploadImageUtility();
-            $arrayPhoto = $imageUpload->createImages($fileTempName, $fileName, ConstantConfig::PATH_GALLERY_IMAGES);
+            if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+                return ['status' => 'danger', 'message' => 'No file was uploaded or the upload was invalid.'];
+            }
 
-            return $arrayPhoto; // return ['status' => 'danger or success', 'message' => 'Result message.', 'data' => 'filename-new.jpg'];
+            $imageUpload = new ResizeUploadImageUtility();
+            $arrayResult = $imageUpload->createImages($file, ConstantConfig::PATH_GALLERY_IMAGES);
+
+            return $arrayResult; // return ['status' => 'danger or success', 'message' => 'Result message.', 'data' => 'filename-new.jpg'];
         } catch (Exception $e) {
             $this->logger->logException($e);
             return ['status' => 'danger', 'message' => 'Error while processing the image: ' . $e->getMessage()];

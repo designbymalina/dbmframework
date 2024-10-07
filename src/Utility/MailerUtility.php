@@ -16,14 +16,16 @@ use Exception;
 
 class MailerUtility
 {
+    private bool $authentication = true;
+
     public function sendMessage(array $params): bool
     {
         // Variables
         $isSend = true;
 
-        $subject = !empty($params['subject']) ? $params['subject'] : getenv('APP_NAME');
-        $senderName = !empty($params['sender_name']) ? $params['sender_name'] : getenv('APP_NAME');
-        $senderEmail = !empty($params['sender_email']) ? $params['sender_email'] : getenv('APP_EMAIL');
+        $subject = !empty($params['subject']) ? $params['subject'] : getenv('MAIL_FROM_NAME');
+        $senderName = !empty($params['sender_name']) ? $params['sender_name'] : getenv('MAIL_FROM_NAME');
+        $senderEmail = !empty($params['sender_email']) ? $params['sender_email'] : getenv('MAIL_FROM_EMAIL');
         $recipientName = $params['recipient_name'] ?? null;
         $recipientEmail = $params['recipient_email'] ?? null;
         $messageTemplate = $params['message_template'] ?? null;
@@ -46,9 +48,11 @@ class MailerUtility
             $mail->CharSet = "UTF-8"; // set encoding
 
             // PHPMailer optional SMTP
-            if ((strtolower(getenv('MAIL_SMTP')) == 'true') && ($senderEmail == getenv('APP_EMAIL'))) {
+            $smtpIsTrue = filter_var(getenv('MAIL_SMTP'), FILTER_VALIDATE_BOOLEAN);
+
+            if (($smtpIsTrue === true) && ($senderEmail == getenv('MAIL_FROM_NAME'))) {
                 $mail->IsSMTP(); // telling the class to use SMTP
-                $mail->SMTPAuth = true; // enable SMTP authentication
+                $mail->SMTPAuth = $this->authentication; // enable SMTP authentication
                 $mail->Host = getenv('MAIL_HOST'); // SMTP server
                 $mail->Username = getenv('MAIL_USERNAME'); // SMTP username
                 $mail->Password = getenv('MAIL_PASSWORD'); // SMTP password
@@ -84,6 +88,11 @@ class MailerUtility
         }
 
         return $isSend;
+    }
+
+    public function setSMTPAuth(bool $authentication): void
+    {
+        $this->authentication = $authentication;
     }
 
     private function replaceContent(string $content, array $replace = []): string

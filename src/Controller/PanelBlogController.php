@@ -214,15 +214,11 @@ class PanelBlogController extends AdminBaseController
     public function ajaxUploadImageMethod(): void
     {
         $type = $this->requestData('type');
-
         $pathImage = $this->service->getTypeModule($type);
 
         if (!empty($_FILES['file'])) {
-            $fileName = $_FILES["file"]["name"];
-            $fileTempName = $_FILES["file"]["tmp_name"];
-
             $imageUpload = new ResizeUploadImageUtility();
-            $arrayResult = $imageUpload->createImages($fileTempName, $fileName, $pathImage);
+            $arrayResult = $imageUpload->createImages($_FILES['file'], $pathImage);
 
             echo json_encode($arrayResult);
         } else {
