@@ -102,7 +102,7 @@ return [
     'reset.subheader_create' => "Reset your password and secure your account.",
     'reset.alert.email_not_exist' => "The email address you entered does not exist.",
     'reset.alert.token_expires' => "The password reset token has expired or is invalid.",
-    'reset.alert.send_reset_password' => "If you have an account with us, we will send you an email with a link you must click to reset your password.",
+    'reset.alert.send_reset_password' => "If you have an account with us we will send you an email with a link you must click to reset your password.",
     'reset.alert.updated_success' => "The password for your account on our website has been changed! Log in to continue.",
     'reset.alert.failed_send_reset_instructions' => "The email containing password reset instructions for email address %s could not be sent.",
     'reset.mailer.subject' => "Resetting password",

@@ -102,7 +102,7 @@ return [
     'reset.subheader_create' => "Zresetuj hasło i zabezpiecz swoje konto.",
     'reset.alert.email_not_exist' => "Podany adres e-mail nie instnieje.",
     'reset.alert.token_expires' => "Token resetowania hasła wygasł lub jest nieprawidłowy.",
-    'reset.alert.send_reset_password' => "Jeśli posiadasz konto w naszym serwisie, wyślemy Ci wiadomość e-mail z linkiem, który należy kliknąć, aby zresetować hasło.",
+    'reset.alert.send_reset_password' => "Jeśli posiadasz konto w naszym serwisie wyślemy Ci wiadomość e-mail z linkiem, który należy kliknąć aby zresetować hasło.",
     'reset.alert.updated_success' => "Hasło do Twojego konta w naszym serwisie zostało zmienione! Zaloguj się, aby kontynuować.",
     'reset.alert.failed_send_reset_instructions' => "Nie udało się wysłać wiadomości zawierającej instrukcje dotyczące resetowania hasła dla adresu e-mail: %s.",
     'reset.mailer.subject' => "Resetowanie hasła",
