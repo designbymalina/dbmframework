@@ -6,10 +6,13 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+/**
+ * Class example for Unit test cases (Testy jednostkowe)
+ */
+class ExampleUnitTest extends TestCase
 {
     /**
-     * A basic test example.
+     * A basic example
      *
      * @return void
      */

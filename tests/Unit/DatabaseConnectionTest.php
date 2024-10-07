@@ -23,7 +23,7 @@ class DatabaseConnectionTest extends TestCase
         $dbHost = getenv('DB_HOST');
         $dbName = getenv('DB_NAME');
         $dbUser = getenv('DB_USER');
-        $dbPass = getenv('DB_PASS');
+        $dbPass = getenv('DB_PASSWORD');
 
         try {
             $dbDSN = "mysql:host=" . $dbHost . ";dbname=" . $dbName . ";charset=utf8";

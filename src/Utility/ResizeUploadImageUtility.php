@@ -20,7 +20,7 @@ class ResizeUploadImageUtility
     private const DIR_PHOTO = 'photo/';
     private const DIR_THUMB = 'thumb/';
     private const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif"];
-    
+
     private int $maxLength = 30;
     private int $minWidth = 960;
     // You can change these parameters when loading the class.
@@ -28,13 +28,13 @@ class ResizeUploadImageUtility
     private int $photoMaxWidth = 1280; // size from 960 to 1920
     private int $thumbMaxWidth = 480; // size from 320 to 640
     private int $imageQuality = 80; // quality from 50 to 100
-    
+
     /**
      * Handles file upload, resizing the image and creating a thumbnail.
      *
      * @param array $file - the uploaded file from $_FILES['file']
      * @param string $imagePath - the directory to store images
-     * @return array - status, message and if success data="filename.ext" of the result 
+     * @return array - status, message and if success data="filename.ext" of the result
      */
     public function createImages(array $file, string $imagePath = 'images/'): array
     {
