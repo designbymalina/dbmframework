@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
-    bootstrap="vendor/autoload.php"
+    bootstrap="tests/bootstrap.php"
     colors="true"
     backupGlobals="false"
     backupStaticAttributes="false"
@@ -11,16 +11,18 @@
     stopOnFailure="false"
 >
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory suffix="Test.php">./tests/</directory>
+        <testsuite name="Unit Test Suite">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>./tests/Integration</directory>
         </testsuite>
     </testsuites>
     <php>
-        <ini name="error_reporting" value="-1"/>
-        <ini name="display_errors" value="1"/>
         <env name="DB_HOST" value="localhost"/>
-        <env name="DB_NAME" value="dbm_cms"/>
-        <env name="DB_USER" value="root"/>
-        <env name="DB_PASS" value=""/>
+        <env name="DB_NAME" value=""/>
+        <env name="DB_USER" value=""/>
+        <env name="DB_PASSWORD" value=""/>
+        <env name="APP_SESSION_KEY" value=""/>
     </php>
 </phpunit>
