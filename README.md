@@ -48,6 +48,12 @@ Then configure: Cache settings, Database settings, Mailer settings.
 
 Manual installation makes the framework independent from other tools, equipped with its own autoloading. Executing the command `composer install` will automate the framework, create the Composer autoloading and install selected packages, e.g. for sending emails and development packages. After executing the command, the framework will work with Composer.
 
+#### Additional information
+
+When running the application in a production environment (on a remote server), **you should point the domain to the `/public/`** directory, because that is the root directory.
+
+Additionally, depending on the server configuration, **you may need to disable the `open_basedir`** restriction in PHP settings. This security measure, known as "page separation", can block access to some directories and files outside the domain root directory, which will prevent the application from opening in the domain.
+
 ### Installing via Composer
 
 If you prefer to install via Composer or your project requires additional packages:
