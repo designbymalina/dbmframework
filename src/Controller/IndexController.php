@@ -74,7 +74,7 @@ class IndexController extends BaseController
             str_replace(BASE_DIRECTORY, '', dirname($filePath))
         ));
 
-        return $this->render('index/step.phtml', [
+        return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaStep(),
         ]);
     }
