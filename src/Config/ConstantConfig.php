@@ -23,4 +23,6 @@ class ConstantConfig
             'bg' => 'alert-success',
         ],
     ];
+
+    //-INSTALL_POINT_ADD_CONSTANT
 }

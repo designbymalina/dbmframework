@@ -49,4 +49,6 @@ return function (DependencyContainer $container) {
     $container->set(IndexService::class, function () {
         return new IndexService();
     });
+
+    //-INSTALL_POINT_ADD_DEPENDENCY
 };

@@ -15,8 +15,11 @@ use App\Controller\IndexController;
 use Dbm\Classes\Http\Request;
 use Dbm\Classes\Router;
 
+//-INSTALL_POINT_ADD_USE
+
 return function (Router $router): void {
     $request = new Request();
+    //-INSTALL_POINT_ADD_VALUES
 
     // Index routes
     $router->addRoute('/', [IndexController::class, 'index'], 'index');

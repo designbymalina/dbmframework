@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Service\IndexService;
 use Dbm\Classes\BaseController;
+use Dbm\Classes\Http\Request;
 use Dbm\Interfaces\DatabaseInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -35,14 +36,12 @@ class IndexController extends BaseController
      */
     public function index(IndexService $indexService): ResponseInterface
     {
-        // TEMP: Remove flash and redirect.
+        // Create a New Project (templates/index/index.phtml)!
         $this->setFlash('messageInfo', 'Your application is now ready and you can start working on a new project. Optionally, proceed to installing the DbM CMS content management system.');
-        return $this->redirect('./start');
 
-        // START: Unselect the code and create a New Project.
-        /* return $this->render('index/index.phtml', [
+        return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaIndex(),
-        ]); */
+        ]);
     }
 
     /**
@@ -51,8 +50,19 @@ class IndexController extends BaseController
      *
      * @Route: "/start"
      */
-    public function start(IndexService $indexService): ResponseInterface
+    public function start(IndexService $indexService, Request $request): ResponseInterface
     {
+        $action = $request->getQuery('action');
+
+        if ($action === 'remove') {
+            $msg = $indexService->uninstallInstallModule();
+
+            if (!empty($msg)) {
+                $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
+                $this->setFlash($type, $msg['message']);
+            }
+        }
+
         return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaStart(),
         ]);
@@ -66,13 +76,16 @@ class IndexController extends BaseController
      */
     public function step(IndexService $indexService): ResponseInterface
     {
-        $filePath = BASE_DIRECTORY . 'modules' . DS . 'CMSLite' . DS . 'module.json';
-        // TODO! $indexService->prepareCMSLiteModule()
+        if (class_exists('\\App\\Controller\\InstallController')) {
+            $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="./start?action=remove">remove the installer</a>.');
+        } else {
+            $msg = $indexService->handleInstallPreparation();
 
-        $this->setFlash('messageInfo', sprintf(
-            'DbM CMS Lite module is not available. Download it from the official website or GitHub and place it in: <span class="text-danger">%s</span>',
-            str_replace(BASE_DIRECTORY, '', dirname($filePath))
-        ));
+            if (!empty($msg)) {
+                $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
+                $this->setFlash($type, $msg['message']);
+            }
+        }
 
         return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaStep(),
