@@ -44,10 +44,39 @@ class IndexService
         ];
     }
 
-    public function waitForFileState(string $path, bool $shouldExist, float $timeout = 3.0, float $interval = 0.1): void
+    public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 10.0, float $interval = 0.1): void
     {
+        if (!file_exists($manifestPath)) {
+            return;
+        }
+
+        $json = file_get_contents($manifestPath);
+        $data = json_decode($json, true);
+
+        if (!isset($data['target']) || !is_array($data['target'])) {
+            return;
+        }
+
+        $targets = array_values($data['target']);
         $start = microtime(true);
-        while ((file_exists($path) !== $shouldExist) && (microtime(true) - $start) < $timeout) {
+
+        while ((microtime(true) - $start) < $timeout) {
+            $allMatched = true;
+
+            foreach ($targets as $relativePath) {
+                $path = BASE_DIRECTORY . $relativePath;
+                $exists = file_exists($path);
+
+                if ($exists !== $shouldExist) {
+                    $allMatched = false;
+                    break;
+                }
+            }
+
+            if ($allMatched) {
+                return;
+            }
+
             usleep((int) ($interval * 1_000_000));
         }
     }

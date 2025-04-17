@@ -20,8 +20,8 @@ use ZipArchive;
 class InstallerUtility
 {
     private const DIR_INSTALL = '_Documents';
-    private const PATH_ROUTES = 'application/routes.php';
-    private const PATH_CONSTANT = 'src/Config/ConstantConfig.php';
+    private const PATH_ROUTES = 'application' . DS . 'routes.php';
+    private const PATH_CONSTANT = 'src' . DS . 'Config' . DS . 'ConstantConfig.php';
 
     public function installModule(string $dirModule, string $pathZip, string $pathManifest): array
     {

@@ -84,7 +84,7 @@ class IndexController extends BaseController
                     $this->setFlash($type, $msg['message']);
                 }
 
-                $indexService->waitForFileState($pathManifest, false);
+                $indexService->waitForModuleState($pathManifest, false);
                 return $this->redirect('./start');
             } else {
                 $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');
@@ -100,7 +100,7 @@ class IndexController extends BaseController
                 $this->setFlash($type, $msg['message']);
             }
 
-            $indexService->waitForFileState($pathManifest, true);
+            $indexService->waitForModuleState($pathManifest, true);
         }
 
         return $this->render('index/start.phtml', [
