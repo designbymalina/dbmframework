@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\IndexService;
+use App\Utility\InstallerUtility;
 use Dbm\Classes\BaseController;
 use Dbm\Classes\Http\Request;
 use Dbm\Interfaces\DatabaseInterface;
@@ -21,11 +22,15 @@ use Psr\Http\Message\ResponseInterface;
 
 class IndexController extends BaseController
 {
+    private InstallerUtility $installer;
+
     public function __construct(
         IndexService $indexService,
         ?DatabaseInterface $database = null
     ) {
         parent::__construct($database);
+
+        $this->installer = new InstallerUtility();
     }
 
     /**
@@ -50,19 +55,8 @@ class IndexController extends BaseController
      *
      * @Route: "/start"
      */
-    public function start(IndexService $indexService, Request $request): ResponseInterface
+    public function start(IndexService $indexService): ResponseInterface
     {
-        $action = $request->getQuery('action');
-
-        if ($action === 'remove') {
-            $msg = $indexService->uninstallInstallModule();
-
-            if (!empty($msg)) {
-                $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
-                $this->setFlash($type, $msg['message']);
-            }
-        }
-
         return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaStart(),
         ]);
@@ -70,25 +64,47 @@ class IndexController extends BaseController
 
     /**
      * @param IndexService $indexService
+     * @param Request $request
      * @return ResponseInterface
      *
-     * @Route: "/step"
+     * @Route: "/installer"
      */
-    public function step(IndexService $indexService): ResponseInterface
+    public function installer(IndexService $indexService, Request $request): ResponseInterface
     {
+        $pathManifest = BASE_DIRECTORY . '_Documents' . DS . 'install' . DS . 'module.json';
+
         if (class_exists('\\App\\Controller\\InstallController')) {
-            $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="./start?action=remove">remove the installer</a>.');
+            $action = $request->getQuery('action');
+
+            if ($action === 'remove') {
+                $msg = $this->installer->uninstallModule($pathManifest);
+
+                if (!empty($msg)) {
+                    $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
+                    $this->setFlash($type, $msg['message']);
+                }
+
+                $indexService->waitForFileState($pathManifest, false);
+                return $this->redirect('./start');
+            } else {
+                $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');
+            }
         } else {
-            $msg = $indexService->handleInstallPreparation();
+            $dirModule = BASE_DIRECTORY . '_Documents' . DS . 'install';
+            $pathZip = BASE_DIRECTORY . '_Documents' . DS . 'install.zip';
+
+            $msg = $this->installer->installModule($dirModule, $pathZip, $pathManifest);
 
             if (!empty($msg)) {
                 $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
                 $this->setFlash($type, $msg['message']);
             }
+
+            $indexService->waitForFileState($pathManifest, true);
         }
 
         return $this->render('index/start.phtml', [
-            'meta' => $indexService->getMetaStep(),
+            'meta' => $indexService->getMetaInstaller(),
         ]);
     }
 }

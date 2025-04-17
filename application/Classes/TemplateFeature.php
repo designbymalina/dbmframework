@@ -336,6 +336,35 @@ class TemplateFeature
     }
 
     /**
+     * Sprawdza, czy dana ścieżka istnieje w zarejestrowanych trasach.
+     */
+    public function isPath(string $target): bool
+    {
+        $router = RouterSingleton::getInstance();
+
+        if (!method_exists($router, 'getRoutes')) {
+            return false;
+        }
+
+        $routes = $router->getRoutes();
+        if (!is_array($routes)) {
+            return false;
+        }
+
+        foreach ($routes as $route) {
+            if (!is_array($route)) {
+                continue;
+            }
+
+            if (isset($route['name']) && $route['name'] === $target) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Metoda wyświetla reklamy
      */
     public function adverts(string $position, string $space = ''): string
@@ -375,21 +404,6 @@ class TemplateFeature
         }
 
         return $basePath;
-    }
-
-    /**
-     * Zabezpieczenia scieżki plikow przed manipulowaniem w sposób niebezpieczny
-     */
-    private function sanitizePath(?string $path): string
-    {
-        if (is_null($path)) {
-            return '';
-        }
-
-        $path = str_replace(['../', '..\\'], '', $path); // Usuwanie "directory traversal"
-        $path = preg_replace('/[\x00-\x1F\x7F]/', '', $path); // Usuniecie znakow kontrolnych oraz null byte
-
-        return $path;
     }
 
     /**

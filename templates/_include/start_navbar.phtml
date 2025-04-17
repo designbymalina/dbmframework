@@ -7,9 +7,13 @@
                     <li class="nav-item">
                         <a class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('index', 'active', '') }}" href="{{ $this->path() }}">Home (Build a New Project)</a>
                     </li>
+                    {% if ($this->isPath('install')) : %}
+
                     <li class="nav-item">
-                        <a href="{{ $this->path('step') }}" class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('step', 'active', '') }}{{ $this->isActive('install', 'active', '') }}">Install (DbM CMS)</a>
+                        <a href="{{ $this->path('install') }}" class="nav-link text-truncate dbm-nav-max-width{{ $this->isActive('install', 'active', '') }}">Install (DbM CMS)</a>
                     </li>
+                    {% endif; %}
+
                     <li class="nav-item">
                         <a href="#" class="nav-link disabled text-truncate dbm-nav-max-width" tabindex="-1" aria-disabled="true">Extensions</a>
                     </li>
