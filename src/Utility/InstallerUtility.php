@@ -213,8 +213,8 @@ class InstallerUtility
 
     private function copyRecursive(string $source, string $destination): void
     {
-        $source = rtrim($source, DIRECTORY_SEPARATOR);
-        $destination = rtrim($destination, DIRECTORY_SEPARATOR);
+        $source = rtrim($source, DS);
+        $destination = rtrim($destination, DS);
 
         if (!is_dir($source)) {
             return;
@@ -226,7 +226,7 @@ class InstallerUtility
         );
 
         foreach ($iterator as $item) {
-            $targetPath = $destination . DIRECTORY_SEPARATOR . substr($item->getPathname(), strlen($source) + 1);
+            $targetPath = $destination . DS . substr($item->getPathname(), strlen($source) + 1);
 
             if ($item->isDir()) {
                 mkdir($targetPath, 0777, true);
@@ -314,8 +314,8 @@ class InstallerUtility
                 continue;
             }
 
-            $source = $sourceDir . DIRECTORY_SEPARATOR . $item;
-            $target = $targetDir . DIRECTORY_SEPARATOR . $item;
+            $source = $sourceDir . DS . $item;
+            $target = $targetDir . DS . $item;
 
             if (is_dir($source)) {
                 if (is_dir($target)) {
