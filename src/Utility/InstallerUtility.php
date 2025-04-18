@@ -69,7 +69,7 @@ class InstallerUtility
 
         if (!file_exists($pathZip)) {
             return [
-                'status' => 'error',
+                'status' => 'info',
                 'message' => 'Installation archive not found in ' . self::DIR_INSTALL . ' directory. Download installer from project home page.'
             ];
         }

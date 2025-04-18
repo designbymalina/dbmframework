@@ -44,6 +44,26 @@ class IndexService
         ];
     }
 
+    public function alertMessage(array $msg): array
+    {
+        $map = [
+            'success' => 'messageSuccess',
+            'error' => 'messageDanger',
+            'info' => 'messageInfo',
+            'warning' => 'messageWarning',
+        ];
+
+        $status = $msg['status'] ?? 'info';
+        $message = $msg['message'] ?? '';
+
+        $alertType = $map[$status] ?? 'messageInfo';
+
+        return [
+            'status' => $alertType,
+            'message' => $message,
+        ];
+    }
+
     public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 3.0, float $interval = 0.1): void
     {
         if (!file_exists($manifestPath)) {

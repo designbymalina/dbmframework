@@ -80,8 +80,8 @@ class IndexController extends BaseController
                 $msg = $this->installer->uninstallModule($pathManifest);
 
                 if (!empty($msg)) {
-                    $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
-                    $this->setFlash($type, $msg['message']);
+                    $alert = $indexService->alertMessage($msg);
+                    $this->setFlash($alert['status'], $alert['message']);
                 }
 
                 $indexService->waitForModuleState($pathManifest, false);
@@ -97,8 +97,8 @@ class IndexController extends BaseController
             $msg = $this->installer->installModule($dirModule, $pathZip, $pathManifest);
 
             if (!empty($msg)) {
-                $type = $msg['status'] === 'success' ? 'messageSuccess' : 'messageDanger';
-                $this->setFlash($type, $msg['message']);
+                $alert = $indexService->alertMessage($msg);
+                $this->setFlash($alert['status'], $alert['message']);
             }
 
             $indexService->waitForModuleState($pathManifest, true);
