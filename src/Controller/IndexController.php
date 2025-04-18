@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class IndexController extends BaseController
 {
-    private InstallerUtility $installer;
+    private readonly InstallerUtility $installer;
 
     public function __construct(
         IndexService $indexService,
@@ -85,6 +85,7 @@ class IndexController extends BaseController
                 }
 
                 $indexService->waitForModuleState($pathManifest, false);
+
                 return $this->redirect('./start');
             } else {
                 $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');

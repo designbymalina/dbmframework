@@ -44,7 +44,7 @@ class IndexService
         ];
     }
 
-    public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 10.0, float $interval = 0.1): void
+    public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 3.0, float $interval = 0.1): void
     {
         if (!file_exists($manifestPath)) {
             return;
@@ -53,19 +53,27 @@ class IndexService
         $json = file_get_contents($manifestPath);
         $data = json_decode($json, true);
 
-        if (!isset($data['target']) || !is_array($data['target'])) {
+        if (!is_array($data) || !isset($data['target']) || !isset($data['register'])) {
             return;
         }
 
-        $targets = array_values($data['target']);
+        $targets = array_merge(
+            array_values($data['target']),
+            array_values($data['register'])
+        );
+
+        if ($shouldExist) {
+            usleep(3_000_000);
+        }
+
         $start = microtime(true);
 
         while ((microtime(true) - $start) < $timeout) {
             $allMatched = true;
 
             foreach ($targets as $relativePath) {
-                $path = BASE_DIRECTORY . $relativePath;
-                $exists = file_exists($path);
+                $fullPath = BASE_DIRECTORY . $relativePath;
+                $exists = file_exists($fullPath);
 
                 if ($exists !== $shouldExist) {
                     $allMatched = false;
