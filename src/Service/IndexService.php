@@ -64,7 +64,7 @@ class IndexService
         ];
     }
 
-    public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 3.0, float $interval = 0.1): void
+    public function waitForModuleState(string $manifestPath, bool $shouldExist, float $timeout = 3.0, float $interval = 0.1, array $important = []): void
     {
         if (!file_exists($manifestPath)) {
             return;
@@ -83,7 +83,19 @@ class IndexService
         );
 
         if ($shouldExist) {
-            usleep(3_000_000);
+            usleep(3_000_000); // 3.0s
+
+            if (!empty($important)) {
+                foreach ($important as $key) {
+                    if (isset($data['target'][$key])) {
+                        $checkPath = BASE_DIRECTORY . $data['target'][$key];
+                        $maxTries = 30;
+                        while (!file_exists($checkPath) && $maxTries-- > 0) {
+                            usleep(100_000);
+                        }
+                    }
+                }
+            }
         }
 
         $start = microtime(true);
