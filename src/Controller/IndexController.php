@@ -71,37 +71,33 @@ class IndexController extends BaseController
      */
     public function installer(IndexService $indexService, Request $request): ResponseInterface
     {
+        $dirModule = BASE_DIRECTORY . '_Documents' . DS . 'install';
         $pathManifest = BASE_DIRECTORY . '_Documents' . DS . 'install' . DS . 'module.json';
 
         if (class_exists('\\App\\Controller\\InstallController')) {
             $action = $request->getQuery('action');
 
             if ($action === 'remove') {
-                $msg = $this->installer->uninstallModule($pathManifest);
+                $msg = $this->installer->uninstallModule($dirModule, $pathManifest);
 
                 if (!empty($msg)) {
                     $alert = $indexService->alertMessage($msg);
                     $this->setFlash($alert['type'], $alert['message']);
                 }
 
-                $this->installer->waitForModuleState($pathManifest, false);
-
                 return $this->redirect('./start');
             } else {
                 $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');
             }
         } else {
-            $dirModule = BASE_DIRECTORY . '_Documents' . DS . 'install';
             $pathZip = BASE_DIRECTORY . '_Documents' . DS . 'install.zip';
 
-            $msg = $this->installer->installModule($dirModule, $pathZip, $pathManifest);
+            $msg = $this->installer->installModule($dirModule, $pathManifest, $pathZip);
 
             if (!empty($msg)) {
                 $alert = $indexService->alertMessage($msg);
                 $this->setFlash($alert['type'], $alert['message']);
             }
-
-            $this->installer->waitForModuleState($pathManifest, true);
         }
 
         return $this->render('index/start.phtml', [
