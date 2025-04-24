@@ -42,7 +42,7 @@ class IndexController extends BaseController
     public function index(IndexService $indexService): ResponseInterface
     {
         // Create a New Project (templates/index/index.phtml)!
-        $this->setFlash('messageInfo', 'Your application is now ready and you can start working on a new project. Optionally, proceed to installing the DbM CMS content management system.');
+        $this->setFlash('messageInfo', $this->translation->trans('install.alert.application_is_ready'));
 
         return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaIndex(),
@@ -81,14 +81,14 @@ class IndexController extends BaseController
 
                 if (!empty($msg)) {
                     $alert = $indexService->alertMessage($msg);
-                    $this->setFlash($alert['status'], $alert['message']);
+                    $this->setFlash($alert['type'], $alert['message']);
                 }
 
-                $indexService->waitForModuleState($pathManifest, false);
+                $this->installer->waitForModuleState($pathManifest, false);
 
                 return $this->redirect('./start');
             } else {
-                $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');
+                $this->setFlash('messageInfo', $this->translation->trans('install.alert.installer_prepared'));
             }
         } else {
             $dirModule = BASE_DIRECTORY . '_Documents' . DS . 'install';
@@ -98,10 +98,10 @@ class IndexController extends BaseController
 
             if (!empty($msg)) {
                 $alert = $indexService->alertMessage($msg);
-                $this->setFlash($alert['status'], $alert['message']);
+                $this->setFlash($alert['type'], $alert['message']);
             }
 
-            $indexService->waitForModuleState($pathManifest, true);
+            $this->installer->waitForModuleState($pathManifest, true);
         }
 
         return $this->render('index/start.phtml', [

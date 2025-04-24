@@ -12,7 +12,7 @@
                         <p class="fs-5 h-desc mb-0">Your lightweight and flexible framework for building powerful web applications.</p>
                     </div>
                     <div class="position-absolute top-0 end-0 m-3">
-                        <!-- Language -->
+                        {{ $this->htmlLanguage($this->asset(), '6', 'dbm-list-language') }}
                     </div>
                 </div>
                 <div class="p-4 dbm-box-welcome-features">
@@ -35,7 +35,7 @@
                     <div class="row g-2">
                         <div class="col-lg-6">
                             <h3 class="fw-bold">Start Building New Project</h3>
-                            <p>Go to the file 'src/Controller/IndexController.php' and in the index() method create the first page of your project or use a ready-made solution and install the CMS.</p>
+                            <p>If you don't need a content management system go to 'application/routes.php' and remove/comment out all 'Installation routes', then go to 'src/Controller/IndexController.php' and in the index() method create the first page of your project.</p>
                             <p class="m-0">Check out the documentation to get started with DbM Framework.</p>
                             <p class="mx-0 mt-1 mb-0"><a href="https://github.com/designbymalina/dbmframework" class="btn btn-light fw-bold dbm-btn-gradient" target="_blank">Go to documentation</a></p>
                             <p class="m-0 small">Documentation is being developed.</p>
@@ -46,7 +46,7 @@
                             <p>Use a ready-to-go content management system based on the DbM Framework to launch your website without writing code.</p>
                             <p class="m-0">Create One Page, Multi Page websites, blogs or portals - all configurable via an intuitive interface.</p>
                             <p class="mx-0 mt-1 mb-0">
-                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient">Install the installer</a>
+                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient">Install now</a>
                             </p>
                         </div>
                     </div>

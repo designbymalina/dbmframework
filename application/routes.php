@@ -24,7 +24,6 @@ return function (Router $router): void {
     // Index routes
     $router->addRoute('/', [IndexController::class, 'index'], 'index');
     $router->addRoute('/start', [IndexController::class, 'start'], 'start');
-    //$router->addRoute('/step', [IndexController::class, 'step'], 'step');
     $router->addRoute('/installer', [IndexController::class, 'installer'], 'installer');
     //-INSTALL_POINT_ADD_ROUTES
 
