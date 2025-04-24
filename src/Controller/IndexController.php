@@ -42,7 +42,7 @@ class IndexController extends BaseController
     public function index(IndexService $indexService): ResponseInterface
     {
         // Create a New Project (templates/index/index.phtml)!
-        $this->setFlash('messageInfo', $this->translation->trans('install.alert.application_is_ready'));
+        $this->setFlash('messageInfo', 'Your application is now ready and you can start working on a new project. Optionally, proceed to installing the DbM CMS content management system.');
 
         return $this->render('index/start.phtml', [
             'meta' => $indexService->getMetaIndex(),
@@ -88,7 +88,7 @@ class IndexController extends BaseController
 
                 return $this->redirect('./start');
             } else {
-                $this->setFlash('messageInfo', $this->translation->trans('install.alert.installer_prepared'));
+                $this->setFlash('messageInfo', 'The installer has been prepared. <a href="./install" class="fw-bold">Click here to continue &rsaquo;&rsaquo;</a> or if you no longer need it <a href="?action=remove">remove the installer</a>.');
             }
         } else {
             $dirModule = BASE_DIRECTORY . '_Documents' . DS . 'install';
