@@ -98,6 +98,8 @@ class IndexController extends BaseController
                 $alert = $indexService->alertMessage($msg);
                 $this->setFlash($alert['type'], $alert['message']);
             }
+
+            return $this->redirect('./start');
         }
 
         return $this->render('index/start.phtml', [
