@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Dbm\Classes\Manager;
+namespace Dbm\Classes\Managers;
 
 class SessionManager
 {

@@ -25,9 +25,9 @@
 
 declare(strict_types=1);
 
-namespace Dbm\Classes\Log;
+namespace Dbm\Classes\Logs;
 
-use Psr\Log\LoggerInterface;
+use Psr\Logs\LoggerInterface;
 
 class Logger implements LoggerInterface
 {

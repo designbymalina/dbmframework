@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use Dbm\Classes\Http\Request;
-use Dbm\Classes\Manager\CookieManager;
+use Dbm\Classes\Managers\CookieManager;
 use Dbm\Classes\Services\LanguageService;
 use Dbm\Interfaces\TranslationInterface;
 use Lib\Files\FileSystem;

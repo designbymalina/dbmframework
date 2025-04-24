@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Psr\Log;
+namespace Psr\Logs;
 
 /**
  * Describes a logger instance.

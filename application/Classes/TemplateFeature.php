@@ -17,7 +17,7 @@ namespace Dbm\Classes;
 
 use Dbm\Classes\Helpers\LanguageHelper;
 use Dbm\Classes\Http\Request;
-use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Logs\Logger;
 use Lib\Adverts\AdvertisementCache;
 use Exception;
 use ReflectionClass;

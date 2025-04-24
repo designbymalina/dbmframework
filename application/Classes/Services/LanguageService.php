@@ -15,7 +15,7 @@ namespace Dbm\Classes\Services;
 
 use Dbm\Classes\Helpers\LanguageHelper;
 use Dbm\Classes\Http\Request;
-use Dbm\Classes\Manager\CookieManager;
+use Dbm\Classes\Managers\CookieManager;
 
 class LanguageService
 {

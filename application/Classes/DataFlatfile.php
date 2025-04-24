@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use App\Config\ConstantConfig;
-use App\Exception\NotFoundException;
 use Dbm\Classes\Dto\FileOperationDto;
+use Dbm\Classes\Exceptions\NotFoundException;
 use Dbm\Classes\Helpers\LanguageHelper;
-use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Logs\Logger;
 use Dbm\Interfaces\DataFlatfileInterface;
 use Exception;
 

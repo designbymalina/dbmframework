@@ -24,5 +24,12 @@ class ConstantConfig
         ],
     ];
 
+    // Authentication - User roles
+    public const USER_ROLES = [
+        'A' => 'ADMIN',
+        'U' => 'USER',
+        'G' => 'GUEST',
+    ];
+
     //-INSTALL_POINT_ADD_CONSTANT
 }

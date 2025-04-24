@@ -18,7 +18,7 @@ use App\Service\IndexService;
 use Dbm\Classes\Database;
 use Dbm\Classes\DependencyContainer;
 use Dbm\Classes\Http\Request;
-use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Logs\Logger;
 use Dbm\Interfaces\DatabaseInterface;
 
 return function (DependencyContainer $container) {

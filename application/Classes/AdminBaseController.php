@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Dbm\Classes;
 
 use App\Config\ConstantConfig;
-use App\Exception\UnauthorizedRedirectException;
+use Dbm\Classes\Exceptions\UnauthorizedRedirectException;
 use Dbm\Interfaces\DatabaseInterface;
 
 class AdminBaseController extends BaseController
@@ -27,7 +27,7 @@ class AdminBaseController extends BaseController
         $this->database = $database;
 
         if (empty(getenv('DB_NAME'))) {
-            $this->setFlash('messageInfo', 'Brak połączenia z bazą danych.');
+            $this->setFlash('messageInfo', 'No database connection.');
             throw new UnauthorizedRedirectException('./start');
         }
 

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Dbm\Classes;
 
-use App\Exception\UnauthorizedRedirectException;
 use Dbm\Classes\DependencyContainer;
 use Dbm\Classes\ExceptionHandler;
+use Dbm\Classes\Exceptions\UnauthorizedRedirectException;
 use Dbm\Classes\Http\Request;
-use Dbm\Classes\Log\Logger;
+use Dbm\Classes\Logs\Logger;
 use Dbm\Interfaces\DatabaseInterface;
 use Dbm\Interfaces\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
