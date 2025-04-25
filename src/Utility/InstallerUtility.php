@@ -22,8 +22,8 @@ class InstallerUtility
     private const DIR_INSTALL = '_Documents';
     private const PATH_ROUTES = 'application' . DS . 'routes.php';
     private const PATH_CONSTANT = 'src' . DS . 'Config' . DS . 'ConstantConfig.php';
-    private const PATH_MODULE_ROUTES = 'config' . DS . 'routes.php';
-    private const PATH_MODULE_CONSTANT = 'config' . DS . 'constants.php';
+    private const PATH_MODULE_ROUTES = '_Modifications' . DS . 'routes.php';
+    private const PATH_MODULE_CONSTANT = '_Modifications' . DS . 'constants.php';
     private const PATH_BACKUP_BASE = self::DIR_INSTALL . DS . 'BackupBaseFiles';
 
     public function installModule(string $dirModule, string $pathManifest, string $pathZip): array
