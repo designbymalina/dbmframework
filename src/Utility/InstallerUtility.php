@@ -22,8 +22,8 @@ class InstallerUtility
     private const DIR_INSTALL = '_Documents';
     private const PATH_ROUTES = 'application' . DS . 'routes.php';
     private const PATH_CONSTANT = 'src' . DS . 'Config' . DS . 'ConstantConfig.php';
-    private const PATH_MODULE_ROUTES = 'files' . DS . 'routes.php';
-    private const PATH_MODULE_CONSTANT = 'files' . DS . 'constants.php';
+    private const PATH_MODULE_ROUTES = 'config' . DS . 'routes.php';
+    private const PATH_MODULE_CONSTANT = 'config' . DS . 'constants.php';
     private const PATH_BACKUP_BASE = self::DIR_INSTALL . DS . 'BackupBaseFiles';
 
     public function installModule(string $dirModule, string $pathManifest, string $pathZip): array
@@ -39,7 +39,6 @@ class InstallerUtility
         }
 
         $manifest = json_decode(file_get_contents($pathManifest), true);
-
         if (!isset($manifest['target'], $manifest['files'])) {
             return ['type' => 'error', 'message' => 'Invalid manifest structure.'];
         }
@@ -48,7 +47,7 @@ class InstallerUtility
         $this->removeConstants($dirModule);
         $this->updateTranslations('APP_LANGUAGES', '');
         $this->deleteModuleFiles($manifest['target'], $manifest['files']);
-        $this->restoreBackupBaseFiles($manifest['files'], $manifest['target']);
+        $this->restoreBaseFiles($manifest['files'], $manifest['target']);
 
         $this->waitForModuleState($pathManifest, false);
 
@@ -74,7 +73,7 @@ class InstallerUtility
 
         $this->waitForModuleState($pathManifest, true);
 
-        return ['type' => "success", 'message' => 'The installer has been successfully loaded! <a href="./install">Click here to continue &rsaquo;&rsaquo;</a>'];
+        return ['type' => "success", 'message' => 'Installation completed successfully!'];
     }
 
     /** TODO! Można rozszerzyć. Problem z czasem sprawdzania kopiowania/usuwania plików na różnych dyskach i systemach. */
@@ -112,8 +111,10 @@ class InstallerUtility
             if (!isset($arrayTargets[$key])) {
                 continue;
             }
+
             $source = BASE_DIRECTORY . $src;
             $target = BASE_DIRECTORY . $arrayTargets[$key];
+
             if (is_dir($source)) {
                 $this->copyRecursive($source, $target);
             } elseif (is_file($source)) {
@@ -145,6 +146,7 @@ class InstallerUtility
             if ($item === '.' || $item === '..') {
                 continue;
             }
+
             $source = $sourceDir . DS . $item;
             $target = $targetDir . DS . $item;
 
@@ -168,6 +170,7 @@ class InstallerUtility
     {
         $constantsFile = $dirModule . DS . self::PATH_MODULE_CONSTANT;
         $targetPath = BASE_DIRECTORY . self::PATH_CONSTANT;
+
         if (!file_exists($constantsFile) || !file_exists($targetPath)) {
             return;
         }
@@ -175,9 +178,19 @@ class InstallerUtility
         include $constantsFile;
         $content = file_get_contents($targetPath);
 
-        if (isset($installSteps) && !str_contains($content, 'ARRAY_INSTALL_STEPS')) {
-            $content = str_replace("//-INSTALL_POINT_ADD_CONSTANT", trim($installSteps) . "\n\n    //-INSTALL_POINT_ADD_CONSTANT", $content);
-            file_put_contents($targetPath, $content);
+        if (isset($installConstants)) {
+            if (preg_match('/\/\/-KEY_CONSTANTS_(\w+)/', $installConstants, $matches)) {
+                $key = $matches[0];
+
+                if (!str_contains($content, $key)) {
+                    $content = str_replace(
+                        "//-INSTALL_POINT_ADD_CONSTANT",
+                        trim($installConstants) . "\n\n    //-INSTALL_POINT_ADD_CONSTANT",
+                        $content
+                    );
+                    file_put_contents($targetPath, $content);
+                }
+            }
         }
     }
 
@@ -185,6 +198,7 @@ class InstallerUtility
     {
         $constantsFile = $dirModule . DS . self::PATH_MODULE_CONSTANT;
         $targetPath = BASE_DIRECTORY . self::PATH_CONSTANT;
+
         if (!file_exists($constantsFile) || !file_exists($targetPath)) {
             return;
         }
@@ -192,10 +206,14 @@ class InstallerUtility
         include $constantsFile;
         $content = file_get_contents($targetPath);
 
-        if (isset($installKey['steps'])) {
-            $pattern = "/\n{2,}?[ \t]*" . preg_quote($installKey['steps'], '/') . ".*?\];/s";
-            $content = preg_replace($pattern, '', $content);
-            file_put_contents($targetPath, $content);
+        if (isset($installConstants)) {
+            if (preg_match_all('/\/\/-KEY_CONSTANTS_(\w+)/', $installConstants, $matches)) {
+                foreach ($matches[0] as $keyMarker) {
+                    $pattern = '/[ \t]*' . preg_quote($keyMarker, '/') . '.*?\n{2,}[ \t]*(?=    \/\/-INSTALL_POINT_ADD_CONSTANT)/s';
+                    $content = preg_replace($pattern, '', $content);
+                }
+                file_put_contents($targetPath, $content);
+            }
         }
     }
 
@@ -231,6 +249,7 @@ class InstallerUtility
     {
         $routesFile = $dirModule . DS . self::PATH_MODULE_ROUTES;
         $targetPath = BASE_DIRECTORY . self::PATH_ROUTES;
+
         if (!file_exists($routesFile) || !file_exists($targetPath)) {
             return;
         }
@@ -241,6 +260,7 @@ class InstallerUtility
         if (isset($installUses)) {
             $content = str_replace(trim($installUses) . "\n", '', $content);
         }
+
         if (isset($installRoutes)) {
             foreach (explode("\n", trim($installRoutes)) as $line) {
                 $content = str_replace(trim($line) . "\n", '', $content);
@@ -257,6 +277,7 @@ class InstallerUtility
     {
         $source = rtrim($source, DS);
         $destination = rtrim($destination, DS);
+
         if (!is_dir($source)) {
             return;
         }
@@ -268,6 +289,7 @@ class InstallerUtility
 
         foreach ($iterator as $item) {
             $targetPath = $destination . DS . substr($item->getPathname(), strlen($source) + 1);
+
             if ($item->isDir()) {
                 $this->ensureDir($targetPath);
             } else {
@@ -292,11 +314,14 @@ class InstallerUtility
     private function updateTranslations(string $key, string $value): void
     {
         $envPath = BASE_DIRECTORY . '.env';
+
         if (!file_exists($envPath)) {
             return;
         }
+
         $lines = file($envPath);
         $found = false;
+
         foreach ($lines as &$line) {
             if (str_starts_with(trim($line), "$key=")) {
                 $line = "$key=$value\n";
@@ -304,9 +329,11 @@ class InstallerUtility
                 break;
             }
         }
+
         if (!$found) {
             $lines[] = "$key=$value\n";
         }
+
         file_put_contents($envPath, implode('', $lines));
     }
 
@@ -316,17 +343,19 @@ class InstallerUtility
             if (!isset($arrayTargets[$key])) {
                 continue;
             }
+
             $src = BASE_DIRECTORY . $srcRel;
             $target = BASE_DIRECTORY . $arrayTargets[$key];
             $backup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . $arrayTargets[$key];
 
-            if (is_file($src) && file_exists($target)) {
+            if (is_file($src) && file_exists($target) && !file_exists($backup)) {
                 $this->safeCopy($target, $backup);
             } elseif (is_dir($src)) {
                 $iterator = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($src, RecursiveDirectoryIterator::SKIP_DOTS),
                     RecursiveIteratorIterator::LEAVES_ONLY
                 );
+
                 foreach ($iterator as $file) {
                     $relative = substr($file->getPathname(), strlen($src) + 1);
                     $targetFile = $target . DS . $relative;
@@ -339,12 +368,13 @@ class InstallerUtility
         }
     }
 
-    private function restoreBackupBaseFiles(array $arrayFiles, array $arrayTargets): void
+    private function restoreBaseFiles(array $arrayFiles, array $arrayTargets): void
     {
         foreach ($arrayFiles as $key => $_) {
             if (!isset($arrayTargets[$key])) {
                 continue;
             }
+
             $target = BASE_DIRECTORY . $arrayTargets[$key];
             $backup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . $arrayTargets[$key];
 
