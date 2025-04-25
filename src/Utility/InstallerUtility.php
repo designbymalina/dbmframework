@@ -35,12 +35,12 @@ class InstallerUtility
     public function uninstallModule(string $dirModule, string $pathManifest): array
     {
         if (!file_exists($pathManifest)) {
-            return ['type' => 'error', 'message' => 'Install manifest not found.'];
+            return ['type' => 'danger', 'message' => 'Install manifest not found.'];
         }
 
         $manifest = json_decode(file_get_contents($pathManifest), true);
         if (!isset($manifest['target'], $manifest['files'])) {
-            return ['type' => 'error', 'message' => 'Invalid manifest structure.'];
+            return ['type' => 'danger', 'message' => 'Invalid manifest structure.'];
         }
 
         $this->removeRoutes($dirModule);
@@ -57,12 +57,12 @@ class InstallerUtility
     private function prepareModuleInstallation(string $dirModule, string $pathManifest): array
     {
         if (!file_exists($pathManifest)) {
-            return ['type' => "error", 'message' => "Install manifest not found: <code>$pathManifest</code>"];
+            return ['type' => "danger", 'message' => "Install manifest not found: <code>$pathManifest</code>"];
         }
 
         $manifest = json_decode(file_get_contents($pathManifest), true);
         if (!$manifest || !isset($manifest['files'], $manifest['target'])) {
-            return ['type' => "error", 'message' => "Invalid install manifest structure."];
+            return ['type' => "danger", 'message' => "Invalid install manifest structure."];
         }
 
         $this->backupBaseFiles($manifest['files'], $manifest['target']);
@@ -102,7 +102,7 @@ class InstallerUtility
             return ['type' => 'success', 'message' => 'Install module extracted successfully.'];
         }
 
-        return ['type' => 'error', 'message' => 'Unable to open install.zip archive.'];
+        return ['type' => 'danger', 'message' => 'Unable to open install.zip archive.'];
     }
 
     private function copyModuleFiles(array $arrayFiles, array $arrayTargets): void
@@ -226,21 +226,49 @@ class InstallerUtility
         include $routesFile;
         $content = file_get_contents($routesPath);
 
-        if (!isset($installUses, $installRoutes, $installClasses)) {
+        if (!isset($installUses, $installRoutes)) {
             return;
         }
 
-        $alreadyExists = array_reduce($installClasses, fn ($carry, $class) => $carry || str_contains($content, trim($class)), false);
+        $newUseLines = [];
 
-        if (!$alreadyExists) {
-            $content = preg_replace([
+        foreach (explode("\n", trim($installUses)) as $line) {
+            $line = trim($line);
+            if ($line !== '' && !str_contains($content, $line)) {
+                $newUseLines[] = $line;
+            }
+        }
+
+        $newRouteLines = [];
+
+        foreach (explode("\n", trim($installRoutes)) as $line) {
+            $line = trim($line);
+            if ($line !== '' && !str_contains($content, $line)) {
+                $newRouteLines[] = $line;
+            }
+        }
+
+        $modified = false;
+
+        if (!empty($newUseLines)) {
+            $content = preg_replace(
                 '/(\/\/\-INSTALL_POINT_ADD_USE)/',
-                '/(\/\/\-INSTALL_POINT_ADD_ROUTES)/'
-            ], [
-                trim($installUses) . "\n\$1",
-                trim($installRoutes) . "\n    \$1"
-            ], $content);
+                implode("\n", $newUseLines) . "\n$1",
+                $content
+            );
+            $modified = true;
+        }
 
+        if (!empty($newRouteLines)) {
+            $content = preg_replace(
+                '/(\/\/\-INSTALL_POINT_ADD_ROUTES)/',
+                implode("\n    ", $newRouteLines) . "\n    $1",
+                $content
+            );
+            $modified = true;
+        }
+
+        if ($modified) {
             file_put_contents($routesPath, $content);
         }
     }
@@ -258,18 +286,26 @@ class InstallerUtility
         $content = file_get_contents($targetPath);
 
         if (isset($installUses)) {
-            $content = str_replace(trim($installUses) . "\n", '', $content);
+            foreach (explode("\n", trim($installUses)) as $line) {
+                $line = trim($line);
+                if ($line !== '') {
+                    $pattern = '/^[ \t]*' . preg_quote($line, '/') . '\s*[\r\n]?/m';
+                    $content = preg_replace($pattern, '', $content);
+                }
+            }
         }
 
         if (isset($installRoutes)) {
             foreach (explode("\n", trim($installRoutes)) as $line) {
-                $content = str_replace(trim($line) . "\n", '', $content);
+                $line = trim($line);
+                if ($line !== '') {
+                    $pattern = '/^[ \t]*' . preg_quote($line, '/') . '\s*[\r\n]?/m';
+                    $content = preg_replace($pattern, '', $content);
+                }
             }
         }
 
-        $content = preg_replace('/^[ \t]+(\/\/\-INSTALL_POINT_ADD_ROUTES)/m', '    $1', $content);
-        $content = preg_replace('/^[ \t]+(\/\/\-INSTALL_POINT_ADD_USE)/m', '$1', $content);
-
+        $content = preg_replace('/\n{3,}/', "\n\n", $content);
         file_put_contents($targetPath, $content);
     }
 
@@ -339,6 +375,18 @@ class InstallerUtility
 
     private function backupBaseFiles(array $arrayFiles, array $arrayTargets): void
     {
+        $allowedDirs = ['/src/', '/templates/'];
+
+        // Filtrowanie arrayFiles po ścieżkach źródłowych
+        $arrayFiles = array_filter($arrayFiles, function ($srcRel) use ($allowedDirs) {
+            foreach ($allowedDirs as $dir) {
+                if (str_contains($srcRel, $dir)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
         foreach ($arrayFiles as $key => $srcRel) {
             if (!isset($arrayTargets[$key])) {
                 continue;
@@ -366,11 +414,25 @@ class InstallerUtility
                 }
             }
         }
+
+        // Kopia application/routes.php
+        $routesPath = BASE_DIRECTORY . self::PATH_ROUTES;
+        $routesBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_ROUTES;
+        if (file_exists($routesPath) && !file_exists($routesBackup)) {
+            $this->safeCopy($routesPath, $routesBackup);
+        }
+
+        // Kopia src/Config/ConstantConfig.php
+        $constantPath = BASE_DIRECTORY . self::PATH_CONSTANT;
+        $constantBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_CONSTANT;
+        if (file_exists($constantPath) && !file_exists($constantBackup)) {
+            $this->safeCopy($constantPath, $constantBackup);
+        }
     }
 
     private function restoreBaseFiles(array $arrayFiles, array $arrayTargets): void
     {
-        foreach ($arrayFiles as $key => $_) {
+        foreach ($arrayFiles as $key => $item) {
             if (!isset($arrayTargets[$key])) {
                 continue;
             }
@@ -383,6 +445,20 @@ class InstallerUtility
             } elseif (is_dir($backup)) {
                 $this->copyRecursive($backup, $target);
             }
+        }
+
+        // Restore application/routes.php
+        $routesTarget = BASE_DIRECTORY . self::PATH_ROUTES;
+        $routesBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_ROUTES;
+        if (file_exists($routesBackup)) {
+            $this->safeCopy($routesBackup, $routesTarget);
+        }
+
+        // Restore src/Config/ConstantConfig.php
+        $constantTarget = BASE_DIRECTORY . self::PATH_CONSTANT;
+        $constantBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_CONSTANT;
+        if (file_exists($constantBackup)) {
+            $this->safeCopy($constantBackup, $constantTarget);
         }
     }
 }
