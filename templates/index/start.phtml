@@ -9,7 +9,7 @@
                 <div class="p-4 rounded-top position-relative dbm-box-welcome-header">
                     <div>
                         <h1 class="display-5 fw-bold"><i class="bi bi-stars me-2"></i>Welcome to DbM Framework!</h1>
-                        <p class="fs-5 h-desc mb-0">Your lightweight and flexible framework for building powerful web applications.</p>
+                        <p class="fs-5 h-desc mb-0">Your lightweight and flexible framework for building modern web applications.</p>
                     </div>
                     <div class="position-absolute top-0 end-0 m-3">
                         {{ $this->htmlLanguage($this->asset(), '6', 'dbm-list-language') }}
@@ -35,18 +35,18 @@
                     <div class="row g-2">
                         <div class="col-lg-6">
                             <h3 class="fw-bold">Start Building New Project</h3>
-                            <p>If you don't need a content management system go to 'application/routes.php' and remove/comment out all 'Installation routes', then go to 'src/Controller/IndexController.php' and in the index() method create the first page of your project.</p>
-                            <p class="m-0">Check out the documentation to get started with DbM Framework.</p>
+                            <p>Go to src/Controller/IndexController.php and create the first page of your project in the index() method. If you prefer, use the content management system to build your page without coding.</p>
+                            <p class="m-0">Read the documentation to get started with the DbM Framework.</p>
                             <p class="mx-0 mt-1 mb-0"><a href="https://github.com/designbymalina/dbmframework" class="btn btn-light fw-bold dbm-btn-gradient" target="_blank">Go to documentation</a></p>
                             <p class="m-0 small">Documentation is being developed.</p>
                         </div>
                         <div class="col-lg-6">
                             <hr class="d-lg-none">
                             <h3 class="fw-bold">Install DbM CMS</h3>
-                            <p>Use a ready-to-go content management system based on the DbM Framework to launch your website without writing code.</p>
-                            <p class="m-0">Create One Page, Multi Page websites, blogs or portals - all configurable via an intuitive interface.</p>
+                            <p>Use the built-in CMS based on the DbM Framework to launch your website without writing code.</p>
+                            <p class="m-0">Create One Page, Multi Page, websites, blogs, portals - all using an intuitive interface that does not require programming knowledge.</p>
                             <p class="mx-0 mt-1 mb-0">
-                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient">Install now</a>
+                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient">Run the Installer</a>
                             </p>
                         </div>
                     </div>
