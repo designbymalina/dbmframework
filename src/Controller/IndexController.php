@@ -95,6 +95,10 @@ class IndexController extends BaseController
             $msg = $this->installer->installModule($dirModule, $pathManifest, $pathZip);
 
             if (!empty($msg)) {
+                if ($msg['type'] === 'success') {
+                    $msg['message'] .= ' <a href="./install">Preview &rsaquo;&rsaquo;</a>';
+                }
+
                 $alert = $indexService->alertMessage($msg);
                 $this->setFlash($alert['type'], $alert['message']);
             }

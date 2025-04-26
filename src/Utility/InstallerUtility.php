@@ -226,12 +226,11 @@ class InstallerUtility
         include $routesFile;
         $content = file_get_contents($routesPath);
 
-        if (!isset($installUses, $installRoutes)) {
+        if (!isset($installUses, $installRoutes, $installValues)) {
             return;
         }
 
         $newUseLines = [];
-
         foreach (explode("\n", trim($installUses)) as $line) {
             $line = trim($line);
             if ($line !== '' && !str_contains($content, $line)) {
@@ -240,11 +239,18 @@ class InstallerUtility
         }
 
         $newRouteLines = [];
-
         foreach (explode("\n", trim($installRoutes)) as $line) {
             $line = trim($line);
             if ($line !== '' && !str_contains($content, $line)) {
                 $newRouteLines[] = $line;
+            }
+        }
+
+        $newValueLines = [];
+        foreach (explode("\n", trim($installValues)) as $line) {
+            $line = trim($line);
+            if ($line !== '' && !str_contains($content, $line)) {
+                $newValueLines[] = $line;
             }
         }
 
@@ -263,6 +269,15 @@ class InstallerUtility
             $content = preg_replace(
                 '/(\/\/\-INSTALL_POINT_ADD_ROUTES)/',
                 implode("\n    ", $newRouteLines) . "\n    $1",
+                $content
+            );
+            $modified = true;
+        }
+
+        if (!empty($newValueLines)) {
+            $content = preg_replace(
+                '/(\/\/\-INSTALL_POINT_ADD_VALUES)/',
+                implode("\n    ", $newValueLines) . "\n    $1",
                 $content
             );
             $modified = true;
@@ -297,6 +312,16 @@ class InstallerUtility
 
         if (isset($installRoutes)) {
             foreach (explode("\n", trim($installRoutes)) as $line) {
+                $line = trim($line);
+                if ($line !== '') {
+                    $pattern = '/^[ \t]*' . preg_quote($line, '/') . '\s*[\r\n]?/m';
+                    $content = preg_replace($pattern, '', $content);
+                }
+            }
+        }
+
+        if (isset($installValues)) {
+            foreach (explode("\n", trim($installValues)) as $line) {
                 $line = trim($line);
                 if ($line !== '') {
                     $pattern = '/^[ \t]*' . preg_quote($line, '/') . '\s*[\r\n]?/m';

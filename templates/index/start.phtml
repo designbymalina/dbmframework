@@ -46,7 +46,10 @@
                             <p>Use the built-in CMS based on the DbM Framework to launch your website without writing code.</p>
                             <p class="m-0">Create One Page, Multi Page, websites, blogs, portals - all using an intuitive interface that does not require programming knowledge.</p>
                             <p class="mx-0 mt-1 mb-0">
-                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient">Run the Installer</a>
+                                <a href="{{ $this->path('installer') }}" class="btn btn-light fw-bold dbm-btn-gradient" onclick="this.querySelector('.spinner-border').classList.remove('d-none')">
+                                    <span class="spinner-border spinner-border-sm me-2 d-none" aria-hidden="true"></span> 
+                                    <span role="status">Run the Installer</span>
+                                </a>
                             </p>
                         </div>
                     </div>
