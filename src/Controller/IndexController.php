@@ -96,7 +96,7 @@ class IndexController extends BaseController
 
             if (!empty($msg)) {
                 if ($msg['type'] === 'success') {
-                    $msg['message'] .= ' <a href="./install">Preview &rsaquo;&rsaquo;</a>';
+                    $msg['message'] .= ' <a href="./install">Click here to continue &rsaquo;&rsaquo;</a>';
                 }
 
                 $alert = $indexService->alertMessage($msg);
