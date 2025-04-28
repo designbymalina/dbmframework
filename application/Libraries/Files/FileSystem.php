@@ -18,50 +18,31 @@ use RuntimeException;
 
 class FileSystem
 {
-    public function fileMultiDelete($images): ?string
+    public function fileMultiDelete(mixed $files): ?string
     {
-        if (is_array($images)) {
-            foreach ($images as $image) {
-                if (file_exists($image)) {
-                    unlink($image);
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    unlink($file);
 
-                    if (is_file($image)) {
-                        return "Something went wrong! The file $image has not been deleted.";
+                    if (is_file($file)) {
+                        return "Something went wrong! The file $file has not been deleted.";
                     }
                 } else {
-                    return "File $image does not exist!";
+                    return "File $file does not exist!";
                 }
             }
-        } elseif (file_exists($images)) {
-            unlink($images);
+        } elseif (file_exists($files)) {
+            unlink($files);
 
-            if (is_file($images)) {
-                return "Something went wrong! The file $images has not been deleted.";
+            if (is_file($files)) {
+                return "Something went wrong! The file $files has not been deleted.";
             }
         } else {
-            return "File $images does not exist!";
+            return "File $files does not exist!";
         }
 
         return null;
-    }
-
-    public function scanDirectory(string $directory, int $sort = 0, array $arraySkip = ['..', '.']): ?array
-    {
-        if (is_dir($directory)) {
-            return array_diff(scandir($directory, $sort), $arraySkip);
-        }
-
-        return null;
-    }
-
-    public function contentPreview(string $pathFile): ?string
-    {
-        if (is_file($pathFile) && file_exists($pathFile) && (filesize($pathFile) > 0)) {
-            $contentPreview = file_get_contents($pathFile);
-            $contentPreview = str_replace([PHP_EOL], ["<br>"], $contentPreview);
-        }
-
-        return $contentPreview ?? null;
     }
 
     public function deleteFile(string $filePath): void
@@ -96,5 +77,57 @@ class FileSystem
         if (file_put_contents($filePath, $fileContent) === false) {
             throw new RuntimeException("Unable to edit file: $filePath");
         }
+    }
+
+    public function renameFile(string $sourcePath, string $destinationPath): void
+    {
+        if (!file_exists($sourcePath)) {
+            throw new RuntimeException("File does not exist: $sourcePath");
+        }
+
+        if (!rename($sourcePath, $destinationPath)) {
+            throw new RuntimeException("Failed to rename $sourcePath to $destinationPath");
+        }
+    }
+
+    public function scanDirectory(string $directory, int $sort = 0, array $arraySkip = ['..', '.']): ?array
+    {
+        if (is_dir($directory)) {
+            return array_diff(scandir($directory, $sort), $arraySkip);
+        }
+
+        return null;
+    }
+
+    public function deleteDirectory(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        foreach (scandir($directory) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $directory . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path)) {
+                $this->deleteDirectory($path);
+            } else {
+                $this->deleteFile($path);
+            }
+        }
+
+        rmdir($directory);
+    }
+
+    public function contentPreview(string $pathFile): ?string
+    {
+        if (is_file($pathFile) && file_exists($pathFile) && (filesize($pathFile) > 0)) {
+            $contentPreview = file_get_contents($pathFile);
+            $contentPreview = str_replace([PHP_EOL], ["<br>"], $contentPreview);
+        }
+
+        return $contentPreview ?? null;
     }
 }
