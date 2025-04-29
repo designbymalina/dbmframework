@@ -52,19 +52,18 @@ class FileSystem
         }
     }
 
-    public function saveFile(string $filePath, string $fileContent, int $chmod = 0755): void
+    public function copyFile(string $sourcePath, ?string $backupPath = null): void
     {
-        $directory = dirname($filePath);
-        if (!is_dir($directory) && !mkdir($directory, $chmod, true) && !is_dir($directory)) {
-            throw new RuntimeException("Failed to create directory: $directory");
+        if (!file_exists($sourcePath)) {
+            throw new RuntimeException("Source file does not exist: $sourcePath");
         }
 
-        if (file_put_contents($filePath, $fileContent) === false) {
-            throw new RuntimeException("Unable to write to file: $filePath");
+        if ($backupPath === null) {
+            $backupPath = $sourcePath . '.bak';
         }
 
-        if (!chmod($filePath, $chmod)) {
-            throw new RuntimeException("Failed to set permissions for file: $filePath");
+        if (!copy($sourcePath, $backupPath)) {
+            throw new RuntimeException("Failed to copy $sourcePath to $backupPath");
         }
     }
 
@@ -87,6 +86,22 @@ class FileSystem
 
         if (!rename($sourcePath, $destinationPath)) {
             throw new RuntimeException("Failed to rename $sourcePath to $destinationPath");
+        }
+    }
+
+    public function saveFile(string $filePath, string $fileContent, int $chmod = 0755): void
+    {
+        $directory = dirname($filePath);
+        if (!is_dir($directory) && !mkdir($directory, $chmod, true) && !is_dir($directory)) {
+            throw new RuntimeException("Failed to create directory: $directory");
+        }
+
+        if (file_put_contents($filePath, $fileContent) === false) {
+            throw new RuntimeException("Unable to write to file: $filePath");
+        }
+
+        if (!chmod($filePath, $chmod)) {
+            throw new RuntimeException("Failed to set permissions for file: $filePath");
         }
     }
 
