@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace App\Utility;
 
+use Dbm\Classes\Helpers\TranslationLoader;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
@@ -51,7 +52,7 @@ class InstallerUtility
 
         $this->waitForModuleState($pathManifest, false);
 
-        return ['type' => 'success', 'message' => 'The installer and configuration files have been completely removed.'];
+        return ['type' => 'success', 'message' => $this->translation('installer.installation_removed')];
     }
 
     private function prepareModuleInstallation(string $dirModule, string $pathManifest): array
@@ -73,7 +74,7 @@ class InstallerUtility
 
         $this->waitForModuleState($pathManifest, true);
 
-        return ['type' => "success", 'message' => 'Installation completed successfully!'];
+        return ['type' => "success", 'message' => $this->translation('installer.installation_success')];
     }
 
     /** TODO! Można rozszerzyć. Problem z czasem sprawdzania kopiowania/usuwania plików na różnych dyskach i systemach. */
@@ -396,6 +397,21 @@ class InstallerUtility
         }
 
         file_put_contents($envPath, implode('', $lines));
+    }
+
+    private function translation(string $trans): string
+    {
+        $translation = new TranslationLoader();
+
+        if (!empty($translation->load()->arrayTranslation)) {
+            $arrayTrans = $translation->load()->arrayTranslation;
+
+            if (array_key_exists($trans, $arrayTrans)) {
+                return $arrayTrans[$trans];
+            }
+        }
+
+        return $trans;
     }
 
     private function backupBaseFiles(array $arrayFiles, array $arrayTargets): void
