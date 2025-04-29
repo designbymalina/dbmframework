@@ -52,7 +52,7 @@ class InstallerUtility
 
         $this->waitForModuleState($pathManifest, false);
 
-        return ['type' => 'success', 'message' => $this->translation('installer.installation_removed')];
+        return ['type' => 'success', 'message' => 'The installer and configuration files have been completely removed.'];
     }
 
     private function prepareModuleInstallation(string $dirModule, string $pathManifest): array
@@ -74,7 +74,7 @@ class InstallerUtility
 
         $this->waitForModuleState($pathManifest, true);
 
-        return ['type' => "success", 'message' => $this->translation('installer.installation_success')];
+        return ['type' => "success", 'message' => 'Installation completed successfully.'];
     }
 
     /** TODO! Można rozszerzyć. Problem z czasem sprawdzania kopiowania/usuwania plików na różnych dyskach i systemach. */
@@ -399,6 +399,9 @@ class InstallerUtility
         file_put_contents($envPath, implode('', $lines));
     }
 
+    /**
+     * TODO! Metoda nie używana. Dodaj tłumaczenia, ale najpierw musisz uporać się z waitForModuleState()?
+     */
     private function translation(string $trans): string
     {
         $translation = new TranslationLoader();
