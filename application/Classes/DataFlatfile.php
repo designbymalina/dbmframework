@@ -17,19 +17,23 @@ use App\Config\ConstantConfig;
 use Dbm\Classes\Dto\FileOperationDto;
 use Dbm\Classes\Exceptions\NotFoundException;
 use Dbm\Classes\Helpers\LanguageHelper;
+use Dbm\Classes\Http\Request;
 use Dbm\Classes\Logs\Logger;
+use Dbm\Classes\Managers\CookieManager;
 use Dbm\Interfaces\DataFlatfileInterface;
 use Exception;
 
 class DataFlatfile implements DataFlatfileInterface
 {
     private Logger $logger;
-    private LanguageHelper $defaultLang;
+    private LanguageHelper $language;
+    private CookieManager $cookie;
 
     public function __construct()
     {
         $this->logger = new Logger();
-        $this->defaultLang = new LanguageHelper();
+        $this->language = new LanguageHelper();
+        $this->cookie = new CookieManager();
     }
 
     public function dataFlatFile(string $type = 'content', string $space = '', ?string $path = null): FileOperationDto
@@ -73,15 +77,24 @@ class DataFlatfile implements DataFlatfileInterface
     public function fileName(): string
     {
         $divider = '.';
-        $dir = dirname($_SERVER['PHP_SELF']);
-        $name = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
+        $request = new Request();
+        $serverParams = $request->getServerParams();
+        $dir = dirname($serverParams['PHP_SELF'] ?? '');
+        $uri = $serverParams['REQUEST_URI'] ?? '';
 
-        if (strpos($dir, 'public')) {
-            $path = substr($dir, 0, strpos($dir, 'public'));
-            $name = str_replace($path, '', $name);
+        $parsedUrl = parse_url($uri);
+        $path = $parsedUrl['path'] ?? '';
+        $query = $parsedUrl['query'] ?? '';
+
+        parse_str($query, $queryParams);
+        $lang = $queryParams['lang'] ?? $this->cookie->getCookie('dbmLanguage');
+
+        if (strpos($dir, 'public') !== false) {
+            $publicPath = substr($dir, 0, strpos($dir, 'public'));
+            $path = str_replace($publicPath, '', $path);
         }
 
-        $name = ltrim($name, '/');
+        $name = ltrim($path, '/');
         $name = str_replace(['/', '.html'], ['-', ''], $name);
 
         if (strpos($name, $divider) !== false) {
@@ -89,10 +102,14 @@ class DataFlatfile implements DataFlatfileInterface
             $name = 'page-' . $name;
         }
 
-        $defaultLang = $this->defaultLang->getDefaultLanguage();
-        $defaultLang = is_string($defaultLang) ? strtolower($defaultLang) : 'err';
+        if (!is_string($lang) || trim($lang) === '') {
+            $lang = $this->language->getDefaultLanguage();
+            $lang = is_string($lang) ? strtolower($lang) : 'err';
+        } else {
+            $lang = strtolower($lang);
+        }
 
-        return $defaultLang . '_' . $name;
+        return $lang . '_' . $name;
     }
 
     private function arrayFillKeys(array $arrayKeys, array $arrayValues): ?array
@@ -123,7 +140,7 @@ class DataFlatfile implements DataFlatfileInterface
 
     private function getAvailablePages(): array
     {
-        $lang = strtolower($this->defaultLang->getDefaultLanguage());
+        $lang = strtolower($this->language->getDefaultLanguage());
         $pattern = ConstantConfig::PATH_DATA_CONTENT . "{$lang}_*.txt";
         $files = glob($pattern) ?: [];
 
