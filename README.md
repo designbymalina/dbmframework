@@ -101,7 +101,7 @@ If you are using a CMS, take care of write permissions in data/, modules/.
 
 Documentation:
 
-[Konfiguracja środowiska (.env)](_Documents/Docs/env.md)  
+[Environment configuration (.env)](_Documents/Docs/env.md)  
 [Routing (routes.php)](_Documents/Docs/routing.md)  
 [Dependency Injection (services.php)](_Documents/Docs/dependency-injection.md)  
 [TemplateFeature](_Documents/Docs/template-feature.md)  

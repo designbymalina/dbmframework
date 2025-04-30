@@ -101,7 +101,7 @@ Jeśli używasz CMS, zadbaj o prawa zapisu w data/, modules/.
 
 Dokumentacja:
 
-[Konfiguracja środowiska (.env)](_Documents/Docs/env.md)  
+[Environment configuration (.env)](_Documents/Docs/env.md)  
 [Routing (routes.php)](_Documents/Docs/routing.md)  
 [Dependency Injection (services.php)](_Documents/Docs/dependency-injection.md)  
 [TemplateFeature](_Documents/Docs/template-feature.md)  
