@@ -16,6 +16,7 @@ declare(strict_types=1);
 use Dbm\Classes\DotEnv;
 use Dbm\Classes\ExceptionHandler;
 use Dbm\Classes\DependencyContainer;
+use Dbm\Classes\Helpers\DebugHelper;
 use Dbm\Classes\Router;
 use Dbm\Classes\RouterSingleton;
 use Dbm\Interfaces\DatabaseInterface;
@@ -48,6 +49,16 @@ try {
 
     // Autoloading with or without Composer
     autoloadingWithWithoutComposer($pathAutoload);
+
+    // Registering helpers functions
+    if (!function_exists('dump')) {
+        function dump(mixed ...$vars): void
+        {
+            foreach ($vars as $var) {
+                DebugHelper::dump($var);
+            }
+        }
+    }
 
     // Load environment variables
     $dotenv = new DotEnv($pathConfig);

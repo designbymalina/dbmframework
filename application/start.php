@@ -10,7 +10,6 @@
  */
 
 use Dbm\Classes\ExceptionHandler;
-use Dbm\Classes\Helpers\DebugHelper;
 
 function setupErrorHandling(): void
 {
@@ -74,24 +73,21 @@ function autoloadingWithWithoutComposer(string $pathAutoload): void
         require $pathAutoload;
     } else {
         spl_autoload_register(function ($className) {
-            // Mapa przestrzeni nazw do katalogów
-            $namespaceMap = [
-                'App' => "src",
-                'Dbm' => "application",
-                'Psr' => "application/Psr",
-                'Lib' => 'application/Libraries',
-                'Mod' => "modules",
+            $psr4Map = [
+                'App\\' => 'src/',
+                'Dbm\\' => 'application/',
+                'Psr\\' => 'application/Psr/',
+                'Lib\\' => 'application/Libraries/',
+                'Mod\\' => 'modules/',
             ];
 
-            // Wbudowane biblioteki i klasy (wyjątki)
             if (is_dir(BASE_DIRECTORY . 'libraries')) {
-                static $loadedLibraries = []; // Flaga unikania wielokrotnego ładowania
+                static $loadedLibraries = [];
 
                 $namespaceLibraries = [
                     'PHPMailer\\PHPMailer\\PHPMailer' => "libraries/phpmailer/src",
                 ];
 
-                // Obsługa wyjątków (biblioteki zdefiniowane w $namespaceLibraries)
                 foreach ($namespaceLibraries as $keySpace => $libraryPath) {
                     if (!isset($loadedLibraries[$keySpace]) && !class_exists($keySpace)) {
                         $librarySegments = explode("\\", $keySpace);
@@ -105,33 +101,36 @@ function autoloadingWithWithoutComposer(string $pathAutoload): void
                             return;
                         }
 
-                        error_log("Autoloader: Nie znaleziono pliku dla {$keySpace} w ścieżce {$filePathLib}");
+                        error_log("Autoloader: File not found for {$keySpace} in path {$filePathLib}");
                     }
                 }
             }
 
-            // Obsługa mapowanych przestrzeni nazw
-            $arrayClassName = explode("\\", $className);
-            $namespaceRoot = $arrayClassName[0] ?? '';
+            foreach ($psr4Map as $prefix => $baseDir) {
+                if (strpos($className, $prefix) === 0) {
+                    $relativeClass = substr($className, strlen($prefix));
+                    $segments = explode('\\', $relativeClass);
 
-            if (!isset($namespaceMap[$namespaceRoot])) {
-                error_log("Autoloader: Nieobsługiwany namespace {$namespaceRoot}");
-                return;
+                    if ($prefix === 'Mod\\' && count($segments) > 0) {
+                        $moduleName = array_shift($segments);
+                        $path = $baseDir . $moduleName . '/' . implode('/', $segments) . '.php';
+                    } else {
+                        $path = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+                    }
+
+                    $filePath = BASE_DIRECTORY . str_replace('/', DS, $path);
+
+                    if (file_exists($filePath)) {
+                        require $filePath;
+                        return;
+                    } else {
+                        error_log("Autoloader: No file found for class {$className} in path {$filePath}");
+                        return;
+                    }
+                }
             }
 
-            // Budowanie ścieżki pliku dla mapowanej przestrzeni
-            $mappedPath = str_replace('/', DS, $namespaceMap[$namespaceRoot]);
-            unset($arrayClassName[0]);
-
-            $relativePath = implode(DS, $arrayClassName);
-            $filePath = BASE_DIRECTORY . $mappedPath . DS . $relativePath . '.php';
-
-            // Załaduj plik
-            if (file_exists($filePath)) {
-                require $filePath;
-            } else {
-                error_log("Autoloader: Nie znaleziono pliku dla klasy {$className} w ścieżce {$filePath}");
-            }
+            error_log("Autoloader: No matching namespace for {$className}");
         });
     }
 }
@@ -152,14 +151,4 @@ function initializeSession(): void
 function isConfigDatabase(): bool
 {
     return !empty(getenv('DB_HOST')) && !empty(getenv('DB_NAME')) && !empty(getenv('DB_USER'));
-}
-
-// ### Rejestrowanie funkcji pomocniczych
-if (!function_exists('dump')) {
-    function dump(mixed ...$vars): void
-    {
-        foreach ($vars as $var) {
-            DebugHelper::dump($var);
-        }
-    }
 }
