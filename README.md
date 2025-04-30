@@ -62,7 +62,6 @@ git clone https://github.com/designbymalina/dbmframework.git
 If you want to use external libraries, you can use Composer:
 
 ```bash
-cd dbmframework
 composer install
 ```
 
