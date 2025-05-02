@@ -88,6 +88,14 @@ class DataFlatfile implements DataFlatfileInterface
 
         parse_str($query, $queryParams);
         $lang = $queryParams['lang'] ?? $this->cookie->getCookie('dbmLanguage');
+        $availableLanguages = array_map('strtolower', $this->language->getAvailableLanguages());
+
+        if (!is_string($lang) || trim($lang) === '' || !in_array(strtolower($lang), $availableLanguages, true)) {
+            $lang = $this->language->getDefaultLanguage();
+            $lang = is_string($lang) ? strtolower($lang) : 'err';
+        } else {
+            $lang = strtolower($lang);
+        }
 
         if (strpos($dir, 'public') !== false) {
             $publicPath = substr($dir, 0, strpos($dir, 'public'));
@@ -100,13 +108,6 @@ class DataFlatfile implements DataFlatfileInterface
         if (strpos($name, $divider) !== false) {
             $name = substr($name, 0, strpos($name, $divider));
             $name = 'page-' . $name;
-        }
-
-        if (!is_string($lang) || trim($lang) === '') {
-            $lang = $this->language->getDefaultLanguage();
-            $lang = is_string($lang) ? strtolower($lang) : 'err';
-        } else {
-            $lang = strtolower($lang);
         }
 
         return $lang . '_' . $name;

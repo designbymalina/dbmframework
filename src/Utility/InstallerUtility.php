@@ -21,10 +21,12 @@ use ZipArchive;
 class InstallerUtility
 {
     private const DIR_INSTALL = '_Documents';
-    private const PATH_ROUTES = 'application' . DS . 'routes.php';
     private const PATH_CONSTANT = 'src' . DS . 'Config' . DS . 'ConstantConfig.php';
-    private const PATH_MODULE_ROUTES = '_Modifications' . DS . 'routes.php';
+    private const PATH_SERVICES = 'application' . DS . 'services.php';
+    private const PATH_ROUTES = 'application' . DS . 'routes.php';
     private const PATH_MODULE_CONSTANT = '_Modifications' . DS . 'constants.php';
+    private const PATH_MODULE_SERVICES = '_Modifications' . DS . 'services.php';
+    private const PATH_MODULE_ROUTES = '_Modifications' . DS . 'routes.php';
     private const PATH_BACKUP_BASE = self::DIR_INSTALL . DS . 'BackupBaseFiles';
 
     public function installModule(string $dirModule, string $pathManifest, string $pathZip): array
@@ -45,6 +47,7 @@ class InstallerUtility
         }
 
         $this->removeRoutes($dirModule);
+        $this->removeDependencies($dirModule);
         $this->removeConstants($dirModule);
         $this->updateTranslations('APP_LANGUAGES', '');
         $this->deleteModuleFiles($manifest['target'], $manifest['files']);
@@ -70,7 +73,8 @@ class InstallerUtility
         $this->copyModuleFiles($manifest['files'], $manifest['target']);
         $this->updateTranslations('APP_LANGUAGES', 'EN|PL');
         $this->modifyConstants($dirModule);
-        $this->modifyRoutes(BASE_DIRECTORY . self::PATH_ROUTES, $dirModule . DS . self::PATH_MODULE_ROUTES);
+        $this->modifyDependencies($dirModule);
+        $this->modifyRoutes($dirModule);
 
         $this->waitForModuleState($pathManifest, true);
 
@@ -218,14 +222,17 @@ class InstallerUtility
         }
     }
 
-    private function modifyRoutes(string $routesPath, string $routesFile): void
+    private function modifyRoutes(string $dirModule): void
     {
-        if (!file_exists($routesPath) || !file_exists($routesFile)) {
+        $routesFile = $dirModule . DS . self::PATH_MODULE_ROUTES;
+        $targetPath = BASE_DIRECTORY . self::PATH_ROUTES;
+
+        if (!file_exists($routesFile) || !file_exists($targetPath)) {
             return;
         }
 
         include $routesFile;
-        $content = file_get_contents($routesPath);
+        $content = file_get_contents($targetPath);
 
         if (!isset($installUses, $installRoutes, $installValues)) {
             return;
@@ -285,7 +292,7 @@ class InstallerUtility
         }
 
         if ($modified) {
-            file_put_contents($routesPath, $content);
+            file_put_contents($targetPath, $content);
         }
     }
 
@@ -329,6 +336,90 @@ class InstallerUtility
                     $content = preg_replace($pattern, '', $content);
                 }
             }
+        }
+
+        $content = preg_replace('/\n{3,}/', "\n\n", $content);
+        file_put_contents($targetPath, $content);
+    }
+
+    private function modifyDependencies(string $dirModule): void
+    {
+        $servicesFile = $dirModule . DS . self::PATH_MODULE_SERVICES;
+        $targetPath = BASE_DIRECTORY . self::PATH_SERVICES;
+
+        if (!file_exists($servicesFile) || !file_exists($targetPath)) {
+            return;
+        }
+
+        include $servicesFile;
+        $content = file_get_contents($targetPath);
+
+        if (!isset($installUses, $installDependencies)) {
+            return;
+        }
+
+        $modified = false;
+
+        $newUseLines = [];
+        foreach (explode("\n", trim($installUses)) as $line) {
+            $line = rtrim($line);
+            if ($line !== '' && !str_contains($content, trim($line))) {
+                $newUseLines[] = $line;
+            }
+        }
+
+        if (!empty($newUseLines)) {
+            $content = preg_replace(
+                '/(\/\/\-INSTALL_POINT_ADD_USE)/',
+                implode("\n", $newUseLines) . "\n$1",
+                $content
+            );
+            $modified = true;
+        }
+
+        $dependenciesBlock = trim($installDependencies);
+
+        if (!str_contains($content, $dependenciesBlock)) {
+            $content = preg_replace(
+                '/^[ \t]*\/\/\-INSTALL_POINT_ADD_DEPENDENCIES/m',
+                '    ' . $dependenciesBlock . "\n$0",
+                $content
+            );
+            $modified = true;
+        }
+
+        if ($modified) {
+            file_put_contents($targetPath, $content);
+        }
+    }
+
+    private function removeDependencies(string $dirModule): void
+    {
+        $servicesFile = $dirModule . DS . self::PATH_MODULE_SERVICES;
+        $targetPath = BASE_DIRECTORY . self::PATH_SERVICES;
+
+        if (!file_exists($servicesFile) || !file_exists($targetPath)) {
+            return;
+        }
+
+        include $servicesFile;
+        $content = file_get_contents($targetPath);
+
+        if (isset($installUses)) {
+            foreach (explode("\n", trim($installUses)) as $line) {
+                $line = rtrim($line);
+                if ($line !== '') {
+                    $pattern = '/^[ \t]*' . preg_quote($line, '/') . '[ \t]*[\r\n]+/m';
+                    $content = preg_replace($pattern, '', $content);
+                }
+            }
+        }
+
+        if (isset($installDependencies)) {
+            $block = trim($installDependencies);
+            $content = str_replace($block . "\n", '', $content);
+            $content = str_replace("\n" . $block, '', $content);
+            $content = str_replace($block, '', $content);
         }
 
         $content = preg_replace('/\n{3,}/', "\n\n", $content);
@@ -466,6 +557,13 @@ class InstallerUtility
             $this->safeCopy($routesPath, $routesBackup);
         }
 
+        // Kopia application/services.php
+        $servicesPath = BASE_DIRECTORY . self::PATH_SERVICES;
+        $servicesBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_SERVICES;
+        if (file_exists($servicesPath) && !file_exists($servicesBackup)) {
+            $this->safeCopy($servicesPath, $servicesBackup);
+        }
+
         // Kopia src/Config/ConstantConfig.php
         $constantPath = BASE_DIRECTORY . self::PATH_CONSTANT;
         $constantBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_CONSTANT;
@@ -496,6 +594,13 @@ class InstallerUtility
         $routesBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_ROUTES;
         if (file_exists($routesBackup)) {
             $this->safeCopy($routesBackup, $routesTarget);
+        }
+
+        // Restore application/services.php
+        $servicesTarget = BASE_DIRECTORY . self::PATH_SERVICES;
+        $servicesBackup = BASE_DIRECTORY . self::PATH_BACKUP_BASE . DS . self::PATH_SERVICES;
+        if (file_exists($servicesBackup)) {
+            $this->safeCopy($servicesBackup, $servicesTarget);
         }
 
         // Restore src/Config/ConstantConfig.php

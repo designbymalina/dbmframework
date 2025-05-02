@@ -21,6 +21,8 @@ use Dbm\Classes\Http\Request;
 use Dbm\Classes\Logs\Logger;
 use Dbm\Interfaces\DatabaseInterface;
 
+//-INSTALL_POINT_ADD_USE
+
 return function (DependencyContainer $container) {
     // Registers DatabaseInterface as a dependency
     $container->set(DatabaseInterface::class, function () {
@@ -50,5 +52,5 @@ return function (DependencyContainer $container) {
         return new IndexService();
     });
 
-    //-INSTALL_POINT_ADD_DEPENDENCY
+    //-INSTALL_POINT_ADD_DEPENDENCIES
 };
