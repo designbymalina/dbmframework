@@ -106,10 +106,52 @@ Szczegóły w dokumentacji: [TemplateFeature](_Documents/Docs/template-feature.m
 {% extends 'base.phtml' %}
 
 {% block content %}
-    <h1>{{ $this->get('title') }}</h1>
+    <h1>{{ $title }}</h1>
     <p>Witaj w aplikacji DbM Framework!</p>
 {% endblock %}
 ```
+
+## Możliwość zmiany systemu szablonów
+
+DbM Framework pozwala również na pełne zastąpienie wbudowanego systemu szablonów zewnętrznym silnikiem - np. Twig.
+
+Wystarczy zmodyfikować klasę `TemplateEngine` (dziedziczoną przez BaseController) tak, aby używała silnika Twig zamiast własnej składni.
+
+Należy pamiętać, że w takiej sytuacji konstruktor klasy `BaseController` powinien jawnie wywołać `parent::__construct()`, aby poprawnie zainicjalizować mechanizm renderowania Twig.
+
+**Przykład:**
+
+```php
+namespace Dbm\Classes;
+
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Psr\Http\Message\ResponseInterface;
+use Dbm\Classes\Http\Response;
+use Dbm\Classes\Http\Stream;
+
+class TemplateEngine
+{
+    private Environment $twig;
+
+    public function __construct()
+    {
+        $loader = new FilesystemLoader(BASE_DIRECTORY . 'templates');
+        $this->twig = new Environment($loader, [
+            'cache' => BASE_DIRECTORY . 'var/cache',
+            'auto_reload' => true,
+        ]);
+    }
+
+    protected function render(string $template, array $data = []): ResponseInterface
+    {
+        $content = $this->twig->render($template, $data);
+        return new Response(200, ['Content-Type' => 'text/html'], new Stream($content));
+    }
+}
+```
+
+Dzięki temu możesz pisać widoki w .twig, korzystać z dziedziczenia layoutów, filtrów, makr itp. - bez konieczności przebudowy kontrolerów, poza dodaniem `parent::__construct()` w ich konstruktorach.
 
 ## Podsumowanie
 
