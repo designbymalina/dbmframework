@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.3" version="2.3" srcLang="en" trgLang="en">
+  <file id="validation">
+    <unit id="validation.required">
+      <segment>
+        <source>The field is required.</source>
+        <target>The field is required.</target>
+      </segment>
+    </unit>
+    <unit id="validation.min">
+      <segment>
+        <source>The field must be at least :value characters long.</source>
+        <target>The field must be at least :value characters long.</target>
+      </segment>
+    </unit>
+    <unit id="validation.max">
+      <segment>
+        <source>The field cannot exceed :value characters long.</source>
+        <target>The field cannot exceed :value characters long.</target>
+      </segment>
+    </unit>
+    <unit id="validation.string">
+      <segment>
+        <source>The field must be a string.</source>
+        <target>The field must be a string.</target>
+      </segment>
+    </unit>
+    <unit id="validation.email">
+      <segment>
+        <source>Invalid email address.</source>
+        <target>Invalid email address.</target>
+      </segment>
+    </unit>
+    <unit id="validation.url">
+      <segment>
+        <source>Field must be a valid URL.</source>
+        <target>Field must be a valid URL.</target>
+      </segment>
+    </unit>
+    <unit id="validation.phone">
+      <segment>
+        <source>Field must be a valid phone number.</source>
+        <target>Field must be a valid phone number.</target>
+      </segment>
+    </unit>
+    <unit id="validation.letters_spaces">
+      <segment>
+        <source>Field can only contain letters, spaces, and dashes.</source>
+        <target>Field can only contain letters, spaces, and dashes.</target>
+      </segment>
+    </unit>
+    <unit id="validation.password">
+      <segment>
+        <source>Field must meet the password strength requirements.</source>
+        <target>Field must meet the password strength requirements.</target>
+      </segment>
+    </unit>
+    <unit id="validation.confirmed">
+      <segment>
+        <source>Field confirmation does not match.</source>
+        <target>Field confirmation does not match.</target>
+      </segment>
+    </unit>
+    <unit id="validation.regex">
+      <segment>
+        <source>The field contains invalid characters.</source>
+        <target>The field contains invalid characters.</target>
+      </segment>
+    </unit>
+    <unit id="validation.csrf">
+      <segment>
+        <source>Invalid security token. Please refresh the page and try again.</source>
+        <target>Invalid security token. Please refresh the page and try again.</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

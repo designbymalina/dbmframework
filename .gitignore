@@ -1,0 +1,5 @@
+###> framework ###
+/var/
+/vendor/
+.env
+###< framework ###

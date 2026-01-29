@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.3" version="2.3" srcLang="en" trgLang="pl">
+  <file id="validation">
+    <unit id="validation.required">
+      <segment>
+        <source>The field is required.</source>
+        <target>Pole jest wymagane.</target>
+      </segment>
+    </unit>
+    <unit id="validation.min">
+      <segment>
+        <source>The field must be at least :value characters long.</source>
+        <target>Pole musi mieć co najmniej :value znak/i/ów.</target>
+      </segment>
+    </unit>
+    <unit id="validation.max">
+      <segment>
+        <source>The field cannot exceed :value characters long.</source>
+        <target>Pole nie może przekraczać :value znaków.</target>
+      </segment>
+    </unit>
+    <unit id="validation.string">
+      <segment>
+        <source>The field must be a string.</source>
+        <target>Pole musi być ciągiem tekstowym.</target>
+      </segment>
+    </unit>
+    <unit id="validation.email">
+      <segment>
+        <source>Invalid email address.</source>
+        <target>Nieprawidłowy adres e-mail.</target>
+      </segment>
+    </unit>
+    <unit id="validation.url">
+      <segment>
+        <source>Field must be a valid URL.</source>
+        <target>Pole musi być prawidłowym adresem URL.</target>
+      </segment>
+    </unit>
+    <unit id="validation.phone">
+      <segment>
+        <source>Field must be a valid phone number.</source>
+        <target>Pole musi zawierać prawidłowy numer telefonu.</target>
+      </segment>
+    </unit>
+    <unit id="validation.letters_spaces">
+      <segment>
+        <source>Field can only contain letters, spaces, and dashes.</source>
+        <target>Pole może zawierać tylko litery, spacje i myślniki.</target>
+      </segment>
+    </unit>
+    <unit id="validation.password">
+      <segment>
+        <source>Field must meet the password strength requirements.</source>
+        <target>Pole musi spełniać wymagania dotyczące siły hasła.</target>
+      </segment>
+    </unit>
+    <unit id="validation.confirmed">
+      <segment>
+        <source>Field confirmation does not match.</source>
+        <target>Pole potwierdzenia nie pasuje.</target>
+      </segment>
+    </unit>
+    <unit id="validation.regex">
+      <segment>
+        <source>The field contains invalid characters.</source>
+        <target>Pole zawiera niedozwolone znaki.</target>
+      </segment>
+    </unit>
+    <unit id="validation.csrf">
+      <segment>
+        <source>Invalid security token. Please refresh the page and try again.</source>
+        <target>Nieprawidłowy token bezpieczeństwa. Odśwież stronę i spróbuj ponownie.</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>
