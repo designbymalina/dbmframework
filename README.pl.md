@@ -205,7 +205,8 @@ W przypadku serwera zdalnego, gdzie domena wskazuje bezpośrednio na katalog pub
 
 Dokumentacja:
 
-[Creating first Controller and Service](_Documents/_Docs/01-controller-and-service.md)
+[Introduction](_Documents/_Docs/01-introduction.md)  
+[Creating first Controller and Service](_Documents/_Docs/02-controller-and-service.md)  
 [Application Programming Interface (api.php)](_Documents/_Docs/api.md)  
 [Command console (console.php)](_Documents/_Docs/console.md)  
 [Dependency Injection - DI (services.php)](_Documents/_Docs/dependency-injection.md)  
