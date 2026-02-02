@@ -283,11 +283,27 @@ final class ModulePackageService
     private function validateManifest(array $manifest): void
     {
         if (empty($manifest['key'])) {
-            throw new InvalidModulePackageException('Invalid module.json, missing key.');
+            throw new InvalidModulePackageException('Missing module key.');
         }
 
-        if (!preg_match('/^[a-z0-9_-]+$/i', $manifest['key'])) {
-            throw new InvalidModulePackageException('Invalid module.json, invalid key format.');
+        if (!preg_match('/^[a-z0-9_-]+$/', $manifest['key'])) {
+            throw new InvalidModulePackageException('Invalid module key format.');
+        }
+
+        if (empty($manifest['class']) || !class_exists($manifest['class'])) {
+            throw new InvalidModulePackageException('Invalid or missing module class.');
+        }
+
+        if (!empty($manifest['type']) && !in_array($manifest['type'], ['core', 'plugin'], true)) {
+            throw new InvalidModulePackageException('Invalid module type.');
+        }
+
+        if (!empty($manifest['stage']) && !in_array(
+            $manifest['stage'],
+            ['pre-install', 'install', 'post-install'],
+            true
+        )) {
+            throw new InvalidModulePackageException('Invalid module stage.');
         }
     }
 }

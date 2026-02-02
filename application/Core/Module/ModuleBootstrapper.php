@@ -55,11 +55,13 @@ final class ModuleBootstrapper
 
     private function loadModule(string $key, string $class, bool $core): void
     {
-        $path = BASE_DIRECTORY . '/modules/' . ucfirst($key);
+        $path = $this->resolveModulePath($class);
         $manifestPath = $path . '/module.json';
 
         if (!is_file($manifestPath)) {
-            throw new RuntimeException("Missing module.json for module '{$key}'. Check your configuration.");
+            throw new RuntimeException(
+                "Missing module.json for module '{$key}'. Check your configuration."
+            );
         }
 
         $manifest = json_decode(
@@ -67,6 +69,12 @@ final class ModuleBootstrapper
             true,
             flags: JSON_THROW_ON_ERROR
         );
+
+        if ($manifest['key'] !== $key) {
+            throw new RuntimeException(
+                "Module key mismatch: config='{$key}', manifest='{$manifest['key']}'"
+            );
+        }
 
         if (!class_exists($class)) {
             throw new RuntimeException("Module class not found: {$class}");
@@ -98,5 +106,17 @@ final class ModuleBootstrapper
         foreach ($this->registry->all() as $module) {
             $module->boot();
         }
+    }
+
+    private function resolveModulePath(string $class): string
+    {
+        $parts = explode('\\', trim($class, '\\'));
+        $moduleDir = $parts[1] ?? null;
+
+        if (!$moduleDir) {
+            throw new RuntimeException("Invalid module class: {$class}");
+        }
+
+        return BASE_DIRECTORY . '/modules/' . $moduleDir;
     }
 }
