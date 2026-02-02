@@ -8,6 +8,9 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * TODO! Zmienić na DbmMessage, obecnie może dezorientować (ktoś zrobi use Message; i tworzy chaos).
+ * Dbm\Http\Message\Message -> Dbm\Http\Message\DbmMessage ?!
  */
 
 declare(strict_types=1);

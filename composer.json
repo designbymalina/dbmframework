@@ -24,15 +24,14 @@
         "phpstan/phpstan": "^1.10"
     },
     "autoload": {
-        "classmap": [
-            "application/"
-        ],
         "psr-4": {
             "App\\": "src/",
             "Dbm\\": "application/",
-            "Lib\\": "application/Libraries/",
             "Mod\\": "modules/"
-        }
+        },
+        "classmap": [
+            "application/Libraries/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

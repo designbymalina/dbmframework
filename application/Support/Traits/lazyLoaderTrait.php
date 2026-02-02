@@ -14,7 +14,7 @@
  * {
  *     return $this->lazy('service', fn () => new AccountService($this->repository()));
  * }
- * and:
+ * Call:
  * $this->service()->someMethod();
  */
 

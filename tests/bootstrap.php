@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Test command: vendor/bin/phpunit tests/Unit/ExampleUnitTest.php
 // Definiujemy stałe wymagane w projekcie, np. BASE_DIRECTORY
 if (!defined('BASE_DIRECTORY')) {

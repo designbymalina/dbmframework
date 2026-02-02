@@ -15,50 +15,60 @@ declare(strict_types=1);
 
 namespace Lib\Adverts;
 
-class AdvertisementCache
+final class AdvertisementCache
 {
-    private static $instance;
-    private const ADS_DIR = BASE_DIRECTORY . '/data/adverts';
-    private const CACHE_FILE = BASE_DIRECTORY . '/var/cache/adverts/ads_cache.php';
+    private const ADS_DIR = 'data/adverts';
+    private const CACHE_FILE = 'var/cache/adverts/ads_cache.php';
 
-    private $cache = [];
+    private static ?self $instance = null;
 
-    public function __construct()
+    /** @var array<string, string> */
+    private array $cache = [];
+
+    private function __construct()
     {
         $this->preloadAds();
     }
 
     public static function getInstance(): self
     {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+        return self::$instance ??= new self();
     }
 
     public function getAdvert(string $position, string $space = ''): string
     {
         $advert = $this->cache[$position] ?? '';
 
-        $needle = '[URL]';
-
-        if (!empty($advert) && str_contains($advert, $needle)) {
-            $space = is_numeric($space) ? str_repeat('    ', (int) $space) : $space ?? '';
-            $search = [PHP_EOL, $needle];
-            $replace = [PHP_EOL . $space, getenv('APP_URL')];
-
-            return trim(str_replace($search, $replace, $advert)) . PHP_EOL;
+        if ($advert === '') {
+            return '';
         }
 
-        return $advert;
+        if (!str_contains($advert, '[URL]')) {
+            return $advert;
+        }
+
+        $indent = is_numeric($space)
+            ? str_repeat('    ', (int) $space)
+            : $space;
+
+        return trim(
+            str_replace(
+                [PHP_EOL, '[URL]'],
+                [PHP_EOL . $indent, getenv('APP_URL') ?: ''],
+                $advert
+            )
+        ) . PHP_EOL;
     }
 
     private function preloadAds(): void
     {
         if ($this->isCacheValid()) {
-            $this->cache = include self::CACHE_FILE;
-            return;
+            $data = require $this->cacheFile();
+
+            if (is_array($data)) {
+                $this->cache = $data;
+                return;
+            }
         }
 
         $this->cache = $this->loadAdsFromFiles();
@@ -67,14 +77,16 @@ class AdvertisementCache
 
     private function isCacheValid(): bool
     {
-        if (!file_exists(self::CACHE_FILE)) {
+        $cacheFile = $this->cacheFile();
+
+        if (!is_file($cacheFile)) {
             return false;
         }
 
-        $cacheTime = filemtime(self::CACHE_FILE);
+        $cacheTime = filemtime($cacheFile) ?: 0;
 
-        foreach (glob(self::ADS_DIR . "/*.txt") as $filePath) {
-            if (filemtime($filePath) > $cacheTime) {
+        foreach (glob($this->adsDir() . '/*.txt') ?: [] as $file) {
+            if (filemtime($file) > $cacheTime) {
                 return false;
             }
         }
@@ -86,9 +98,8 @@ class AdvertisementCache
     {
         $ads = [];
 
-        foreach (glob(self::ADS_DIR . "/*.txt") as $filePath) {
-            $position = basename($filePath, '.txt');
-            $ads[$position] = file_get_contents($filePath) ?: '';
+        foreach (glob($this->adsDir() . '/*.txt') ?: [] as $file) {
+            $ads[basename($file, '.txt')] = file_get_contents($file) ?: '';
         }
 
         return $ads;
@@ -96,12 +107,27 @@ class AdvertisementCache
 
     private function saveCache(): void
     {
-        $cacheDir = dirname(self::CACHE_FILE);
+        $cacheFile = $this->cacheFile();
+        $dir = dirname($cacheFile);
 
-        if (!is_dir($cacheDir)) {
-            mkdir($cacheDir, 0o755, true);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0o755, true);
         }
 
-        file_put_contents(self::CACHE_FILE, "<?php return " . var_export($this->cache, true) . ";", LOCK_EX);
+        file_put_contents(
+            $cacheFile,
+            "<?php return " . var_export($this->cache, true) . ";",
+            LOCK_EX
+        );
+    }
+
+    private function adsDir(): string
+    {
+        return BASE_DIRECTORY . '/' . self::ADS_DIR;
+    }
+
+    private function cacheFile(): string
+    {
+        return BASE_DIRECTORY . '/' . self::CACHE_FILE;
     }
 }

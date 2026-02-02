@@ -86,11 +86,6 @@ function logErrorToFile(int $errLevel, string $errMessage, string $errFile, int 
 
 ### Bootstrap / env functions ###
 
-/* Optional - future helper
-function basePath(string $path = ''): string {
-    return BASE_DIRECTORY . ($path ? '/' . ltrim($path, '/') : '');
-}*/
-
 function configurationSettings(string $pathConfig): void
 {
     if (!file_exists($pathConfig)) {
@@ -99,130 +94,79 @@ function configurationSettings(string $pathConfig): void
 }
 
 /**
- * Minimal path helper for bootstrap autoloader, compatible with Dbm\Support\Normalize\Path:join()
- */
-function pathJoin(string ...$parts): string
-{
-    return implode('/', array_map(static fn($p) => trim(str_replace('\\', '/', $p), '/'), $parts));
-}
-
-/**
  * Autoloading with without Composer
  *
  * @param string $pathComposerAutoload
  * @return void
+ *
+ * PSR-4 compliant autoloader
+ * - absolute paths only
+ * - Linux / Windows safe
+ * - supports bundled libraries (PSR, Guzzle, PHPMailer)
  */
 function autoloadingWithWithoutComposer(string $pathComposerAutoload): void
 {
     if (is_file($pathComposerAutoload)) {
-        require $pathComposerAutoload;
+        require_once $pathComposerAutoload;
         return;
     }
 
-    spl_autoload_register(static function (string $className): void {
+    $base = rtrim(BASE_DIRECTORY, '/');
 
-        // Ignore template-generated classes
-        if (str_starts_with($className, '__Tpl_')) {
-            return;
-        }
+    // --- MAIN PSR-4 MAP ---
+    $psr4 = [
+        'App\\' => $base . '/src/',
+        'Dbm\\' => $base . '/application/',
+        'Mod\\' => $base . '/modules/',
+        'Lib\\' => $base . '/application/Libraries/', // fallback
+    ];
 
-        /**
-         * === PSR-4 namespace, directory map
-         */
-        $namespaceMap = [
-            'App' => 'src',
-            'Dbm' => 'application',
-            'Lib' => 'application/Libraries',
-            'Mod' => 'modules',
-        ];
+    // --- BUNDLED / EXTERNAL LIBRARIES ---
+    $libraries = [
+        'Psr\\Http\\Message\\' => $base . '/libraries/psr/http-message/src/',
+        'Psr\\Http\\Client\\' => $base . '/libraries/psr/http-client/src/',
+        'Psr\\Log\\' => $base . '/libraries/psr/log/src/',
+        'PHPMailer\\PHPMailer\\' => $base . '/libraries/phpmailer/src/',
+        'GuzzleHttp\\Promise\\' => $base . '/libraries/guzzlehttp/promise/src/',
+        'GuzzleHttp\\Psr7\\' => $base . '/libraries/guzzlehttp/psr7/src/',
+        'GuzzleHttp\\' => $base . '/libraries/guzzlehttp/guzzle/src/',
+    ];
 
-        foreach ($namespaceMap as $prefix => $baseDir) {
-            if (!str_starts_with($className, $prefix)) {
-                continue;
-            }
+    // --- FRAMEWORK-BUNDLED PACKAGES ---
+    $bundles = [
+        'Lib\\DataTables\\' => $base . '/application/Libraries/DataTables/src/',
+        'Lib\\Search\\' => $base . '/application/Libraries/Search/src/',
+    ];
 
-            $relativeClass = ltrim(substr($className, strlen($prefix)), '\\');
+    // order matters: more specific first
+    $maps = $bundles + $libraries + $psr4;
 
-            $filePath = pathJoin(
-                BASE_DIRECTORY,
-                $baseDir,
-                str_replace('\\', '/', $relativeClass)
-            ) . '.php';
+    spl_autoload_register(
+        static function (string $class) use ($maps): void {
 
-            if (is_file($filePath)) {
-                require_once $filePath;
+            if ($class[0] === '_') {
                 return;
             }
 
-            error_log("Autoloader: Class {$className} not found at {$filePath}");
-            return;
-        }
-
-        /**
-         * === External / bundled libraries (PSR, PHPMailer, Guzzle)
-         */
-        $librariesRoot = pathJoin(BASE_DIRECTORY, 'libraries');
-        if (!is_dir($librariesRoot)) {
-            return;
-        }
-
-        static $loadedLibraries = [];
-
-        $namespaceLibraries = [
-            'Psr\\Http\\Message\\' => 'libraries/psr/http-message/src',
-            'Psr\\Http\\Client\\' => 'libraries/psr/http-client/src',
-            'Psr\\Log\\' => 'libraries/psr/log/src',
-            'PHPMailer\\PHPMailer' => 'libraries/phpmailer/src',
-            'GuzzleHttp\\Promise' => 'libraries/guzzlehttp/promise/src',
-            'GuzzleHttp\\Psr7' => 'libraries/guzzlehttp/psr7/src',
-            'GuzzleHttp' => 'libraries/guzzlehttp/guzzle/src',
-        ];
-
-        // longest prefix first
-        uksort($namespaceLibraries, fn($a, $b) => strlen($b) <=> strlen($a));
-
-        foreach ($namespaceLibraries as $prefix => $libraryPath) {
-            if (!str_starts_with($className, $prefix)) {
-                continue;
-            }
-
-            $relative = ltrim(substr($className, strlen($prefix)), '\\');
-
-            $filePath = pathJoin(
-                BASE_DIRECTORY,
-                $libraryPath,
-                str_replace('\\', '/', $relative)
-            ) . '.php';
-
-            if (is_file($filePath)) {
-                require_once $filePath;
-                return;
-            }
-
-            // Fallback: load entire library once
-            if (!isset($loadedLibraries[$prefix])) {
-                $dir = pathJoin(BASE_DIRECTORY, $libraryPath);
-
-                if (is_dir($dir)) {
-                    $it = new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)
-                    );
-
-                    foreach ($it as $file) {
-                        if ($file->isFile() && $file->getExtension() === 'php') {
-                            require_once $file->getPathname();
-                        }
-                    }
-
-                    $loadedLibraries[$prefix] = true;
-                } else {
-                    error_log("Autoloader: Library directory missing: {$dir}");
+            foreach ($maps as $prefix => $dir) {
+                if (strncmp($class, $prefix, strlen($prefix)) !== 0) {
+                    continue;
                 }
-            }
 
-            return;
-        }
-    });
+                $file = $dir
+                    . str_replace('\\', '/', substr($class, strlen($prefix)))
+                    . '.php';
+
+                if (is_file($file)) {
+                    require $file;
+                }
+
+                return;
+            }
+        },
+        true,
+        true
+    );
 }
 
 function initializeSession(): void

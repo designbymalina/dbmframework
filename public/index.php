@@ -23,6 +23,8 @@ use Dbm\Exceptions\ExceptionHandler;
 ob_start();
 
 // Define constants
+// INFO! Jeśli będzie czas na PHPStan i kolejne poziomy:
+// Zastępować BASE_DIRECTORY na Dbm\Core\Paths, finalnie usunąć globalne stałe.
 $baseDirectory = realpath(dirname(__DIR__));
 
 if ($baseDirectory === false) {

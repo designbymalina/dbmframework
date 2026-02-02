@@ -113,7 +113,7 @@ use Dbm\Console\AbstractCommand;
 
 final class ExampleCommand extends AbstractCommand
 {
-    public function run(): void
+    public function execute(): void
     {
         $this->success('OK!');
     }
