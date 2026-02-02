@@ -1,0 +1,9 @@
+                            <!-- @installer: Progress Bar -->
+                            {% if (isset($progress)): %}
+                            {% $style = ' style="width: ' . $progress . '%"'; %}
+                            <div class="progress" role="progressbar" aria-label="Progress bar" aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar bg-warning"{{{ $style }}}>{{ $progress }}%</div>
+                            </div>
+                            {% else: %}
+                            <div class="small">{{ $this->trans('installer.progressbar.not_started') }}</div>
+                            {% endif; %}

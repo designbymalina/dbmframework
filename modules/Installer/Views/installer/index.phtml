@@ -1,0 +1,99 @@
+{% extends 'base_installer.phtml' %}
+
+{% block content %}
+    <!-- @installer Main Content -->
+    <main class="my-4 my-lg-5">
+        <div class="container">
+            {% include '_component/messages_dismissing.phtml' %}
+            <!-- Header -->
+            <div class="bg-white text-dark p-lg-2 rounded-lg shadow-lg">
+                <div class="p-4 rounded-top position-relative dbm-box-welcome-header">
+                    <div>
+                        <h1 class="display-5 fw-bold"><i class="bi bi-stars me-2"></i>{{ $this->trans('installer.header.title') }}</h1>
+                        <h2 class="fs-5 h-desc">{{ $this->trans('installer.header.subtitle') }}</h2>
+                    </div>
+                    <div class="position-absolute top-0 end-0 m-3">
+                        {{ $this->htmlLanguage($this->asset(), '6', 'dbm-list-language') }}
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <div class="col-12 col-md-6">
+                            <p class="text-end text-uppercase text-light m-0 me-2 dbm-x-small">{{ $this->trans('installer.progressbar.installation') }}</p>
+                            {% include '_component/progressbar.phtml' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="py-4">
+                    <div class="container">
+                        <div class="row flex-column flex-md-row">
+                            <!-- Menu -->
+                            <div class="col-md-4 mb-4 mb-md-0">
+                                {% if (!empty($steps)): %}
+                                <ul class="list-group list-group-flush dbm-installer-steps">
+                                {% foreach ($steps as $index => $step): %}
+                                    <li class="list-group-item d-flex align-items-center {{ $step === $currentStep ? 'fw-bold text-dark' : '' }}">
+                                        <span class="me-3 dbm-step-index {{ ($index <= $currentIndex) ? 'bg-success text-white' : '' }}">{{ $index + 1 }}</span>
+                                        <span>{{ $this->trans($step->getTitle()) }}</span>
+                                    </li>
+                                {% endforeach; %}
+                                </ul>
+                                {% endif; %}
+                            </div>
+                            <!-- Content -->
+                            <div class="col-md-8">
+                                <h3 class="mb-3">
+                                    <span class="me-1">{{ $this->trans('installer.content.title') }}:</span>
+                                    <span class="fw-bold">{% if ($currentStep && $currentStep->getTitle()) : %}{{ $this->trans($currentStep->getTitle()) }}{% endif; %}</span>
+                                </h3>
+                                {% if (!empty($payload) && isset($payload['type'])): %}
+                                    {% if ($payload['type'] === 'alert'): %}
+                                        <div class="alert alert-{{ $payload['class'] ?? 'info' }}">{{{ $this->trans($payload['text'], $payload['placeholder'] ?? []) }}}</div>
+
+                                        {% if ($currentStep && $currentStep->getDescription()): %}
+                                        <div class="py-2">{{{ $this->trans($currentStep->getDescription()) }}}</div>
+                                        {% endif; %}
+                                    {% elseif ($payload['type'] === 'list'): %}
+                                        <ul class="list-group list-group-flush">
+                                            {% foreach ($payload['items'] as $msg): %}
+                                                <li class="list-group-item border-0 py-1">
+                                                {% if ($msg['type'] === 'success'): %}
+                                                    <i class="bi bi-check2-circle text-success"></i>
+                                                    <span class="ms-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</span>
+                                                {% elseif ($msg['type'] === 'danger'): %}
+                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                    <span class="ms-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</span>
+                                                {% else: %}
+                                                    <h4 class="h5 mt-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</h4>
+                                                {% endif; %}
+                                                </li>
+                                            {% endforeach; %}
+                                        </ul>
+                                    {% else: %}
+                                        <div class="px-1">{{{ $this->trans($payload['text']) }}}</div>
+                                    {% endif; %}
+                                {% else: %}
+                                <div class="alert alert-warning">{{ $this->trans('installer.alert.content_not_load') }}</div>
+                                {% endif; %}
+                                {% if (!empty($payload) && ($payload['type'] ?? null) === 'actions'): %}
+                                <div class="d-flex gap-2 mt-4">
+                                    {% foreach ($payload['actions'] as $action): %}
+                                        <a href="{{ $action['url'] }}" class="{{ $action['class'] ?? 'btn btn-primary' }}">{{ $this->trans($action['label']) }}</a>
+                                    {% endforeach; %}
+                                </div>
+                                {% else: %}
+                                <form method="post" onsubmit="const btn = this.querySelector('button');btn.querySelector('.btn-icon').classList.add('d-none');btn.querySelector('.spinner-border').classList.remove('d-none');">
+                                    <button type="submit" class="btn btn-light fw-bold dbm-btn-gradient d-inline-flex align-items-center gap-2">
+                                        <span class="btn-icon"><i class="bi bi-play-circle"></i></span>
+                                        <span class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                                        <span>{{ $this->trans('installer.button.next_step') }}</span>
+                                    </button>
+                                    <input type="hidden" name="_step" value="next">
+                                </form>
+                                {% endif; %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

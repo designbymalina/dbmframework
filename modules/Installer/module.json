@@ -1,0 +1,8 @@
+{
+  "name": "DbM Installer",
+  "version": "2.0.0",
+  "key": "installer",
+  "type": "core",
+  "stage": "pre-install",
+  "class": "Mod\\Installer\\InstallerModule"
+}
