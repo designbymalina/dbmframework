@@ -58,13 +58,13 @@ DbM to framework, który nie walczy z programistą - **pozwala mu pracować tak,
 - `data/` - dane i pliki (wymagane prawa do zapisu)  
 - `modules/` - moduły systemu zarządzania treścią  
 
-## Instalacja manualna
+## Instalacja i konfiguracja (instalacja manualna)
 
-1. Skieruj domenę na katalog `public/`. W pliku `public/.htaccess` ustaw odpowiedni `RewriteBase`.
-2. Jeśli korzystasz z localhosta, skopiuj plik `.htaccess` z katalogu `_Documents` do katalogu głównego i dostosuj `RewriteBase`.
-3. Skonfiguruj plik `.env.example`, następnie zmień jego nazwę na `.env`.
+1. **Konfiguracja domeny:** Skieruj domenę na katalog `public/`. Jeśli korzystasz z lokalnego środowiska (localhost), skopiuj plik `.htaccess` z katalogu `_Documents/_Server/` do głównego folderu projektu. Następnie w obu plikach - w katalogu głównym oraz public/.htaccess - dostosuj dyrektywę RewriteBase do ścieżki uruchomieniowej aplikacji.
+2. **Plik środowiskowy:** Skonfiguruj plik `.env.example`, następnie zmień jego nazwę na `.env`.
+3. **Optymalizacja:** Po zakończeniu konfiguracji i uruchomieniu systemu ustaw `CACHE_ENABLED`.
 
-W konfiguracji podstawowej uzupełnij sekcję **General settings**:
+W konfiguracji podstawowej pliku `.env` uzupełnij sekcję **General settings**:
 
 ```env
 APP_URL="http://localhost/"
@@ -189,17 +189,13 @@ php bin/dbm worker example (for ExampleWorker)
 
 ## Informacja dodatkowa
 
-W środowisku produkcyjnym kieruj domenę na katalog public/. W przypadku uruchamiania aplikacji w środowisku produkcyjnym (na serwerze zdalnym), **należy skierować domenę na katalog `/public/`**, ponieważ to właśnie on pełni rolę katalogu głównego (document root).
+W środowisku produkcyjnym (na serwerze zdalnym) **należy skierować domenę na katalog `public/`**, ponieważ to właśnie on pełni rolę katalogu głównego (document root). Jeśli korzystasz z lokalnego środowiska (localhost), skonfiguruj pliki .htaccess zarówno w folderze głównym projektu, jak i w folderze public/. W przypadku serwera zdalnego, gdzie domena wskazuje bezpośrednio na katalog public/, aplikacja zazwyczaj nie wymaga dodatkowej konfiguracji plików .htaccess.
 
-Upewnij się, że open_basedir nie blokuje dostępu do katalogów. Dodatkowo, w zależności od konfiguracji serwera, **może być konieczne wyłączenie ograniczenia `open_basedir`** w ustawieniach PHP. To zabezpieczenie, znane jako "separacja stron", może blokować dostęp do niektórych katalogów i plików spoza katalogu głównego domeny, co uniemożliwi otworzenie aplikacji w domenie.
+Upewnij się, że `open_basedir` nie blokuje dostępu do katalogów. W zależności od konfiguracji serwera może być konieczne wyłączenie tego ograniczenia w ustawieniach PHP. To zabezpieczenie, znane jako "separacja stron", może blokować dostęp do plików spoza katalogu głównego domeny, co uniemożliwi poprawne działanie aplikacji.
 
-Po uruchomieniu aplikacji włącz cache (`CACHE_ENABLED=true`) co przyspiesza działanie strony.
+Po uruchomieniu aplikacji włącz cache (CACHE_ENABLED=true), co przyspieszy działanie strony.
 
-Korzystając z **DBM CMS**, zadbaj o prawa zapisu w katalogach `data/`, `modules/`.
-
-Jeśli korzystasz z lokalnego środowiska (localhost), skopiuj plik `.htaccess` z katalogu `_Documents/_Server/` do głównego folderu projektu. Następnie w obu plikach - w katalogu głównym oraz public/.htaccess - dostosuj dyrektywę RewriteBase do ścieżki uruchomieniowej aplikacji.
-
-W przypadku serwera zdalnego, gdzie domena wskazuje bezpośrednio na katalog public/ i znajdujący się tam plik .htaccess, aplikacja nie wymaga dodatkowej konfiguracji.
+Korzystając z **DBM CMS**, pamiętaj o nadaniu praw zapisu w katalogach data/.
 
 **WAŻNE!** Prosimy o zachowanie stopki: "Created with <a href="https://dbm.org.pl/" title="DbM">DbM Framework</a>". Link powinien pozostać nienaruszony. Dziękujemy za wsparcie rozwoju projektu! Zachowując link w stopce pomagasz rozwijać darmowy framework open source, wspierasz jego rozwój i społeczność niezależnych twórców PHP.
 

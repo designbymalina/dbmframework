@@ -58,13 +58,13 @@ DbM is a framework that doesn't fight the developer - **it lets them work the wa
 - `data/` - data and files (write permissions required)  
 - `modules/` - content management system modules  
 
-## Manual Installation
+## Installation and Configuration (manual installation)
 
-1. Point your domain to the `public/` directory. Set the appropriate `RewriteBase` in the `public/.htaccess` file.
-2. If you're using localhost, copy the `.htaccess` file from the `_Documents` directory to the root directory and adjust the `RewriteBase`.
-3. Configure the `.env.example` file, then rename it to `.env`.
+1. **Domain Configuration:** Point your domain to the `public/` directory. If you are using a local environment (localhost), copy the `.htaccess` file from `_Documents/_Server/` to the project root. Then, in both files – the root directory and public/.htaccess – adjust the RewriteBase directive to match your application's execution path.
+2. **Environment File:** Configure the `.env.example` file, then rename it to `.env`.
+3. **Optimization:** After completing the configuration and launching the system, set `CACHE_ENABLED`.
 
-In the basic configuration, complete the **General settings** section:
+In the basic `.env` configuration, complete the General settings section:
 
 ```env
 APP_URL="http://localhost/"
@@ -189,17 +189,13 @@ php bin/dbm worker example (for ExampleWorker)
 
 ## Additional Information
 
-In a production environment, point your domain to the public/ directory. If running the application in a production environment (on a remote server), **you should point your domain to the `/public/` directory**, as this serves as the document root.
+In a production environment (on a remote server), **the domain must point to the `public/` directory**, as it serves as the document root. If you are using a local environment (localhost), configure the .htaccess files in both the project root and the public/ folder. For remote servers where the domain already points directly to the public/ directory, the application typically requires no further .htaccess configuration.
 
-Make sure that open_basedir does not block access to directories. Additionally, depending on your server configuration, **you may need to disable the `open_basedir` restriction** in your PHP settings. This security measure, known as "page separation," can block access to certain directories and files outside the domain root, preventing the application from opening within the domain.
+Ensure that `open_basedir` does not block access to directories. Depending on your server configuration, it may be necessary to disable this restriction in the PHP settings. This security feature, known as "site separation," can block access to files outside the domain's document root, preventing the application from functioning correctly.
 
-After launching the application, enable caching (`CACHE_ENABLED=true`) to speed up the page.
+After launching the application, enable the cache (CACHE_ENABLED=true) to speed up the website.
 
-When using **DBM CMS**, ensure that `data/` and `modules/` directories have write permissions.
-
-If you are using a local environment (localhost), copy the `.htaccess` file from the `_Documents/_Server/` directory to the project's root folder. Then, in both .htaccess files (in the root and public/ directories), adjust the RewriteBase directive to match your application's path.
-
-For remote servers where the domain points directly to the public/ directory and its .htaccess file, no additional configuration is required.
+When using **DBM CMS**, also ensure that the data/ directories have the appropriate write permissions.
 
 **IMPORTANT!** Please retain the footer: "Created with <a href="https://dbm.org.pl/" title="DbM">DbM Framework</a>". The link should remain intact. Thank you for supporting the project! By maintaining the link in the footer, you help develop the free, open-source framework and support its development and the community of independent PHP developers.
 
