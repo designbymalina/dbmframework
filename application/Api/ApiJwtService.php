@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dbm\Api;
 
 use Dbm\Http\Message\Response;
+use RuntimeException;
 
 class ApiJwtService
 {
@@ -24,13 +25,25 @@ class ApiJwtService
     public function __construct(?string $secret = null, ?int $expiration = null)
     {
         if (getenv('API_ENABLED') !== 'true') {
-            Response::json(['error' => 'API is disabled'], 503);
-            exit;
+            throw new RuntimeException('API is disabled');
         }
 
         $this->secret = $secret ?? (getenv('API_JWT_SECRET') ?: 'default-secret-key');
         $this->expiration = $expiration ?? (int) (getenv('API_JWT_EXPIRATION') ?: 3600);
     }
+
+    // INFO! Docelowa wersja. Gdzie reakcja HTTP powinna być w middleware albo w controllerze API.
+    // public static function fromEnv(): self
+    // {
+    //     if (getenv('API_ENABLED') !== 'true') {
+    //         throw new ApiDisabledException();
+    //     }
+
+    //     return new self(
+    //         getenv('API_JWT_SECRET') ?: 'default-secret-key',
+    //         (int)(getenv('API_JWT_EXPIRATION') ?: 3600)
+    //     );
+    // }
 
     /**
      * Generuje nowy token JWT.

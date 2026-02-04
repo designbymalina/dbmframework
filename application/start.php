@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Application: DbM Framework (bootstrap application)
  * A lightweight PHP framework for building web applications.
@@ -12,6 +10,10 @@ declare(strict_types=1);
  * @link https://www.dbm.org.pl
  */
 
+// Strict typing
+declare(strict_types=1);
+
+// Importing required classes from namespace
 use Dbm\Core\DependencyContainer;
 use Dbm\Core\Module\InstallerContext;
 use Dbm\Core\Module\ModuleBootstrapper;
@@ -202,7 +204,6 @@ function runRoutingKernel(DependencyContainer $container): void
     $routes = $container->get(RouteCollection::class);
     $routeBuilder = $container->get(RouteBuilder::class);
     $middleware = $container->get(MiddlewareStack::class);
-    $router = $container->get(Router::class);
 
     $sources = [
         BASE_DIRECTORY . '/application/web.php',
@@ -219,12 +220,8 @@ function runRoutingKernel(DependencyContainer $container): void
     // === 2. Rejestracja modułów ===
     /** @var ModuleRegistry $moduleRegistry */
     $moduleRegistry = $container->get(ModuleRegistry::class);
-    $allRegistered = iterator_to_array($moduleRegistry->all());
-
-    if (!empty($allRegistered)) {
-        foreach ($allRegistered as $module) {
-            $moduleRegistry->enable($module->getKey());
-        }
+    foreach (iterator_to_array($moduleRegistry->all()) as $module) {
+        $moduleRegistry->enable($module->getKey());
     }
 
     // Dodaj trasy modułów (last wins)
@@ -238,7 +235,10 @@ function runRoutingKernel(DependencyContainer $container): void
     // === 4. Middleware ===
     loadMiddleware($middleware);
 
-    // === 5. Dispatch ===
+    // === 5. Router (po middleware) ===
+    $router = $container->get(Router::class);
+
+    // === 6. Dispatch ===
     dispatchRequest($router);
 }
 

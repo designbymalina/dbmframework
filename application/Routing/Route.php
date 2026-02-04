@@ -60,6 +60,11 @@ final class Route
         return $this->paramNames;
     }
 
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
     ### Helpers for route cache ###
 
     public function isStatic(): bool

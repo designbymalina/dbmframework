@@ -78,7 +78,11 @@ return function (DependencyContainer $container): void {
         )
     );
 
-    $container->singleton(MiddlewareStack::class);
+    $container->singleton(
+        MiddlewareStack::class,
+        static fn() => new MiddlewareStack()
+    );
+
     $container->singleton(UriNormalizer::class);
 
     $container->singleton(
