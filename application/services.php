@@ -50,6 +50,11 @@ use Dbm\Localization\Contracts\TranslationInterface;
 use Dbm\Localization\LanguageService;
 use Dbm\Localization\Translation;
 use Dbm\Localization\TranslationLoader;
+use Dbm\Security\AccessGuard;
+use Dbm\Security\Contracts\AccessControlInterface;
+use Dbm\Security\Contracts\UserRoleProviderInterface;
+use Dbm\Security\NullAccessControl;
+use Dbm\Security\NullUserRoleProvider;
 use Dbm\Views\Flash\FlashBag;
 use Lib\Files\FileSystem;
 use Lib\Sender\PHPMailerSender;
@@ -115,7 +120,8 @@ return function (DependencyContainer $container): void {
             $c->get(ControllerResolver::class),
             $c->get(ActionArgumentResolver::class),
             $c->get(UriNormalizer::class),
-            $c->get(UrlGenerator::class)
+            $c->get(UrlGenerator::class),
+            $c->get(AccessGuard::class)
         )
     );
 
@@ -171,6 +177,26 @@ return function (DependencyContainer $container): void {
         fn() => isConfigDatabase()
             ? DatabaseFactory::createDatabase()
             : null
+    );
+
+    ### SECURITY - INFO! Może wymagać korekty. ###
+
+    $container->singleton(
+        UserRoleProviderInterface::class,
+        fn() => new NullUserRoleProvider()
+    );
+
+    $container->singleton(
+        AccessControlInterface::class,
+        fn() => new NullAccessControl()
+    );
+
+    $container->singleton(
+        AccessGuard::class,
+        fn($c) => new AccessGuard(
+            $c->get(SessionManager::class),
+            $c->get(AccessControlInterface::class)
+        )
     );
 
     ### EMAIL - Optional ###

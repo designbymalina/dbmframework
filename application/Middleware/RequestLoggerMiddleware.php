@@ -25,7 +25,7 @@ use Psr\Http\Message\RequestInterface;
  * - Loguje metodę, ścieżkę i IP klienta.
  * - Może być rozszerzony o logowanie czasu wykonania requestu.
  *
- * INFO! W przyszłości rozdzielić na RequestLoggerMiddleware i ApiRequestLoggerMiddleware.
+ * INFO! Można rozdzielić na RequestLoggerMiddleware i ApiRequestLoggerMiddleware.
  */
 class RequestLoggerMiddleware
 {
@@ -61,15 +61,15 @@ class RequestLoggerMiddleware
         $method = $request->getMethod() ?? 'GET';
         $uri = $request->getUri()?->getPath() ?? '/';
 
-        $userRole = $payload['role'] ?? 'guest';
+        $role = $payload['role'] ?? 'guest';
 
         $duration = defined('REQUEST_START_TIME')
             ? round((microtime(true) - REQUEST_START_TIME) * 1000, 2)
             : 0.0;
 
         $this->logger->info(
-            "Request {method} {uri} by {role} from {ip} in {time} ms",
-            compact('method', 'uri', 'ip', 'userRole', 'duration')
+            "Request {method} {uri} by {role} from {ip} in {duration} ms",
+            compact('method', 'uri', 'ip', 'role', 'duration')
         );
 
         return null;
