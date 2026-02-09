@@ -85,23 +85,32 @@ class TemplateCompiler
 
         // 2) {% extends '...' %}
         $content = preg_replace_callback(
-            '/\{\%\s*extends\s+[\'"]([^\'"]+)[\'"]\s*\%\}/iu',
-            fn($m) => "<?php \$this->extend('" . addslashes($m[1]) . "'); ?>",
+            '/^[ \t]*\{\%\s*extends\s+[\'"]([^\'"]+)[\'"]\s*\%\}[ \t]*\n?/imu',
+            fn($m) => "<?php \$this->extend('" . addslashes($m[1]) . "'); ?>\n",
             $content
         );
 
-        // 3) {% block name %} / {% endblock %}
+        // 3) {% block name %}
         $content = preg_replace_callback(
-            '/\{\%\s*block\s+([a-zA-Z0-9_]+)\s*\%\}/iu',
-            fn($m) => "<?php \$this->startBlock('{$m[1]}'); ?>",
+            '/^[ \t]*\{\%\s*block\s+([a-zA-Z0-9_]+)\s*\%\}[ \t]*\n?/imu',
+            fn($m) => "<?php \$this->startBlock('{$m[1]}'); ?>\n",
             $content
         );
-        $content = preg_replace('/\{\%\s*endblock\s*\%\}/iu', "<?php \$this->endBlock(); ?>", $content);
+
+        // {% endblock %}
+        $content = preg_replace(
+            '/^[ \t]*\{\%\s*endblock\s*\%\}[ \t]*\n?/imu',
+            "<?php \$this->endBlock(); ?>\n",
+            $content
+        );
+
+        // {% parent %}
+        $content = preg_replace('/\{\%\s*parent\s*\%\}/iu', '@parent', $content);
 
         // 4) {% yield name %}
         $content = preg_replace_callback(
-            '/\{\%\s*yield\s+([a-zA-Z0-9_]+)\s*\%\}/iu',
-            fn($m) => "<?php echo \$this->yieldBlock('{$m[1]}'); ?>",
+            '/^[ \t]*\{\%\s*yield\s+([a-zA-Z0-9_]+)\s*\%\}[ \t]*\n?/imu',
+            fn($m) => "<?php echo \$this->yieldBlock('{$m[1]}'); ?>\n",
             $content
         );
 

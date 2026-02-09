@@ -206,7 +206,11 @@ abstract class TemplateRuntime extends TemplateFeature
      */
     public function yieldBlock(string $name): string
     {
-        return $this->blocks[$name] ?? '';
+        if (!isset($this->blocks[$name])) {
+            return '';
+        }
+
+        return ltrim($this->blocks[$name], "\n");
     }
 
     /**

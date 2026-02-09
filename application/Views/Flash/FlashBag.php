@@ -43,14 +43,15 @@ final class FlashBag
         if ($type !== null) {
             $message = $this->session->pop($type);
 
-            return $message
-                ? ['type' => $type, 'message' => $message]
-                : null;
+            if ($message !== null) {
+                return ['type' => $type, 'message' => $message];
+            }
         }
 
         foreach (self::TYPES as $type => $_) {
             $message = $this->session->pop($type);
-            if ($message) {
+
+            if ($message !== null) {
                 return ['type' => $type, 'message' => $message];
             }
         }

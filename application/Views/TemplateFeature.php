@@ -259,10 +259,10 @@ abstract class TemplateFeature
      * @param array|string|null $constant
      * @return mixed
      */
-    public function constConfig(array|string|null $constant = null): mixed
-    {
-        $class = 'App\\Config\\ConstantConfig';
-
+    public function constConfig(
+        array|string|null $constant = null,
+        $class = 'App\\Config\\ConstantConfig'
+    ): mixed {
         if (!class_exists($class)) {
             return null;
         }
@@ -377,6 +377,56 @@ abstract class TemplateFeature
         return $this->enumHelper()->getEnumValue($enumClass, $caseName);
     }
 
+    public function isActive(
+        string|array $routeNames,
+        string $classActive = 'active',
+        ?string $menuActive = 'linkActive'
+    ): string {
+        $current = RoutingContext::currentRouteName();
+
+        $isActive = is_array($routeNames)
+            ? in_array($current, $routeNames, true)
+            : $current === $routeNames;
+
+        return $isActive ? trim(" {$classActive} {$menuActive}") : '';
+    }
+
+    public function hasRoute(string $name): bool
+    {
+        return RoutingContext::hasRoute($name);
+    }
+
+    public function isCurrentRoute(string $name): bool
+    {
+        return RoutingContext::currentRouteName() === $name;
+    }
+
+    /**
+     * Metoda konwertuje zawartość kontentu (space and replace)
+     */
+    public function replaceContent(string $content, string $space = '', string $searchReplace = '<!--REPLACE_CONTENT-->', string $replaceReplace = ''): ?string
+    {
+        if (!empty($content)) {
+            $space = is_numeric($space) ? str_repeat('    ', (int) $space) : $space ?? '';
+            $search = [PHP_EOL, '[URL]', $searchReplace];
+            $replace = [PHP_EOL . $space, getenv('APP_URL'), trim($replaceReplace)];
+
+            return trim(str_replace($search, $replace, $content)) . PHP_EOL;
+        }
+
+        return null;
+    }
+
+    /**
+     * Metoda wyświetla reklamy
+     */
+    public function adverts(string $position, string $space = ''): string
+    {
+        return AdvertisementCache::getInstance()->getAdvert($position, $space);
+    }
+
+    // === Templates Code and HTML elements ===
+
     /*
      * Visit counter
      */
@@ -429,88 +479,6 @@ abstract class TemplateFeature
         }
 
         return $result;
-    }
-
-    public function isActive(
-        string|array $routeNames,
-        string $classActive = 'active',
-        ?string $menuActive = 'linkActive'
-    ): string {
-        $current = RoutingContext::currentRouteName();
-
-        $isActive = is_array($routeNames)
-            ? in_array($current, $routeNames, true)
-            : $current === $routeNames;
-
-        return $isActive ? trim(" {$classActive} {$menuActive}") : '';
-    }
-
-    public function hasRoute(string $name): bool
-    {
-        return RoutingContext::hasRoute($name);
-    }
-
-    public function isCurrentRoute(string $name): bool
-    {
-        return RoutingContext::currentRouteName() === $name;
-    }
-
-    /**
-     * Metoda konwertuje zawartość kontentu (space and replace)
-     */
-    public function replaceContent(string $content, string $space = '', string $searchReplace = '<!--REPLACE_CONTENT-->', string $replaceReplace = ''): ?string
-    {
-        if (!empty($content)) {
-            $space = is_numeric($space) ? str_repeat('    ', (int) $space) : $space ?? '';
-            $search = [PHP_EOL, '[URL]', $searchReplace];
-            $replace = [PHP_EOL . $space, getenv('APP_URL'), trim($replaceReplace)];
-
-            return trim(str_replace($search, $replace, $content)) . PHP_EOL;
-        }
-
-        return null;
-    }
-
-    /**
-     * Metoda wyświetla reklamy
-     */
-    public function adverts(string $position, string $space = ''): string
-    {
-        return AdvertisementCache::getInstance()->getAdvert($position, $space);
-    }
-
-    /**
-     * Metoda pomocnicza / wspólna dla path() i asset()
-     */
-    private function basePath(): string
-    {
-        // Bazowy katalog publiczny
-        $dirPublic = 'public';
-        $divider = '/';
-
-        // Pełna ścieżka do katalogu public
-        $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
-        $scriptDir = rtrim(str_replace('\\', '/', $scriptDir), '/'); // Normalizacja separatorów
-
-        // Obsługa przypadku, gdy aplikacja jest w katalogu public (np. localhost)
-        if (str_contains($scriptDir, "/{$dirPublic}")) {
-            $requestUri = $_SERVER['REQUEST_URI'];
-            $dirName = dirname($_SERVER['PHP_SELF']);
-
-            $publicPath = substr($requestUri, strlen(strstr($dirName, $dirPublic, true)));
-            $arrayRequestPath = explode($divider, $publicPath);
-            $countDir = count($arrayRequestPath) - 1;
-
-            if ($countDir > 0) {
-                $basePath = str_repeat('..' . $divider, $countDir);
-            } else {
-                $basePath = '.' . $divider;
-            }
-        } else {
-            $basePath = $scriptDir . $divider;
-        }
-
-        return $basePath;
     }
 
     /**
@@ -669,22 +637,42 @@ abstract class TemplateFeature
     }
 
     /**
-     * ### Application methods
+     * Metoda pomocnicza / wspólna dla path() i asset()
      */
-
-    public function currentUser(): ?object
+    private function basePath(): string
     {
-        $user = $this->global('current_user');
+        // Bazowy katalog publiczny
+        $dirPublic = 'public';
+        $divider = '/';
 
-        if ($user instanceof \Closure) {
-            return $user();
+        // Pełna ścieżka do katalogu public
+        $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
+        $scriptDir = rtrim(str_replace('\\', '/', $scriptDir), '/'); // Normalizacja separatorów
+
+        // Obsługa przypadku, gdy aplikacja jest w katalogu public (np. localhost)
+        if (str_contains($scriptDir, "/{$dirPublic}")) {
+            $requestUri = $_SERVER['REQUEST_URI'];
+            $dirName = dirname($_SERVER['PHP_SELF']);
+
+            $publicPath = substr($requestUri, strlen(strstr($dirName, $dirPublic, true)));
+            $arrayRequestPath = explode($divider, $publicPath);
+            $countDir = count($arrayRequestPath) - 1;
+
+            if ($countDir > 0) {
+                $basePath = str_repeat('..' . $divider, $countDir);
+            } else {
+                $basePath = '.' . $divider;
+            }
+        } else {
+            $basePath = $scriptDir . $divider;
         }
 
-        return $user;
+        return $basePath;
     }
 
     /**
      * ### DataTables PHP
+     * TODO! Wczytaj inaczej, nie w tej klasie.
      */
 
     /**
