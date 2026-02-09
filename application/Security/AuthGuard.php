@@ -8,19 +8,6 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
- *
- * Example of usage
- *
- * BaseController:
- * protected function requireAuth(): int
- * {
- *     return $this->authGuard->check();
- * }
- * Controller:
- * public function index(): ResponseInterface
- * {
- *     $userId = $this->requireAuth();
- * }
  */
 
 declare(strict_types=1);
