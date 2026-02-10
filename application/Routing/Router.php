@@ -18,6 +18,7 @@ use Dbm\Http\Message\Request;
 use Dbm\Routing\Contracts\RouterInterface;
 use Dbm\Routing\Exceptions\MethodNotAllowedException;
 use Dbm\Routing\Exceptions\RouteNotFoundException;
+use Dbm\Security\AccessGuard;
 
 final class Router implements RouterInterface
 {
@@ -29,7 +30,8 @@ final class Router implements RouterInterface
         private readonly ControllerResolver $resolver,
         private readonly ActionArgumentResolver $argumentResolver,
         private readonly UriNormalizer $normalizer,
-        private readonly UrlGenerator $urlGenerator
+        private readonly UrlGenerator $urlGenerator,
+        private readonly AccessGuard $accessGuard
     ) {}
 
     public function dispatch(string $uri): void
@@ -58,6 +60,10 @@ final class Router implements RouterInterface
         }
 
         RoutingContext::setCurrentRoute($route);
+
+        if ($route->permission !== null) {
+            $this->accessGuard->checkPermission($route->permission);
+        }
 
         $this->middleware->handle($this->request, $route);
 

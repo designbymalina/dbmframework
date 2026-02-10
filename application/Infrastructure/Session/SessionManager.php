@@ -19,8 +19,8 @@ class SessionManager
     /**
      * Sets a session variable.
      *
-     * @param string $sessionName   The name/key of the session variable.
-     * @param mixed  $sessionValue  The value to store.
+     * @param string $sessionName The name/key of the session variable.
+     * @param mixed  $sessionValue The value to store.
      */
     public function setSession(string $sessionName, mixed $sessionValue): void
     {
@@ -70,7 +70,7 @@ class SessionManager
      *
      * Useful for modifying the session value directly.
      *
-     * @param string $sessionName  The name/key of the session variable.
+     * @param string $sessionName The name/key of the session variable.
      * @return mixed Reference to the session variable.
      */
     public function &getSessionByReference(string $sessionName): mixed

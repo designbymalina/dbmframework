@@ -17,6 +17,7 @@ namespace Dbm\Routing;
 final class RouteBuilder
 {
     private string $groupPrefix = '';
+    private ?string $currentPermission = null;
 
     public function __construct(
         private readonly RouteCollection $routes
@@ -70,9 +71,12 @@ final class RouteBuilder
 
     public function guard(string $permission, callable $callback): void
     {
-        $before = $this->routes->snapshot();
+        $previous = $this->currentPermission;
+        $this->currentPermission = $permission;
+
         $callback($this);
-        $this->routes->applyPermissionDiff($before, $permission);
+
+        $this->currentPermission = $previous;
     }
 
     private function add(string $method, string $path, array $handler, ?string $name): void
@@ -80,9 +84,16 @@ final class RouteBuilder
         $uri = $this->normalizePath($this->groupPrefix, $path);
 
         $this->routes->add(
-            Route::fromMethod($method, $uri, $handler, $name)
+            Route::fromMethod(
+                $method,
+                $uri,
+                $handler,
+                $name,
+                $this->currentPermission
+            )
         );
     }
+
 
     private function normalizePath(string $prefix, string $path): string
     {

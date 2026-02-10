@@ -95,29 +95,6 @@ final class RouteCollection
 
     ### ===== GUARD SUPPORT ===== ###
 
-    public function snapshot(): array
-    {
-        return [
-            'static' => $this->static,
-            'dynamic' => $this->dynamic,
-        ];
-    }
-
-    public function applyPermissionDiff(array $before, string $permission): void
-    {
-        foreach (['static', 'dynamic'] as $type) {
-            foreach ($this->{$type} as $method => $routes) {
-                $previous = $before[$type][$method] ?? [];
-
-                foreach ($routes as $key => $route) {
-                    if (!isset($previous[$key])) {
-                        $route->permission = $permission;
-                    }
-                }
-            }
-        }
-    }
-
     public function hasPath(string $uri): bool
     {
         // static
