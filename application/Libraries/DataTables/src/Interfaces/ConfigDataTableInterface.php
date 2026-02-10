@@ -31,7 +31,7 @@ interface ConfigDataTableInterface
      * Should include table name, primary key, joins, selectMap,
      * sortableMap, filterableMap, and searchable fields.
      *
-     * @return array<string,mixed>
+     * @return array<int,array<string,mixed>>
      */
     public function getTableConfig(): array;
 
