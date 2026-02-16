@@ -25,7 +25,11 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
     protected InstallerState $state;
     protected Logger $logger;
 
+    /** @var array<string, mixed> */
     protected array $payload = [];
+
+    /** @var array<string, mixed> */
+    protected array $errors = [];
 
     public function __construct(DependencyContainer $container)
     {
@@ -86,6 +90,8 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
 
     /**
      * Obsługa danych wejściowych kroku
+     *
+     * @param array<string, mixed> $input
      */
     public function handle(array $input): void
     {
@@ -96,6 +102,8 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
 
     /**
      * Ustawia danye do renderowania.
+     *
+     * @param array<string, mixed> $payload
      */
     public function setPayload(array $payload): void
     {
@@ -104,6 +112,8 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
 
     /**
      * Pobiera dane renderowania.
+     *
+     * @return array<string, mixed>
      */
     public function getPayload(): array
     {
@@ -123,17 +133,9 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
     /**
      * Sprawdza, czy krok jest ukończony.
      */
-    public function isDone(): bool
-    {
-        return (bool) $this->state->get($this->getStepKey() . '.done', false);
-    }
-
-    /**
-     * Sprawdza, czy krok został ukończony.
-     */
     public function isCompleted(): bool
     {
-        return $this->isDone();
+        return (bool) $this->state->get($this->getStepKey() . '.done', false);
     }
 
     /**
@@ -147,6 +149,7 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
     /**
      * Ustawia flagę, czy krok jest krokiem instalacyjnym.
      * Domyślnie większość to kroki instalacyjne inne tylko sprawdzające lub koniec.
+     * Zwykle przydatne w "progress bar".
      */
     public function isInstallStep(): bool
     {

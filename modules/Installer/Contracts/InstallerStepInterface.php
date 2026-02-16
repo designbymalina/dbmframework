@@ -40,7 +40,7 @@ interface InstallerStepInterface
      *
      * Example: "start", "requirements", "database"
      */
-    //public function getKey(): string;
+    // public function getKey(): string;
 
     /**
      * Module package name (ZIP file name).
@@ -97,7 +97,7 @@ interface InstallerStepInterface
      * - persist data to session or config
      * - mark step as completed
      *
-     * @param array $input Raw POST data
+     * @param array<string, mixed> $input
      */
     public function handle(array $input): void;
 
@@ -110,7 +110,12 @@ interface InstallerStepInterface
      *
      * MUST be deterministic.
      */
-    public function isCompleted(): bool; // TODO! Czy metoda ma tu być?
+    public function isCompleted(): bool;
+
+    /**
+     * Checks if the step is an install step.
+     */
+    public function isInstallStep(): bool;
 
     /**
      * Builds payload for the view layer.
@@ -138,13 +143,13 @@ interface InstallerStepInterface
      *     ]
      *   ]
      * ]
+     *
+     * @return array<string, mixed>
      */
     public function getPayload(): array;
 
     /**
      * Checks if the step has a payload to render.
-     *
-     * @return bool True if payload is available, false otherwise.
      */
     public function hasPayload(): bool;
 }

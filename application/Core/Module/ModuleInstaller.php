@@ -34,7 +34,7 @@ final class ModuleInstaller
         $moduleDir = $this->service->resolveModuleDir($packageRoot);
         $manifest = $this->service->readManifest($moduleDir);
 
-        /** @var PackageDescriptor $package */
+        /** @var Dbm\Core\Module\Package\PackageDescriptor $package */
         $package = $this->service->loadPackageDescriptor($moduleDir, $sourcePath);
 
         // === FILES ===
@@ -43,6 +43,8 @@ final class ModuleInstaller
         $this->service->copyWithBackup($packageRoot . '/public', BASE_DIRECTORY . '/public', $manifest['key']);
         $this->service->copyWithBackup($packageRoot . '/templates', BASE_DIRECTORY . '/templates', $manifest['key']);
         $this->service->copyWithBackup($packageRoot . '/translations', BASE_DIRECTORY . '/translations', $manifest['key']);
+        $this->service->copyWithBackup($packageRoot . '/src/Shared', BASE_DIRECTORY . '/src/Shared', $manifest['key']);
+        // INFO! Można dopisać zabezpieczenie dla folderu 'src'. Auto-modyfikacje dozwolone tylko w 'Shared'.
 
         // === FILE MIGRATIONS ===
         $this->service->fileMigrations($package->fileMigrations(), $packageRoot);

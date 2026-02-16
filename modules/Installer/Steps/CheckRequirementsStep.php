@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps;
 
-use Dbm\Exceptions\ExceptionHandler;
 use Mod\Installer\Constants\InstallerConstant;
 
 final class CheckRequirementsStep extends AbstractInstallerStep
@@ -31,7 +30,12 @@ final class CheckRequirementsStep extends AbstractInstallerStep
 
     public function boot(): void
     {
-        if (!empty($this->getPayload())) {
+        if ($this->isCompleted()) {
+            $this->setPayload([
+                'type' => InstallerConstant::ALERT,
+                'class' => 'info',
+                'text' => 'installer.alert.installation_ready',
+            ]);
             return;
         }
 
@@ -41,17 +45,50 @@ final class CheckRequirementsStep extends AbstractInstallerStep
         ]);
     }
 
+    /**
+     * @param array<string, mixed> $input
+     */
     public function handle(array $input): void
     {
         $this->markCompleted();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function checkRequirements(): array
     {
-        // Minimal requirements
+        $messages = [];
+
+        $messages = array_merge($messages, $this->checkCoreRequirements());
+
+        /** @var string[] $pending */
+        $pending = $this->state->get('pending_packages', []);
+
+        // CMS Lite
+        if (in_array('cmslite', $pending, true)) {
+            $messages = array_merge($messages, $this->checkCmsRequirements());
+        }
+
+        // Admin-related modules
+        $adminRelated = ['authentication', 'admin'];
+
+        if (!empty(array_intersect($adminRelated, $pending))) {
+            $messages = array_merge($messages, $this->checkAdminRequirements());
+        }
+
+        return $messages;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function checkCoreRequirements(): array
+    {
+        // Requirements
         $messages[] = [
             'type' => 'info',
-            'text' => 'installer.requirements.msg.min_requirements',
+            'text' => 'installer.requirements.msg.core_requirements',
         ];
 
         // Required PHP version
@@ -70,6 +107,20 @@ final class CheckRequirementsStep extends AbstractInstallerStep
                 ],
             ];
 
+        return $messages;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function checkCmsRequirements(): array
+    {
+        // Requirements
+        $messages[] = [
+            'type' => 'info',
+            'text' => 'installer.requirements.msg.cms_requirements',
+        ];
+
         // Directories
         $notWritableDirs = $this->areNotWritableDirectories(BASE_DIRECTORY);
 
@@ -86,20 +137,35 @@ final class CheckRequirementsStep extends AbstractInstallerStep
                 ],
             ];
 
-        // Translations config
-        try {
-            if ($this->isConfigLanguage()) {
-                $messages[] = [
-                    'type' => 'success',
-                    'text' => 'installer.requirements.msg.language_ok',
-                ];
-            }
-        } catch (ExceptionHandler $e) {
-            $messages[] = [
-                'type' => 'danger',
-                'text' => 'installer.requirements.msg.language_fail',
+        return $messages;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function checkAdminRequirements(): array
+    {
+        // Requirements
+        $messages[] = [
+            'type' => 'info',
+            'text' => 'installer.requirements.msg.admin_requirements',
+        ];
+
+        // Required extensions
+        $requiredExtensions = ['pdo', 'pdo_mysql', 'session', 'json'];
+
+        foreach ($requiredExtensions as $ext) {
+            $messages[] = extension_loaded($ext) ? [
+                'type' => 'success',
+                'text' => 'installer.requirements.msg.extension_ok',
                 'placeholder' => [
-                    'error' => $e->getMessage(),
+                    'ext' => $ext,
+                ],
+            ] : [
+                'type' => 'danger',
+                'text' => 'installer.requirements.msg.extension_fail',
+                'placeholder' => [
+                    'ext' => $ext,
                 ],
             ];
         }
@@ -109,10 +175,12 @@ final class CheckRequirementsStep extends AbstractInstallerStep
 
     /**
      * Returns a list of directories that do not exist or are not writable.
+     *
+     * @return array<int, string>
      */
     private function areNotWritableDirectories(string $baseDir): array
     {
-        $requiredDirs = ['', '/modules', '/public', '/templates', '/translations'];
+        $requiredDirs = ['/modules', '/public', '/templates', '/translations'];
 
         $invalid = [];
 
@@ -125,23 +193,5 @@ final class CheckRequirementsStep extends AbstractInstallerStep
         }
 
         return $invalid;
-    }
-
-    /**
-     * Checks if APP_LANGUAGES config is valid.
-     */
-    private function isConfigLanguage(): bool
-    {
-        $appLanguages = getenv('APP_LANGUAGES');
-
-        if ($appLanguages !== false && trim($appLanguages) !== '') {
-            if (!preg_match('/^([A-Z]{2})(\\|[A-Z]{2})*$/', $appLanguages)) {
-                $message = "Configuration APP_LANGUAGES contains an invalid format. Expected e.g. 'PL' or 'PL|EN|DE'.";
-                $this->logger->error($message);
-                throw new ExceptionHandler($message);
-            }
-        }
-
-        return true;
     }
 }

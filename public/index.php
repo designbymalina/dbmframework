@@ -28,7 +28,7 @@ ob_start();
 $baseDirectory = realpath(dirname(__DIR__));
 
 if ($baseDirectory === false) {
-    throw new RuntimeException('Cannot resolve BASE_DIRECTORY');
+    throw new \RuntimeException('Cannot resolve BASE_DIRECTORY');
 }
 
 define('REQUEST_START_TIME', microtime(true));
@@ -75,7 +75,7 @@ try {
 
     // Start routing kernel
     runRoutingKernel($container);
-} catch (Throwable $exception) {
+} catch (\Throwable $exception) {
     $env = getenv('APP_ENV');
     $env = is_string($env) ? $env : 'production';
     (new ExceptionHandler())->handle($exception, $env);

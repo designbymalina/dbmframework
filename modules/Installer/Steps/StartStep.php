@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps;
 
+use Dbm\Exceptions\ExceptionHandler;
 use Mod\Installer\Constants\InstallerConstant;
-use Mod\Installer\Contracts\InstallerStepInterface;
-use RuntimeException;
 
-final class StartStep extends AbstractInstallerStep implements InstallerStepInterface
+final class StartStep extends AbstractInstallerStep
 {
     public function getName(): string
     {
@@ -31,13 +30,16 @@ final class StartStep extends AbstractInstallerStep implements InstallerStepInte
     }
 
     /**
-     * ? Logika wyświetlenia "Content"
+     * Wyświetlenie, pokazuje stan + przycisk
      */
     public function boot(): void
     {
-        $this->checkStart();
-
-        if (!empty($this->getPayload())) {
+        if ($this->isCompleted()) {
+            $this->setPayload([
+                'type' => InstallerConstant::ALERT,
+                'class' => 'info',
+                'text' => 'installer.alert.installation_ready',
+            ]);
             return;
         }
 
@@ -48,21 +50,35 @@ final class StartStep extends AbstractInstallerStep implements InstallerStepInte
     }
 
     /**
-     * ? Logika po kliknęciu "Next"
+     * Obsługa danych wejściowych (instaluje)
+     *
+     * @param array<string, mixed> $input
      */
     public function handle(array $input): void
     {
+        if ($this->isCompleted()) {
+            return;
+        }
+
+        $this->isConfigLanguage();
         $this->markCompleted();
     }
 
-    private function checkStart(): void
+    /**
+     * Checks if APP_LANGUAGES config is valid.
+     */
+    private function isConfigLanguage(): bool
     {
         $appLanguages = getenv('APP_LANGUAGES');
 
         if (trim($appLanguages) === '') {
-            $message = "Configuration APP_LANGUAGES is required in the .env file. Expected configuration value is 'PL' or 'PL|EN|DE' etc.";
-            $this->logger->error($message);
-            throw new RuntimeException($message);
+            if (!preg_match('/^([A-Z]{2})(\\|[A-Z]{2})*$/', $appLanguages)) {
+                $message = "Configuration APP_LANGUAGES is required in the .env file. Expected value is `EN` or `PL|EN|DE` etc.";
+                $this->logger->error($message);
+                throw new ExceptionHandler($message);
+            }
         }
+
+        return true;
     }
 }

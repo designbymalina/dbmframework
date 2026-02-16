@@ -14,10 +14,11 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps;
 
-use Mod\Installer\Contracts\InstallerStepInterface;
+use Dbm\Core\Module\PackageInstaller;
 use Mod\Installer\Constants\InstallerConstant;
+use Mod\Installer\Steps\Helper\AlertHelper;
 
-final class AdminPanelStep extends AbstractInstallerStep implements InstallerStepInterface
+final class AdminPanelStep extends AbstractInstallerStep
 {
     public function getName(): string
     {
@@ -31,18 +32,27 @@ final class AdminPanelStep extends AbstractInstallerStep implements InstallerSte
 
     public function getDescription(): string
     {
-        return 'installer.step.admin.content';
+        return ''; // optional: 'installer.step.admin.content';
     }
 
     public function boot(): void
     {
+        if ($this->isCompleted()) {
+            $this->setPayload([
+                'type' => InstallerConstant::ALERT,
+                'class' => 'info',
+                'text' => 'installer.alert.installation_ready',
+            ]);
+
+            $this->setDescription(null);
+            return;
+        }
+
         if (!empty($this->getPayload())) {
             return;
         }
 
-        $zipPath = BASE_DIRECTORY . '/_Documents/packages/' . $this->getZipFile();
-
-        if ($this->getPhase() === 'check' && !is_file($zipPath)) {
+        if (!is_file($this->getZipPath())) {
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'danger',
@@ -51,16 +61,30 @@ final class AdminPanelStep extends AbstractInstallerStep implements InstallerSte
                     'path' => '/_Documents/packages/' . $this->getZipFile(),
                 ],
             ]);
-            // return;
+            return;
         }
-    }
 
-    public function handle(array $input): void
-    {
         $this->setPayload([
             'type' => InstallerConstant::TEXT,
             'text' => 'installer.step.admin.content',
         ]);
+    }
+
+    public function handle(array $input): void
+    {
+        if ($this->isCompleted()) {
+            return;
+        }
+
+        if (!is_file($this->getZipPath())) {
+            return;
+        }
+
+        $installer = $this->container->get(PackageInstaller::class);
+
+        if (!AlertHelper::installOrFail($installer, $this)) {
+            return;
+        }
 
         $this->markCompleted();
     }

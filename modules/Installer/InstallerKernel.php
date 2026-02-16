@@ -15,118 +15,119 @@ declare(strict_types=1);
 namespace Mod\Installer;
 
 use Mod\Installer\Constants\InstallerConstant;
+use Mod\Installer\Contracts\InstallerStateInterface;
 use Mod\Installer\Contracts\InstallerStepInterface;
 use Mod\Installer\Steps\Helper\CacheHelper;
-use Mod\Installer\Steps\NullInstallerStep;
 
 final class InstallerKernel
 {
-    private bool $clearCacheAfter = false;
-
+    /**
+     * @param InstallerStepInterface[] $steps
+     */
     public function __construct(
-        private InstallerState $state,
+        private InstallerStateInterface $state,
         private array $steps
     ) {}
 
     /* ===== Navigation ===== */
 
-    public function state(): InstallerState
+    public function state(): InstallerStateInterface
     {
         return $this->state;
     }
 
-    public function currentIndex(): int
-    {
-        return $this->state->currentIndex();
-    }
-
+    /**
+     * @return array<int, InstallerStepInterface>
+     */
     public function steps(): array
     {
         return $this->steps;
     }
 
+    /**
+     * Indeks biezacego kroku
+     */
+    public function currentIndex(): int
+    {
+        return $this->state->currentIndex();
+    }
+
+    /**
+     * Bieżacy krok
+     */
     public function currentStep(): InstallerStepInterface
     {
-        $index = $this->state->currentIndex();
-        $step = $this->steps[$index] ?? null;
-
-        if (!$step) {
-            return new NullInstallerStep();
+        if (empty($this->steps)) {
+            throw new \RuntimeException('Installer has no steps.');
         }
 
-        $step->boot();
-        return $step;
+        $this->state->clampIndex(count($this->steps) - 1);
+
+        return $this->steps[$this->state->currentIndex()];
     }
 
     /* ===== Lifecycle ===== */
 
     public function boot(): void
     {
-        $step = $this->currentStep();
-
-        if ($step && method_exists($step, 'boot')) {
-            $step->boot();
-        }
+        $this->currentStep()->boot();
     }
 
+    /**
+     * @param array<string, mixed> $input
+     */
     public function handle(array $input): void
     {
         $step = $this->currentStep();
-        if (!$step) {
-            return;
-        }
 
         $step->handle($input);
 
-        if ($step->isCompleted()) {
-            $this->state->markDone($step->getName());
+        if (!$step->isCompleted()) {
+            return;
+        }
+
+        $lastIndex = count($this->steps) - 1;
+        $isLast = $this->currentIndex() === $lastIndex;
+
+        if ($isLast) {
+            $this->state->finish();
+
+            register_shutdown_function(static function (): void {
+                CacheHelper::clearCache();
+            });
+        } else {
             $this->state->advance();
         }
     }
 
-
     /* ===== View ===== */
 
+    /**
+     * @return array<string, mixed>
+     */
     public function payload(): array
     {
         $step = $this->currentStep();
 
-        if (!$step) {
-            return [
-                'type' => InstallerConstant::ALERT,
-                'text' => 'installer.alert.no_step',
-            ];
+        if ($step->hasPayload()) {
+            return $step->getPayload();
         }
 
-        $payload = $step->getPayload();
+        $this->state->clear(); // INFO! Opcjonalne.
 
-        if (!$step->hasPayload()) {
-            return []; // default payload
-        }
-
-        return !empty($payload)
-            ? $payload
-            : [
-                'type' => InstallerConstant::ALERT,
-                'class' => 'warning',
-                'text' => 'installer.alert.no_payload',
-                'placeholder' => [],
-            ];
+        return [
+            'type' => InstallerConstant::ALERT,
+            'class' => 'info',
+            'text' => 'installer.alert.installation_process', // optional: installer.alert.installation_success
+            'actions' => [
+                [
+                    'label' => 'installer.button.home_page',
+                    'class' => 'dbm-btn-gradient',
+                    'path' => 'home',
+                ],
+            ],
+        ];
     }
-
-    /* ===== Cache ====
-    INFO! Obecnie nie używane, patrz do CmsLiteStep -> CacheHelper::clearCache()
-    public function requestClearCache(): void
-    {
-        $this->clearCacheAfter = true;
-    }
-
-    public function terminate(): void
-    {
-        if ($this->clearCacheAfter) {
-            CacheHelper::clearCache();
-        }
-    } */
 
     /* ===== Progress ===== */
 
@@ -143,7 +144,7 @@ final class InstallerKernel
         $completed = 0;
 
         foreach ($progressSteps as $step) {
-            if ($step->isDone()) {
+            if ($step->isCompleted()) {
                 $completed++;
             }
         }

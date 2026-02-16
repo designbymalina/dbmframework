@@ -8,6 +8,10 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * INFO! Być może warto zmienić InstallerState i Instalator
+ * na wersję bez indeksów - opartą wyłącznie o nazwy kroków?
+ * Albo jeszcze inaczej, aby pozbyć się indeksów.
  */
 
 declare(strict_types=1);
@@ -15,35 +19,31 @@ declare(strict_types=1);
 namespace Mod\Installer;
 
 use Dbm\Infrastructure\Session\SessionManager;
+use Mod\Installer\Contracts\InstallerStateInterface;
 
-final class InstallerState
+final class InstallerState implements InstallerStateInterface
 {
+    /**
+     * Klucz sesji, pod którym przechowywany jest stan instalatora.
+     */
     private const KEY = 'dbm_installer';
 
     public function __construct(
         private SessionManager $session
     ) {}
 
-    /* ===== low-level ===== */
-
-    private function data(): array
-    {
-        return $this->session->getSession(self::KEY) ?? [];
-    }
-
-    private function save(array $data): void
-    {
-        $this->session->setSession(self::KEY, $data);
-    }
-
-    /* ===== generic ===== */
-
+    /**
+     * Pobiera pojedynczą wartość ze stanu.
+     */
     public function get(string $key, mixed $default = null): mixed
     {
         $data = $this->data();
         return $data[$key] ?? $default;
     }
 
+    /**
+     * Ustawia pojedynczą wartość w stanie.
+     */
     public function set(string $key, mixed $value): void
     {
         $data = $this->data();
@@ -51,45 +51,98 @@ final class InstallerState
         $this->save($data);
     }
 
-    public function reset(): void
+    /**
+     * Usuwa pojedynczą wartość z stanu.
+     */
+    public function remove(string $key): void
+    {
+        $data = $this->data();
+
+        if (array_key_exists($key, $data)) {
+            unset($data[$key]);
+            $this->save($data);
+        }
+    }
+
+    /**
+     * Usuwa stan instalatora z sesji.
+     */
+    public function clear(): void
     {
         $this->session->unsetSession(self::KEY);
     }
 
-    /* ===== installer flow ===== */
-
+    /**
+     * Zwraca aktualny indeks kroku (domyślnie 0).
+     */
     public function currentIndex(): int
     {
-        return (int) ($this->get('index', 0));
+        return (int) $this->get('index', 0);
     }
 
+    /**
+     * Ustawia aktualny indeks kroku.
+     *
+     * Zabezpiecza przed wartościami ujemnymi.
+     */
+    public function setCurrentIndex(int $index): void
+    {
+        $this->set('index', max(0, $index));
+    }
+
+    /**
+     * J.w. Ustawia index (czytelniejsze)
+     */
+    public function clampIndex(int $max): void
+    {
+        if ($this->currentIndex() > $max) {
+            $this->setCurrentIndex($max);
+        }
+    }
+
+    /**
+     * Przechodzi do kolejnego kroku.
+     */
     public function advance(): void
     {
-        $this->set('index', $this->currentIndex() + 1);
+        $this->setCurrentIndex($this->currentIndex() + 1);
     }
 
-    public function completedSteps(): array
+    /**
+     * Oznacza instalator jako zakończony.
+     */
+    public function finish(): void
     {
-        return (array) ($this->get('steps', []));
+        $this->set('finished', true);
     }
 
-    public function isDone(string $stepName): bool
+    /**
+     * Sprawdza, czy instalator został zakończony.
+     */
+    public function isFinished(): bool
     {
-        return (bool) $this->get('installer.step.' . strtolower($stepName) . '.done', false);
+        return (bool) $this->get('finished', false);
     }
 
-    public function markDone(string $stepName): void
+    // ===== Helpers =====
+
+    /**
+     * Pobiera cały zapisany stan instalatora z sesji.
+     *
+     * @return array<string, mixed>
+     */
+    private function data(): array
     {
-        $this->set('installer.step.' . strtolower($stepName) . '.done', true);
+        return $this->session->getSession(self::KEY) ?? [];
     }
 
-    public function setPayload(string $stepKey, array $payload): void
+    /**
+     * Zapisuje stan instalatora do sesji.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function save(array $data): void
     {
-        $this->set('payload_' . $stepKey, $payload);
-    }
-
-    public function getPayload(string $stepKey): array
-    {
-        return $this->get('payload_' . $stepKey, []);
+        $this->session->setSession(self::KEY, $data);
     }
 }

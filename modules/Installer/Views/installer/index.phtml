@@ -31,7 +31,7 @@
                                 <ul class="list-group list-group-flush dbm-installer-steps">
                                 {% foreach ($steps as $index => $step): %}
                                     <li class="list-group-item d-flex align-items-center {{ $step === $currentStep ? 'fw-bold text-dark' : '' }}">
-                                        <span class="me-3 dbm-step-index {{ ($index <= $currentIndex) ? 'bg-success text-white' : '' }}">{{ $index + 1 }}</span>
+                                        <span class="me-3 dbm-step-index {{ $step->isCompleted() ? 'bg-success text-white' : '' }}">{{ $index + 1 }}</span>
                                         <span>{{ $this->trans($step->getTitle()) }}</span>
                                     </li>
                                 {% endforeach; %}
@@ -45,50 +45,50 @@
                                     <span class="fw-bold">{% if ($currentStep && $currentStep->getTitle()) : %}{{ $this->trans($currentStep->getTitle()) }}{% endif; %}</span>
                                 </h3>
                                 {% if (!empty($payload) && isset($payload['type'])): %}
-                                    {% if ($payload['type'] === 'alert'): %}
-                                        <div class="alert alert-{{ $payload['class'] ?? 'info' }}">{{{ $this->trans($payload['text'], $payload['placeholder'] ?? []) }}}</div>
-
+                                    {% if ($payload['type'] === 'alert' && isset($payload['text'])): %}
+                                        <div class="alert alert-{{ $payload['class'] ?? 'info' }}">
+                                            {{{ $this->trans($payload['text'], $payload['placeholder'] ?? []) }}}
+                                        </div>
                                         {% if ($currentStep && $currentStep->getDescription()): %}
-                                        <div class="py-2">{{{ $this->trans($currentStep->getDescription()) }}}</div>
+                                            <div class="py-2">
+                                                {{{ $this->trans($currentStep->getDescription()) }}}
+                                            </div>
                                         {% endif; %}
-                                    {% elseif ($payload['type'] === 'list'): %}
+                                    {% elseif ($payload['type'] === 'list' && isset($payload['items'])): %}
                                         <ul class="list-group list-group-flush">
                                             {% foreach ($payload['items'] as $msg): %}
                                                 <li class="list-group-item border-0 py-1">
-                                                {% if ($msg['type'] === 'success'): %}
-                                                    <i class="bi bi-check2-circle text-success"></i>
-                                                    <span class="ms-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</span>
-                                                {% elseif ($msg['type'] === 'danger'): %}
-                                                    <i class="bi bi-x-circle text-danger"></i>
-                                                    <span class="ms-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</span>
-                                                {% else: %}
-                                                    <h4 class="h5 mt-2">{{ $this->trans($msg['text'], $msg['placeholder'] ?? []) }}</h4>
-                                                {% endif; %}
+                                                    {% if (($msg['type'] ?? null) === 'success'): %}
+                                                    <i class="bi bi-check2-circle text-success ms-2"></i>
+                                                    {% elseif (($msg['type'] ?? null) === 'danger'): %}
+                                                    <i class="bi bi-x-circle text-danger ms-2"></i>
+                                                    {% endif; %}
+                                                    <span>{{ $this->trans($msg['text'] ?? '', $msg['placeholder'] ?? []) }}</span>
                                                 </li>
                                             {% endforeach; %}
                                         </ul>
-                                    {% else: %}
-                                        <div class="px-1">{{{ $this->trans($payload['text']) }}}</div>
+                                    {% elseif (isset($payload['text'])): %}
+                                        <div class="px-1">
+                                            {{{ $this->trans($payload['text'], $payload['placeholder'] ?? []) }}}
+                                        </div>
                                     {% endif; %}
-                                {% else: %}
-                                <div class="alert alert-warning">{{ $this->trans('installer.alert.content_not_load') }}</div>
                                 {% endif; %}
-                                {% if (!empty($payload) && ($payload['type'] ?? null) === 'actions'): %}
-                                <div class="d-flex gap-2 mt-4">
+                                <div id="box_btn_form">
+                                {% if (!empty($payload['actions'])): %}
                                     {% foreach ($payload['actions'] as $action): %}
-                                        <a href="{{ $action['url'] }}" class="{{ $action['class'] ?? 'btn btn-primary' }}">{{ $this->trans($action['label']) }}</a>
+                                        <a href="{{ $this->path($action['path']) ?? '#err' }}" class="btn {{ $action['class'] ?? '' }}">{{ $this->trans($action['label']) }}</a>
                                     {% endforeach; %}
-                                </div>
-                                {% else: %}
-                                <form method="post" onsubmit="const btn = this.querySelector('button');btn.querySelector('.btn-icon').classList.add('d-none');btn.querySelector('.spinner-border').classList.remove('d-none');">
-                                    <button type="submit" class="btn btn-light fw-bold dbm-btn-gradient d-inline-flex align-items-center gap-2">
-                                        <span class="btn-icon"><i class="bi bi-play-circle"></i></span>
-                                        <span class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
-                                        <span>{{ $this->trans('installer.button.next_step') }}</span>
-                                    </button>
-                                    <input type="hidden" name="_step" value="next">
-                                </form>
+                                {% elseif (!$currentStep->isCompleted()): %}
+                                    <form method="post" class="mt-2" onsubmit="const btn=this.querySelector('button'); btn.querySelector('.btn-icon')?.classList.add('d-none'); btn.querySelector('.spinner-border')?.classList.remove('d-none');">
+                                        <button type="submit" class="btn btn-light dbm-btn-gradient fw-bold d-inline-flex align-items-center gap-2">
+                                            <span class="btn-icon"><i class="bi bi-play-circle"></i></span>
+                                            <span class="spinner-border spinner-border-sm d-none"></span>
+                                            <span>{{ $this->trans('installer.button.next_step') }}</span>
+                                        </button>
+                                        <input type="hidden" name="_step" value="next">
+                                    </form>
                                 {% endif; %}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -18,8 +18,7 @@ final class InstallerConstant
 {
     public const PHP_VERSION = '8.1.0';
 
-    public const TEXT = 'text';   // treść (HTML / trans)
+    public const TEXT = 'text'; // treść (HTML / trans)
+    public const LIST = 'list'; // lista komunikatów
     public const ALERT = 'alert'; // pojedynczy alert
-    public const LIST = 'list';   // lista komunikatów
-    public const FORM = 'form';   // formularz
 }

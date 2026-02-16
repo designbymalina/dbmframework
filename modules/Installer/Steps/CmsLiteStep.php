@@ -17,7 +17,6 @@ namespace Mod\Installer\Steps;
 use Dbm\Core\Module\PackageInstaller;
 use Mod\Installer\Constants\InstallerConstant;
 use Mod\Installer\Steps\Helper\AlertHelper;
-use Mod\Installer\Steps\Helper\CacheHelper;
 
 final class CmsLiteStep extends AbstractInstallerStep
 {
@@ -26,95 +25,60 @@ final class CmsLiteStep extends AbstractInstallerStep
         return 'cmslite';
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return 'installer.step.cmslite.title';
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
-        return 'installer.step.cmslite.content';
+        return ''; // optional: 'installer.step.cmslite.content'
     }
 
     public function boot(): void
     {
-        if ($this->isDone()) {
+        if ($this->isCompleted()) {
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'info',
-                'text' => 'installer.alert.already_installed',
+                'text' => 'installer.alert.installation_ready',
             ]);
 
             $this->setDescription(null);
             return;
         }
 
-        if (!empty($this->getPayload())) {
-            return;
-        }
-
-        if ($this->getPhase() === 'check' && !is_file($this->getZipPath())) {
+        if (!is_file($this->getZipPath())) {
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'danger',
                 'text' => 'installer.alert.archive_is_missing',
-                'placeholder' => [
-                    'path' => '/_Documents/packages/' . $this->getZipFile(),
-                ],
             ]);
             return;
         }
 
-        match ($this->getPhase()) {
-            'check', 'ready' => $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'info',
-                'text' => 'installer.alert.installation_ready',
-            ]),
-            'installing' => $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'info',
-                'text' => 'installer.alert.installation_process',
-            ]),
-            'done' => $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'success',
-                'text' => 'installer.alert.installation_success',
-            ]),
-        };
+        $this->setPayload([
+            'type' => InstallerConstant::TEXT,
+            'text' => 'installer.step.cmslite.content',
+        ]);
     }
 
     public function handle(array $input): void
     {
-        if ($this->isDone()) {
+        if ($this->isCompleted()) {
             return;
         }
 
-        if ($this->getPhase() === 'check') {
-            if (!is_file($this->getZipPath())) {
-                return;
-            }
-            $this->setPhase('ready');
+        if (!is_file($this->getZipPath())) {
+            return;
         }
 
-        if ($this->getPhase() === 'ready') {
-            $this->setPhase('installing');
+        $installer = $this->container->get(PackageInstaller::class);
+
+        if (!AlertHelper::installOrFail($installer, $this)) {
+            return;
         }
 
-        if ($this->getPhase() === 'installing') {
-            $installer = $this->container->get(PackageInstaller::class);
-
-            if (!AlertHelper::installOrFail($installer, $this)) {
-                return;
-            }
-
-            $this->setPhase('done');
-            $this->markCompleted();
-
-            // Clear cache
-            register_shutdown_function(static function (): void {
-                CacheHelper::clearCache();
-            });
-        }
+        $this->markCompleted();
     }
 }

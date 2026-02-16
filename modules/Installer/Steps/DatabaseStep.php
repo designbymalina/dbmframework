@@ -40,16 +40,16 @@ final class DatabaseStep extends AbstractInstallerStep
 
     public function getDescription(): string
     {
-        return 'installer.step.database.content';
+        return ''; // optional: 'installer.step.database.content'
     }
 
     public function boot(): void
     {
-        if ($this->isDone()) {
+        if ($this->isCompleted()) {
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'info',
-                'text' => 'installer.alert.already_installed',
+                'text' => 'installer.alert.installation_ready',
             ]);
 
             $this->setDescription(null);
@@ -60,50 +60,105 @@ final class DatabaseStep extends AbstractInstallerStep
             return;
         }
 
-        if (!$this->repository->connect()) {
-            $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'danger',
-                'text' => 'installer.alert.database_connection_failed',
-            ]);
-            return;
-        }
-
-        $dbName = getenv('DB_NAME');
-
-        if (!$dbName) {
-            $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'danger',
-                'text' => 'installer.alert.database_name_missing',
-            ]);
-            return;
-        }
-
-        if (!$this->repository->databaseExists($dbName)) {
-            $this->setPayload([
-                'type' => InstallerConstant::ALERT,
-                'class' => 'danger',
-                'text' => 'installer.alert.database_not_exists',
-                'params' => ['database' => $dbName],
-            ]);
-            return;
-        }
-
-        // [? Załóżenie - naciągane] Poprzedni krok został pomyślnie ukończony
+        // Domyślny stan – pokazujemy formularz lub info
         $this->setPayload([
-            'type' => InstallerConstant::ALERT,
-            'class' => 'success',
-            'text' => 'installer.alert.installation_success_cmslite',
+            'type' => InstallerConstant::TEXT,
+            'text' => 'installer.step.database.content',
         ]);
+    }
 
-        $this->repository->selectDatabase($dbName);
+    /**
+     * @param array<string, mixed> $input
+     */
+    public function handle(array $input): void
+    {
+        if (!$this->checkDbSettings()) {
+            return;
+        }
 
         $this->markCompleted();
     }
 
-    public function handle(array $input): void
+    private function checkDbSettings(): bool
     {
-        // default null
+        $dbHost = getenv('DB_HOST');
+        $dbName = getenv('DB_NAME');
+        $dbUser = getenv('DB_USER');
+        // INFO! Tymczasowo, można rozbudować.
+        // Zamiast zgadywać po tabelach, wprowadź np. installation.lock.
+        $dbTable = 'dbm_user';
+
+        $enabledModules = $this->getInstallStepNames();
+
+        if (!$dbHost) {
+            return $this->fail('installer.database.msg.host_missing');
+        }
+
+        if (!$dbName) {
+            return $this->fail('installer.database.msg.name_missing');
+        }
+
+        if (!$dbUser) {
+            return $this->fail('installer.database.msg.user_missing');
+        }
+
+        if (!$this->repository->connect()) {
+            return $this->fail('installer.database.msg.connection_failed');
+        }
+
+        if (!$this->repository->databaseExists($dbName)) {
+            return $this->fail('installer.database.msg.not_exists');
+        }
+
+        if (!in_array('authentication', $enabledModules, true)) {
+            if ($this->repository->tableExists($dbTable)) {
+                return $this->fail('installer.database.msg.table_exists');
+            }
+        } elseif (!in_array('admin', $enabledModules, true)) {
+            if (!$this->repository->tableExists($dbTable)) {
+                return $this->fail('installer.database.msg.table_not_exists');
+            }
+        }
+
+        $this->repository->selectDatabase($dbName);
+
+        return true;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function fail(string $message, array $params = []): bool
+    {
+        $this->setPayload([
+            'type' => InstallerConstant::ALERT,
+            'class' => 'danger',
+            'text' => $message,
+            'params' => $params,
+        ]);
+
+        return false;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getInstallStepNames(): array
+    {
+        $configPath = BASE_DIRECTORY . '/config/modules.php';
+
+        if (!is_file($configPath)) {
+            return [];
+        }
+
+        $modules = require $configPath;
+
+        if (!is_array($modules)) {
+            return [];
+        }
+
+        $enabled = $modules['enabled'] ?? [];
+
+        return array_values($enabled);
     }
 }

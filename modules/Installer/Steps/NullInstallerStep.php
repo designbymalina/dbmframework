@@ -14,18 +14,16 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps;
 
-use Mod\Installer\Contracts\InstallerStepInterface;
-
-final class NullInstallerStep implements InstallerStepInterface
+final class NullInstallerStep extends AbstractInstallerStep
 {
     public function getName(): string
     {
-        return '';
+        return 'null';
     }
 
     public function getTitle(): string
     {
-        return '';
+        return 'installer.step.start.title';
     }
 
     public function getDescription(): string
@@ -35,19 +33,30 @@ final class NullInstallerStep implements InstallerStepInterface
 
     public function boot(): void {}
 
+    /**
+     * @param array<string, mixed> $input
+     */
     public function handle(array $input): void {}
 
-    public function isCompleted(): bool
-    {
-        return false;
-    }
-
+    /**
+     * @return array<string, mixed>
+     */
     public function getPayload(): array
     {
         return [];
     }
 
     public function hasPayload(): bool
+    {
+        return false;
+    }
+
+    public function isCompleted(): bool
+    {
+        return false;
+    }
+
+    public function isInstallStep(): bool
     {
         return false;
     }

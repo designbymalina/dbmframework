@@ -55,14 +55,14 @@ class ExceptionHandler extends Exception
     /**
      * Renders a detailed error page for development environment.
      *
-     * @param int $code Error code.
+     * @param int|string $code Error code.
      * @param string $message Error message.
      * @param string $file File where the error occurred.
      * @param int $line Line number where the error occurred.
      * @param string $trace Stack trace of the error.
      * @return void
      */
-    private function renderDetailedError(int $code, string $message, string $file, int $line, string $trace): void
+    private function renderDetailedError(int|string $code, string $message, string $file, int $line, string $trace): void
     {
         if (ob_get_level() > 0) {
             @ob_end_clean();

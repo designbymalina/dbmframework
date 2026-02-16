@@ -10,12 +10,13 @@ return [
     'installer.navbar.extensions' => 'Rozszerzenia',
     'installer.navbar.download' => 'Pobierz',
     'installer.header.title' => 'Witamy w DbM CMS!',
-    'installer.header.subtitle' => 'DbM Framework / Asystent instalacji platformy DbM CMS',
+    'installer.header.subtitle' => 'DbM Framework / Asystent instalacji Platformy DbM CMS',
     'installer.content.title' => 'Asystent instalacji',
     'installer.progressbar.installation' => 'Postęp instalacji',
     'installer.progressbar.not_started' => 'Pasek postępu nie jest dołączony!',
     'installer.button.next_step' => 'Dalej',
-    'installer.button.back' => 'Wstecz',
+    'installer.button.home_page' => 'Przejdź do strony głównej',
+    'installer.button.add_modules' => 'Dodaj moduły',
     'installer.step.start.title' => 'Rozpocznij instalację',
     'installer.step.start.content' => '
         <p><strong>DbM CMS</strong> to szybki i nowoczesny system zarządzania treścią, stworzony z myślą o prostocie użytkowania i instalacji. Gotowe rozwiązanie oparte na frameworku dla tych, którzy chcą szybko uruchomić witrynę lub aplikację bez konieczności kodowania. Obsługuje zarówno proste strony, jak i złożone projekty oparte na bazie danych. Jeśli nie masz czasu na tworzenie własnych modułów, możesz użyć gotowych narzędzi do zarządzania treścią, SEO i strukturą witryny. Dostępne są także gotowe moduły (wtyczki), takie jak CMS Lite, CMS Core, CMS Pro oraz inne, które możesz szybko zainstalować i dostosować do swoich potrzeb. Efektywne rozwiązanie, które przyspiesza rozwój projektu bez utraty na elastyczności frameworka.</p>
@@ -40,7 +41,7 @@ return [
         </ul>
         <p>W przypadku wykrycia jakichkolwiek problemów, przed kontynuowaniem zostaniesz poinformowany o szczegółach dotyczących ich rozwiązania.</p>
         <p>Ten krok zapewnia poprawne i bezpieczne działanie aplikacji po instalacji.</p>
-    ',
+    ', // not used
     'installer.step.cmslite.title' => 'Instalowanie CMS Lite',
     'installer.step.cmslite.content' => '
         <p>W tym kroku zostanie zainstalowany i skonfigurowany moduł <strong>CMS Lite</strong>.</p>
@@ -48,7 +49,7 @@ return [
         <ul>
         <li>Tworzenie i zarządzanie stronami</li>
         <li>Kontrolowanie strony głównej i struktury witryny</li>
-        <li>Rozszerzanie funkcjonalności w późniejszym czasie o dodatkowe moduły CMS</li>
+        <li>Rozszerzanie funkcjonalności o dodatkowe moduły CMS</li>
         </ul>
         <p>Moduł automatycznie zintegruje się z systemem routingu i stanie się głównym modułem obsługi treści w witrynie.</p>
         <p>Możesz później uaktualnić lub rozszerzyć CMS Lite bez ponownej instalacji systemu.</p>
@@ -90,31 +91,34 @@ return [
     ',
     'installer.step.finish.title' => 'Gratulacje!',
     'installer.step.finish.content' => '
-        <p>Instalacja <strong>DbM CMS Lite</strong> została pomyślnie zakończona.</p>
+        <p>Instalacja <strong>DbM CMS Platform</strong> została pomyślnie zakończona.</p>
         <p>Twój system jest teraz gotowy do użycia. Możesz zacząć budować swoją witrynę, zarządzać treścią i rozszerzać funkcjonalność o dodatkowe moduły.</p>
         <p>Ze względów bezpieczeństwa upewnij się, że instalator nie jest już dostępny.</p>
         <p>Ciesz się pracą z DbM CMS!</p>
     ',
-    'installer.requirements.msg.min_requirements' => 'Niezbędne wymagania dla CMS Lite',
+    'installer.requirements.msg.core_requirements' => 'Niezbędne wymagania systemowe',
+    'installer.requirements.msg.cms_requirements' => 'Niezbędne wymagania dla CMS Lite',
+    'installer.requirements.msg.admin_requirements' => 'Wymagania instalacji uwierzytelniania i panelu administracyjnego',
     'installer.requirements.msg.php_ok' => 'Wersja PHP ≥ %s jest zgodna z wymaganiami',
     'installer.requirements.msg.php_fail' => 'Wersja PHP musi być ≥ %s',
     'installer.requirements.msg.directories_ok' => 'Wymagane katalogi są zapisywalne',
     'installer.requirements.msg.directories_fail' => 'Następujące katalogi nie są zapisywalne: `{files}`. Zmień uprawnienia.',
-    'installer.requirements.msg.language_ok' => 'Konfiguracja języka jest prawidłowa',
-    'installer.requirements.msg.language_fail' => '%s',
-    'installer.alert.content_not_load' => 'Nie można załadować zawartości.',
-    'installer.alert.no_payload' => 'Nie można zainstalować modułu.',
-    'installer.alert.no_step' => 'Nie wybrano kroku.',
+    'installer.requirements.msg.extension_ok' => 'Rozszerzenie `%s` jest załadowane',
+    'installer.requirements.msg.extension_fail' => 'Brakujące rozszerzenia `%s`',
+    'installer.database.msg.host_missing' => 'Nazwa hosta jest wymagana. Uzupełnij konfigurację bazy danych w pliku .env.',
+    'installer.database.msg.name_missing' => 'Nazwa bazy danych jest wymagana.',
+    'installer.database.msg.user_missing' => 'Nazwa użytkownika jest wymagana.',
+    'installer.database.msg.connection_failed' => 'Połączenie z bazą danych nie powiodło się. Sprawdź konfigurację w pliku .env.',
+    'installer.database.msg.not_exists' => 'Baza danych nie istnieje. Uzupełnij konfigurację bazy danych w pliku .env',
+    'installer.database.msg.table_exists' => 'W bazie danych istnieją już tabele modułu. Przed instalacją baza musi zostać wyczyszczona.',
+    'installer.database.msg.table_not_exists' => 'W bazie danych brakuje tabel modułu, które powinny być zainstalowane w module uwierzytelniania.',
     'installer.alert.already_installed' => 'Moduł został już zainstalowany.',
     'installer.alert.invalid_package_structure' => 'Błąd wypakowywania pakietu. Sprawdź plik %s i ponów próbę.<br />%s',
     'installer.alert.archive_is_missing' => 'Brakuje pakietu `%s`.<br>Pobierz go z GitHuba lub ze strony <a href="https://dbm.org.pl/" target="_blank">DbM Framework</a>.',
-    'installer.alert.installation_ready' => 'Pakiet gotowy do instalacji. Aby zainstalować, kliknij przycisk.',
-    'installer.alert.installation_process' => 'Pakiet z trakcie instalacji...',
-    'installer.alert.installation_error' => 'Wystąpił bład podczas instalacji!',
-    'installer.alert.installation_success' => 'Instalacja pakietu `%s` zakończyła się pomyślnie.',
-    'installer.alert.installation_success_cmslite' => 'Instalacja pakietu CMS Lite została pomyślnie zakończona. Możesz zobaczyć <a href="./" target="_blank">stronę główną</a>',
-    'installer.alert.database_connection_failed' => 'Połączenie z bazą danych nie powiodło się. Sprawdź konfigurację w pliku .env.',
-    'installer.alert.database_not_exists' => 'Baza danych `%s` nie istnieje. Uzupełnij konfigurację bazy danych w pliku .env',
-    'installer.alert.database_name_missing' => 'Nazwa bazy danych jest wymagana. Uzupełnij konfigurację bazy danych w pliku .env.',
-    'installer.alert.form_fill_fields' => 'Wypełnij pola formularza.',
+    'installer.alert.module_verification_failed' => 'Weryfikacja modułu nie powiodła się. Sprawdź moduł, wyczyść pamięć podręczną i spróbuj ponownie.',
+    'installer.alert.installation_error' => 'Wystąpił bład podczas instalacji!', // not used
+    'installer.alert.installation_process' => 'Pakiet z trakcie instalacji... przygotuj archiwum lub usuń pozostałości, jeśli instalujesz ponownie!',
+    'installer.alert.installation_ready' => 'Instalacja byłą już wykonywana... wyczyść cache i cookies przeglądarki jeśli chcesz ponowić proces instalacji!',
+    'installer.alert.installation_success' => 'Instalacja zakończyła się pomyślnie.',
+    'installer.alert.installation_completed' => 'Instalacja ukończona.', // not used
 ];

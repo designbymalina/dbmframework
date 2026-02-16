@@ -107,6 +107,7 @@ final class InstallerModule extends CoreModule implements TemplateAwareModule
     {
         $routes->get('/install', [InstallerController::class, 'index'], 'install');
         $routes->post('/install', [InstallerController::class, 'index'], 'install_post');
+        $routes->get('/install/restart', [InstallerController::class, 'restart'], 'install_restart');
     }
 
     // From the interface to use @install in included templates

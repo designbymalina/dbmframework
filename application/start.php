@@ -20,6 +20,7 @@ use Dbm\Core\Module\ModuleBootstrapper;
 use Dbm\Core\Module\ModuleRegistry;
 use Dbm\Core\Module\Package\PackageScanner;
 use Dbm\Exceptions\ExceptionHandler;
+use Dbm\Infrastructure\Session\SessionManager;
 use Dbm\Routing\MiddlewareStack;
 use Dbm\Routing\RouteBuilder;
 use Dbm\Routing\RouteCache;
@@ -42,7 +43,7 @@ function setupErrorHandling(): void
     set_error_handler('reportingErrorHandler');
 
     set_exception_handler(
-        static function (Throwable $exception) use ($env): void {
+        static function (\Throwable $exception) use ($env): void {
             (new ExceptionHandler())->handle($exception, $env);
         }
     );
@@ -53,7 +54,7 @@ function reportingErrorHandler(int $errLevel, string $errMessage, string $errFil
     logErrorToFile($errLevel, $errMessage, $errFile, $errLine);
 
     $exceptionHandler = new ExceptionHandler();
-    $exception = new ErrorException($errMessage, $errLevel, 0, $errFile, $errLine);
+    $exception = new \ErrorException($errMessage, $errLevel, 0, $errFile, $errLine);
     $exceptionHandler->handle($exception, getenv('APP_ENV') ?: 'production');
 
     return true;
@@ -268,7 +269,8 @@ function dispatchRequest(Router $router): void
 
 /**
  * Registering modules
- * INFO: Opcjonalnie można rozbudować, modules.php (manifest), cache listy modułów, tryb APP_ENV=prod -> bez skanowania FS
+ * INFO: Opcjonalnie można rozbudować, modules.php (manifest),
+ * cache listy modułów, tryb APP_ENV=prod -> bez skanowania FS
  *
  * @param DependencyContainer $container
  */
@@ -285,14 +287,18 @@ function registerModules(DependencyContainer $container): void
     $registry = $container->get(ModuleRegistry::class);
     $bootstrapper = $container->get(ModuleBootstrapper::class);
     $scanner = $container->get(PackageScanner::class);
+    $session = $container->get(SessionManager::class);
 
     /** BOOTSTRAP MODUŁÓW */
     if (is_file($pathConfig)) {
         $bootstrapper->bootFromConfig(require $pathConfig);
     }
 
-    // Installer dostępny ZAWSZE
-    if (!is_file($installedLock) || $scanner->hasPendingPackages()) {
+    // Installer
+    if (!is_file($installedLock)
+        || $scanner->hasPendingPackages()
+        || $session->getSession('installer_active') // INFO! FinishStep::SESSION_ACTIVE
+    ) {
         $bootstrapper->bootInstaller();
     }
 

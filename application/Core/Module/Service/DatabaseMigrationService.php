@@ -44,6 +44,10 @@ final class DatabaseMigrationService
                     throw new \RuntimeException("Migration file missing: {$file}");
                 }
 
+                if (!$this->hasExecutableSql($path)) {
+                    continue;
+                }
+
                 $success = $this->repository->importDataFromFile($path);
 
                 if (!$success) {
@@ -60,5 +64,16 @@ final class DatabaseMigrationService
             }
             throw $e;
         }
+    }
+
+    private function hasExecutableSql(string $path): bool
+    {
+        $content = file_get_contents($path);
+
+        // Usuń komentarze SQL
+        $content = preg_replace('/--.*$/m', '', $content);
+        $content = trim($content);
+
+        return $content !== '';
     }
 }
