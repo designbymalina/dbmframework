@@ -18,13 +18,11 @@ use Dbm\Http\Message\Request;
 use Dbm\Infrastructure\Cookie\CookieManager;
 use Dbm\Infrastructure\Session\SessionManager;
 use Dbm\Infrastructure\Log\Logger;
+use Dbm\Libraries\Adverts\AdvertisementCache;
 use Dbm\Localization\LanguageHelper;
 use Dbm\Localization\Translation;
 use Dbm\Routing\RoutingContext;
 use Dbm\Support\Helpers\EnumHelper;
-use Lib\Adverts\AdvertisementCache;
-use Lib\DataTables\Src\Classes\DataTableRenderer;
-use Lib\DataTables\Src\Interfaces\ConfigDataTableInterface;
 use ReflectionClass;
 use Exception;
 
@@ -33,7 +31,6 @@ abstract class TemplateFeature
     private ?SessionManager $sessionManager = null;
     private ?Logger $logger = null;
     private ?EnumHelper $enumHelper = null;
-    private ?DataTableRenderer $datatableRenderer = null;
     protected array $globals = [];
 
     protected function sessionManager(): SessionManager
@@ -181,8 +178,7 @@ abstract class TemplateFeature
             }
         }
 
-        return $this->basePath()
-            . ltrim($url->path($name, $params), '/');
+        return $url->path($name, $params);
     }
 
     /**
@@ -347,8 +343,9 @@ abstract class TemplateFeature
      * Dane są automatycznie konwertowane do stringa i oczyszczane z niebezpiecznych znaków.
      * Nie używa klasy Request - brak narzutu wydajnościowego.
      */
-    public function getRequestValue(string $key, mixed $default = null, bool $escape = true): mixed
+    public function getRequestValue(string $key, bool $escape = true): string
     {
+        $default = '';
         $value = $_POST[$key] ?? $_GET[$key] ?? $default;
 
         if (is_array($value) || is_object($value)) {
@@ -366,8 +363,20 @@ abstract class TemplateFeature
     }
 
     /**
+     * Zwraca parametr z GET lub POST (POST ma priorytet).
+     */
+    public function getRequestArray(string $key): array
+    {
+        $value = $_POST[$key] ?? $_GET[$key] ?? [];
+
+        return is_array($value) ? $value : [];
+    }
+
+    /**
      * Get single enum value by name.
-     * Template example: $adminRole = $enumHelper->getEnumValue('App\\Enum\\RoleEnum', 'ADMIN');
+     *
+     * Template example:
+     * $adminRole = $enumHelper->getEnumValue('App\Shared\Security\Enum', 'ADMIN');
      *
      * @param string $enumClass
      * @param string $caseName
@@ -490,8 +499,8 @@ abstract class TemplateFeature
         ?string $identifier = null,
         ?string $class = null,
         bool $required = false,
-        ?string $space = null,
         ?string $selected = null,
+        ?string $space = null,
         ?string $emptyOption = null,
         string $sortOrder = 'null',
         ?int $size = null,
@@ -637,6 +646,27 @@ abstract class TemplateFeature
     }
 
     /**
+     * Heightlightowanie tekstu w zapytaniu
+     */
+    public function highlight(string $text, string $query): string
+    {
+        if ($query === '') {
+            return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }
+
+        $escapedText = htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $pattern = '/' . preg_quote($query, '/') . '/i';
+
+        return preg_replace(
+            $pattern,
+            '<mark>$0</mark>',
+            $escapedText
+        );
+    }
+
+    // ===== PRYWATNE METODY =====
+
+    /**
      * Metoda pomocnicza / wspólna dla path() i asset()
      */
     private function basePath(): string
@@ -668,88 +698,5 @@ abstract class TemplateFeature
         }
 
         return $basePath;
-    }
-
-    /**
-     * ### DataTables PHP
-     * TODO! Wczytaj inaczej, nie w tej klasie.
-     */
-
-    /**
-     * @param array $records
-     * @param array $sider
-     * @param ConfigDataTableInterface $config
-     * @param string|null $mode
-     * @param string|null $url
-     * @return string
-     */
-    public function datatableRender(
-        array $records,
-        array $sider,
-        ConfigDataTableInterface $config,
-        ?string $mode = null,
-        ?string $url = null
-    ): string {
-        return $this->getDataTableRenderer()->renderDataTable(
-            $records,
-            $sider,
-            $config,
-            $mode,
-            $url
-        );
-    }
-
-    /**
-     * @param array $sider
-     * @param array|null $filters
-     * @param array|null $actions
-     * @param string|null $mode
-     * @return string
-     */
-    public function datatableDtHeader(array $sider, array $filters = [], array $actions = [], ?string $mode = null): string
-    {
-        return $this->getDataTableRenderer()->renderDtHeader($sider, $filters, $actions, $mode);
-    }
-
-    /**
-     * @param array $sider
-     * @return string
-     */
-    public function datatableDtFooter(array $sider): string
-    {
-        return $this->getDataTableRenderer()->renderDtFooter($sider);
-    }
-
-    /**
-     * @param array $sider
-     * @param array $colums
-     * @return string
-     */
-    public function datatableTheadColumns(array $sider, array $schema): string
-    {
-        return $this->getDataTableRenderer()->renderTheadColumns($sider, $schema);
-    }
-
-    /**
-     * @param array $records
-     * @param array $colums
-     * @param string|null $template
-     * @return string
-     */
-    public function datatableTbodyRows(array $records, array $schema, array $sider = []): string
-    {
-        return $this->getDataTableRenderer()->renderTbodyRows($records, $schema, $sider);
-    }
-
-    /**
-     * @return DataTableRenderer
-     */
-    private function getDataTableRenderer(): DataTableRenderer
-    {
-        if ($this->datatableRenderer === null) {
-            $this->datatableRenderer = new DataTableRenderer();
-        }
-
-        return $this->datatableRenderer;
     }
 }

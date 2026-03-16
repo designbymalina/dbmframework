@@ -16,7 +16,7 @@ return [
     'installer.progressbar.not_started' => 'Pasek postępu nie jest dołączony!',
     'installer.button.next_step' => 'Dalej',
     'installer.button.home_page' => 'Przejdź do strony głównej',
-    'installer.button.add_modules' => 'Dodaj moduły',
+    'installer.button.add_modules' => 'Rozszerz system o moduły',
     'installer.step.start.title' => 'Rozpocznij instalację',
     'installer.step.start.content' => '
         <p><strong>DbM CMS</strong> to szybki i nowoczesny system zarządzania treścią, stworzony z myślą o prostocie użytkowania i instalacji. Gotowe rozwiązanie oparte na frameworku dla tych, którzy chcą szybko uruchomić witrynę lub aplikację bez konieczności kodowania. Obsługuje zarówno proste strony, jak i złożone projekty oparte na bazie danych. Jeśli nie masz czasu na tworzenie własnych modułów, możesz użyć gotowych narzędzi do zarządzania treścią, SEO i strukturą witryny. Dostępne są także gotowe moduły (wtyczki), takie jak CMS Lite, CMS Core, CMS Pro oraz inne, które możesz szybko zainstalować i dostosować do swoich potrzeb. Efektywne rozwiązanie, które przyspiesza rozwój projektu bez utraty na elastyczności frameworka.</p>
@@ -34,10 +34,10 @@ return [
         <p>Przed kontynuowaniem instalacji system zweryfikuje, czy środowisko serwera spełnia wszystkie niezbędne wymagania.</p>
         <p>Sprawdzone zostaną następujące elementy:</p>
         <ul>
-        <li>Wersja PHP i wymagane rozszerzenia</li>
-        <li>Uprawnienia plików i katalogów</li>
-        <li>Zgodność konfiguracji serwera</li>
-        <li>Dostępność wymaganych funkcji PHP</li>
+            <li>Wersja PHP i wymagane rozszerzenia</li>
+            <li>Uprawnienia plików i katalogów</li>
+            <li>Zgodność konfiguracji serwera</li>
+            <li>Dostępność wymaganych funkcji PHP</li>
         </ul>
         <p>W przypadku wykrycia jakichkolwiek problemów, przed kontynuowaniem zostaniesz poinformowany o szczegółach dotyczących ich rozwiązania.</p>
         <p>Ten krok zapewnia poprawne i bezpieczne działanie aplikacji po instalacji.</p>
@@ -47,9 +47,9 @@ return [
         <p>W tym kroku zostanie zainstalowany i skonfigurowany moduł <strong>CMS Lite</strong>.</p>
         <p>CMS Lite zapewnia lekką i elastyczną warstwę zarządzania treścią, która umożliwia:</p>
         <ul>
-        <li>Tworzenie i zarządzanie stronami</li>
-        <li>Kontrolowanie strony głównej i struktury witryny</li>
-        <li>Rozszerzanie funkcjonalności o dodatkowe moduły CMS</li>
+            <li>Tworzenie i zarządzanie stronami</li>
+            <li>Kontrolowanie strony głównej i struktury witryny</li>
+            <li>Rozszerzanie funkcjonalności o dodatkowe moduły CMS</li>
         </ul>
         <p>Moduł automatycznie zintegruje się z systemem routingu i stanie się głównym modułem obsługi treści w witrynie.</p>
         <p>Możesz później uaktualnić lub rozszerzyć CMS Lite bez ponownej instalacji systemu.</p>
@@ -59,9 +59,9 @@ return [
         <p>Ten krok weryfikuje połączenie z bazą danych i przygotowuje system do dalszych kroków instalacji.</p>
         <p>Instalator:</p>
         <ul>
-        <li>Sprawdź dane uwierzytelniające i połączenie z bazą danych</li>
-        <li>Sprawdź zgodność serwera bazy danych</li>
-        <li>Przygotuj środowisko do migracji baz danych</li>
+            <li>Sprawdź dane uwierzytelniające i połączenie z bazą danych</li>
+            <li>Sprawdź zgodność serwera bazy danych</li>
+            <li>Przygotuj środowisko do migracji baz danych</li>
         </ul>
         <p>Na tym etapie żadne dane nie zostaną zmodyfikowane. Ten krok zapewnia jedynie gotowość bazy danych do użycia przez system.</p>
         <p>Rzeczywista struktura bazy danych zostanie utworzona w kolejnych krokach.</p>
@@ -69,32 +69,49 @@ return [
     'installer.step.authentication.title' => 'Utwórz system uwierzytelniania',
     'installer.step.authentication.content' => '
         <p>W tym kroku zostanie przygotowany system uwierzytelniania.</p>
-        <p>System skonfiguruje podstawową strukturę wymaganą dla:</p>
+        <p>System skonfiguruje podstawową strukturę potrzebną do:</p>
         <ul>
-        <li>Kont użytkowników</li>
-        <li>Mechanizmów logowania i wylogowywania</li>
-        <li>Obsługi sesji i bezpieczeństwa</li>
+            <li>Obsługi kont użytkowników</li>
+            <li>Mechanizmów logowania i wylogowywania</li>
+            <li>Zarządzania sesjami i bezpieczeństwem</li>
         </ul>
-        <p>Ta funkcjonalność jest wymagana do uzyskania dostępu do panelu administracyjnego i zarządzania chronionymi obszarami aplikacji.</p>
-        <p>W razie potrzeby funkcje uwierzytelniania będzie można później rozszerzyć.</p>
+        <p>System uwierzytelniania umożliwia dostęp do panelu administracyjnego oraz chronionych części aplikacji.</p>
+        <p>W przyszłości funkcje uwierzytelniania można łatwo rozszerzyć o dodatkowe moduły.</p>
     ',
     'installer.step.admin.title' => 'Utwórz panel administracyjny',
     'installer.step.admin.content' => '
         <p>Ten krok instaluje i konfiguruje panel administracyjny.</p>
         <p>Panel administracyjny umożliwia:</p>
         <ul>
-        <li>Zarządzanie treścią witryny</li>
-        <li>Konfigurowanie ustawień systemu</li>
-        <li>Kontrolowanie użytkowników i uprawnień</li>
+            <li>Zarządzanie zawartością stron</li>
+            <li>Kontrolowanie użytkowników i uprawnień</li>
+            <li>Obsługę modułów i pluginów</li>
+        </ul>
+        <p>Podczas instalacji system automatycznie utworzy konta startowe:</p>
+        <ul>
+            <li><strong>Admin</strong> (login lub e-mail) - hasło: <strong>Admin123</strong></li>
+            <li><strong>Lucy</strong> - hasło: <strong>Test123</strong></li>
+            <li><strong>John</strong> - hasło: <strong>Test123</strong></li>
         </ul>
         <p>Po instalacji będziesz mógł zalogować się na konto administratora i zarządzać witryną za pomocą przyjaznego interfejsu użytkownika.</p>
+        <p><strong>Zalecenie bezpieczeństwa:</strong> po pierwszym logowaniu zmień domyślne hasła do kont.</p>
     ',
     'installer.step.finish.title' => 'Gratulacje!',
     'installer.step.finish.content' => '
-        <p>Instalacja <strong>DbM CMS Platform</strong> została pomyślnie zakończona.</p>
-        <p>Twój system jest teraz gotowy do użycia. Możesz zacząć budować swoją witrynę, zarządzać treścią i rozszerzać funkcjonalność o dodatkowe moduły.</p>
+        <p>Instalacja <strong>DbM CMS Platform</strong> została zakończona.</p>
+        <p>System jest już gotowy do działania z modułem strony startowej. Jeśli w katalogu <strong>packages</strong> znajdują się także paczki modułów <strong>Uwierzytelniania</strong> i <strong>Panelu administracyjnego</strong>, instalator może je automatycznie wykryć i dodać do systemu.</p>
+        <p>Pełną wygodę pracy z systemem zapewnia zestaw trzech podstawowych modułów:</p>
+        <ul>
+            <li>Strona startowa</li>
+            <li>Uwierzytelnianie</li>
+            <li>Panel administracyjny</li>
+        </ul>
+        <p>Razem tworzą kompletną konfigurację DbM CMS, umożliwiając wygodne zarządzanie treścią, użytkownikami oraz instalowanie kolejnych modułów z poziomu panelu.</p>
+        <p><em>DbM CMS został zaprojektowany w sposób modułowy - możesz rozpocząć od podstaw i rozwijać system wraz ze wzrostem swojego projektu.</em></p>
+        <p>Jeśli posiadasz dodatkowe moduły: `authentication.zip` i `admin.zip`, skopiuj ich archiwa do katalogu <strong>packages</strong>, a następnie w kolejnym kroku wybierz opcję <strong>dodaj moduły</strong>. W przeciwnym razie możesz przejść do strony głównej.</p>
+        <p>Jeśli właśnie zainstalowałeś dodatkowe moduły, przejdź dalej, aby wrócić do strony głównej.</p>
         <p>Ze względów bezpieczeństwa upewnij się, że instalator nie jest już dostępny.</p>
-        <p>Ciesz się pracą z DbM CMS!</p>
+        <p>Dziękujemy za korzystanie z DbM CMS.</p>
     ',
     'installer.requirements.msg.core_requirements' => 'Niezbędne wymagania systemowe',
     'installer.requirements.msg.cms_requirements' => 'Niezbędne wymagania dla CMS Lite',
@@ -119,6 +136,6 @@ return [
     'installer.alert.installation_error' => 'Wystąpił bład podczas instalacji!', // not used
     'installer.alert.installation_process' => 'Pakiet z trakcie instalacji... przygotuj archiwum lub usuń pozostałości, jeśli instalujesz ponownie!',
     'installer.alert.installation_ready' => 'Instalacja byłą już wykonywana... wyczyść cache i cookies przeglądarki jeśli chcesz ponowić proces instalacji!',
-    'installer.alert.installation_success' => 'Instalacja zakończyła się pomyślnie.',
+    'installer.alert.installation_success' => 'Instalacja zakończyła się pomyślnie. Możesz teraz dodać opcjonalne rozszerzenia lub przejść do strony głównej.',
     'installer.alert.installation_completed' => 'Instalacja ukończona.', // not used
 ];

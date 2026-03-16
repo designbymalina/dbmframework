@@ -1,12 +1,17 @@
 <?php
 
 /**
- * Application: DbM Framework
- * A lightweight PHP framework for building web applications.
+ * Module: DbM DataTables
+ * PHP library for efficient CRUD operations and high-performance database management.
+ *
+ * This software is proprietary and licensed.
+ * Use of this software is subject to the terms of the DbM Platform License.
  *
  * @author Artur Malinowski
- * @copyright Design by Malina (All Rights Reserved)
- * @license MIT
+ * @copyright Design by Malina
+ * @license Proprietary
+ *
+ * @see /LICENSE_DBM_PLATFORM.txt
  * @link https://www.dbm.org.pl
  *
  * ==========================================================================

@@ -18,5 +18,11 @@ interface UrlGeneratorInterface
 {
     public function path(string $routeName, array $params = []): string;
 
+    public function absolute(string $routeName, array $params = []): string;
+
+    public function setBasePath(string $basePath): void;
+
+    public function setBaseUrl(string $scheme, string $host): void;
+
     public function generateSeoFriendlyUrl(string $text, int $limit = 120): string;
 }

@@ -20,9 +20,12 @@ final class UrlGenerator implements UrlGeneratorInterface
 {
     protected array $namedRoutes = [];
     protected static ?string $currentRouteName = null;
+    private string $basePath = '';
+    private string $scheme = 'http';
+    private string $host = 'localhost';
 
     public function __construct(
-        private RouteCollection $routes
+        public RouteCollection $routes
     ) {}
 
     public function path(string $routeName, array $params = []): string
@@ -47,7 +50,32 @@ final class UrlGenerator implements UrlGeneratorInterface
             }
         }
 
-        return '/' . trim($path, '/');
+        $uri = '/' . trim($path, '/');
+
+        if ($this->basePath !== '') {
+            $uri = rtrim($this->basePath, '/') . $uri;
+        }
+
+        return $uri;
+    }
+
+    public function absolute(string $routeName, array $params = []): string
+    {
+        $uri = $this->path($routeName, $params);
+
+        return $this->scheme . '://' . $this->host . $uri;
+    }
+
+    public function setBasePath(string $basePath): void
+    {
+        $basePath = trim($basePath, '/');
+        $this->basePath = $basePath === '' ? '' : '/' . $basePath;
+    }
+
+    public function setBaseUrl(string $scheme, string $host): void
+    {
+        $this->scheme = $scheme;
+        $this->host = $host;
     }
 
     /**

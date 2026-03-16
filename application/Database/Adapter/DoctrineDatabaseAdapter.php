@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Application: DbM Framework
- * A lightweight PHP framework for building web applications.
+ * Module: DbM DataTables
+ * PHP library for efficient CRUD operations and high-performance database management.
+ *
+ * This software is proprietary and licensed.
+ * Use of this software is subject to the terms of the DbM Platform License.
  *
  * @author Artur Malinowski
- * @copyright Design by Malina (All Rights Reserved)
- * @license MIT
- * @link https://www.dbm.org.pl
+ * @copyright Design by Malina
+ * @license Proprietary
  *
- * Example for parmeter $types in DBAL - when to use?
- * $types = ['ids' => \Doctrine\DBAL\Connection::PARAM_INT_ARRAY];
- * $this->database->fetchAll('SELECT * FROM t WHERE id IN (:ids)', ['ids' => [1,2,3]], $types);
+ * @see /LICENSE_DBM_PLATFORM.txt
+ * @link https://www.dbm.org.pl
  */
 
 declare(strict_types=1);

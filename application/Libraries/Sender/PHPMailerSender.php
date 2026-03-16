@@ -4,7 +4,7 @@
  * Library: Universal mail sender wrapper for PHPMailer.
  * A class intended for the DbM Framework and for use in any PHP application.
  *
- * @package Lib\Sender
+ * @package Dbm\Libraries\Sender\PHPMailerSender
  * @author Artur Malinowski
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
@@ -44,7 +44,7 @@
 
 declare(strict_types=1);
 
-namespace Lib\Sender;
+namespace Dbm\Libraries\Sender;
 
 use PHPMailer\PHPMailer\PHPMailer;
 // use PHPMailer\PHPMailer\Exception; // as PHPMailerException; // Not used
@@ -62,6 +62,14 @@ class PHPMailerSender
         $this->mailer->CharSet = "UTF-8"; // Set encoding
     }
 
+    /**
+     * Send message.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return bool
+     * @throws Exception
+     */
     public function sendMessage(array $params): bool
     {
         $isSend = true;
@@ -189,6 +197,9 @@ class PHPMailerSender
         }
     }
 
+    /**
+     * @param array<string, mixed> $recipients
+     */
     private function addRecipients(array $recipients, string $type): void
     {
         foreach ($recipients as $recipient) {
@@ -211,6 +222,9 @@ class PHPMailerSender
         }
     }
 
+    /**
+     * @param array<string, mixed> $replace
+     */
     private function replaceContent(string $content, array $replace = []): string
     {
         $keysToRemove = ["recipients", "attachment_filesecret", "message_type"];
@@ -221,8 +235,7 @@ class PHPMailerSender
         return str_replace($placeholders, $replace, $content);
     }
 
-
-    private function errorLogger($error): void
+    private function errorLogger(mixed $error): void
     {
         $logDir = BASE_DIRECTORY . '/var/log/mailer/';
 

@@ -22,6 +22,9 @@ class IndexService
         private readonly Translation $translation,
     ) {}
 
+    /**
+     * @return array<string, string>
+     */
     public function getMetaIndex(): array
     {
         return [
@@ -31,6 +34,9 @@ class IndexService
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getMetaStart(): array
     {
         return [

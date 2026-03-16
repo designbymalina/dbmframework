@@ -4,7 +4,7 @@
  * Library: Resizing uploaded images
  * A class designed for the DbM Framework and for use in any PHP application.
  *
- * @package Lib\ResizeUploadImage
+ * @package Dbm\Libraries\Upload\ResizeUploadImage
  * @author Artur Malinowski
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
@@ -38,7 +38,7 @@
  */
 declare(strict_types=1);
 
-namespace Lib\Upload;
+namespace Dbm\Libraries\Upload;
 
 use Exception;
 
@@ -55,9 +55,15 @@ class ResizeUploadImage
     private int $photoMaxWidth = 1280;
     private int $thumbMaxWidth = 480;
     private int $imageQuality = 80;
+    /** @var array<string, array<string, string>> */
     private array $translations = [];
     private string $lang = 'en';
 
+    /**
+     * @param array<string, mixed> $file
+     * @return array<string, mixed>
+     * @throws Exception
+     */
     public function createImages(array $file, string $targetDir = 'upload/'): array
     {
         if (!isset($file['tmp_name'], $file['name'], $file['size'])) {
@@ -157,18 +163,31 @@ class ResizeUploadImage
         }
     }
 
+    /**
+     * @param array<string, array<string, string>> $translations
+     */
     public function setTranslator(array $translations, ?string $lang = null): void
     {
         $this->translations = $translations;
 
-        $lang = strtolower($lang);
-        if (($lang !== null) && array_key_exists($lang, $translations)) {
-            $this->lang = $lang;
+        if ($lang !== null) {
+            $lang = strtolower($lang);
+
+            if (array_key_exists($lang, $translations)) {
+                $this->lang = $lang;
+            }
         }
     }
 
-    private function resizeImage(string $sourcePath, string $targetPath, string $extension, int $width, int $height, int $maxWidth, bool $highQuality = true): void
-    {
+    private function resizeImage(
+        string $sourcePath,
+        string $targetPath,
+        string $extension,
+        int $width,
+        int $height,
+        int $maxWidth,
+        bool $highQuality = true
+    ): void {
         $aspectRatio = $width / $height;
         $newWidth = $maxWidth;
         $newHeight = (int) ($maxWidth / $aspectRatio);
@@ -217,10 +236,13 @@ class ResizeUploadImage
                 break;
         }
 
-        imagedestroy($resizedImage);
-        imagedestroy($sourceImage);
+        unset($resizedImage, $sourceImage);
     }
 
+    /**
+     * @param string $basePath
+     * @return array<string, string>
+     */
     private function checkFolders(string $basePath): array
     {
         foreach ([self::DIR_ORIGINAL, self::DIR_PHOTO, self::DIR_THUMB] as $dir) {

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps\Helper;
 
-use Lib\Files\FileSystem;
+use Dbm\Libraries\Files\FileSystem;
 
 final class CacheHelper
 {

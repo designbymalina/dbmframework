@@ -16,10 +16,13 @@ namespace Dbm\Core\Module\Package;
 
 final class PackageDescriptor
 {
+    /**
+     * @param array<string, mixed> $manifest
+     */
     public function __construct(
         private string $key,
-        private string $zipPath,
-        private array $manifest
+        private array $manifest,
+        private ?string $zipPath = null,
     ) {}
 
     public function key(): string
@@ -27,18 +30,54 @@ final class PackageDescriptor
         return $this->key;
     }
 
-    public function zipPath(): string
+    public function name(): string
     {
-        return $this->zipPath;
+        return $this->manifest['name'] ?? $this->key();
     }
 
+    public function version(): string
+    {
+        return $this->manifest['version'] ?? '1.0.0';
+    }
+
+    public function description(): string
+    {
+        return $this->manifest['description'] ?? '';
+    }
+
+    public function type(): string
+    {
+        return $this->manifest['type'] ?? 'plugin';
+    }
+
+    public function class(): string
+    {
+        return $this->manifest['class'];
+    }
+
+    public function isCore(): bool
+    {
+        return $this->type() === 'core';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function manifest(): array
     {
         return $this->manifest;
     }
 
+    public function zipPath(): string
+    {
+        return $this->zipPath;
+    }
+
     /* ===== FILE MIGRATIONS ===== */
 
+    /**
+     * @return array<string, mixed>
+     */
     public function fileMigrations(): array
     {
         return $this->manifest['file_migrations'] ?? [];
@@ -51,6 +90,9 @@ final class PackageDescriptor
         return !empty($this->databaseMigrations());
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function databaseMigrations(): array
     {
         return $this->manifest['database']['migrations'] ?? [];
@@ -63,6 +105,9 @@ final class PackageDescriptor
 
     /* ===== META ===== */
 
+    /**
+     * @return array<string, mixed>
+     */
     public function requires(): array
     {
         return $this->manifest['requires'] ?? [];

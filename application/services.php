@@ -46,6 +46,8 @@ use Dbm\Routing\{
 };
 use Dbm\Views\TemplateEngine;
 use Dbm\Infrastructure\Log\Logger;
+use Dbm\Libraries\Files\FileSystem;
+use Dbm\Libraries\Sender\PHPMailerSender;
 use Dbm\Localization\Contracts\TranslationInterface;
 use Dbm\Localization\LanguageService;
 use Dbm\Localization\Translation;
@@ -53,11 +55,10 @@ use Dbm\Localization\TranslationLoader;
 use Dbm\Security\AccessGuard;
 use Dbm\Security\Contracts\AccessControlInterface;
 use Dbm\Security\Contracts\UserRoleProviderInterface;
+use Dbm\Security\CsrfTokenManager;
 use Dbm\Security\NullAccessControl;
 use Dbm\Security\NullUserRoleProvider;
 use Dbm\Views\Flash\FlashBag;
-use Lib\Files\FileSystem;
-use Lib\Sender\PHPMailerSender;
 
 return function (DependencyContainer $container): void {
 
@@ -103,11 +104,36 @@ return function (DependencyContainer $container): void {
         )
     );
 
+    // TODO! Usuń z kodu UrlGenerator i zamień na UrlGeneratorInterface.
+    // Spróbój ujednolicić basePath() z TemplateFeature.
     $container->singleton(
         UrlGenerator::class,
-        fn($c) => new UrlGenerator(
-            $c->get(RouteCollection::class)
-        )
+        function ($c) {
+            $routes = $c->get(RouteCollection::class);
+            $request = $c->get(Request::class);
+
+            $generator = new UrlGenerator($routes);
+
+            $server = $request->getServerParams();
+
+            $scriptName = $server['SCRIPT_NAME'] ?? '';
+
+            $basePath = str_replace('\\', '/', dirname($scriptName));
+
+            if (str_ends_with($basePath, '/public')) {
+                $basePath = substr($basePath, 0, -7);
+            }
+
+            $generator->setBasePath($basePath);
+
+            $scheme = (!empty($server['HTTPS']) && $server['HTTPS'] !== 'off') ? 'https' : 'http';
+
+            $host = $server['HTTP_HOST'] ?? 'localhost';
+
+            $generator->setBaseUrl($scheme, $host);
+
+            return $generator;
+        }
     );
 
     $container->singleton(
@@ -166,6 +192,15 @@ return function (DependencyContainer $container): void {
         fn($c) => new FlashBag($c->get(SessionManager::class))
     );
 
+    ### TOKEN ###
+
+    $container->singleton(
+        CsrfTokenManager::class,
+        fn($c) => new CsrfTokenManager(
+            $c->get(SessionManager::class)
+        )
+    );
+
     ### VIEW ###
 
     $container->singleton(TemplateEngine::class);
@@ -179,7 +214,7 @@ return function (DependencyContainer $container): void {
             : null
     );
 
-    ### SECURITY - INFO! Może wymagać korekty. ###
+    ### SECURITY ###
 
     $container->singleton(
         UserRoleProviderInterface::class,

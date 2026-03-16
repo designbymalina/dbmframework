@@ -76,10 +76,6 @@ Następnie skonfiguruj: Cache settings, Database settings, Mailer settings, API 
 
 **Uwaga:** Po uruchomieniu aplikacji należy ustawić CACHE_ENABLED=true, aby włączyć buforowanie i przyspieszyć działanie strony.
 
-## Autoloading
-
-Instalacja manualna czyni framework niezależnym od innych narzędzi, wyposażonym w własny autoloading. Wykonanie polecenia `composer install` zautomatyzuje framework, utworzy autoloading Composera i zainstaluje wybrane pakiety, np. do wysyłania wiadomości e-mail oraz pakiety deweloperskie. Po wykonaniu komendy framework będzie współpracował z Composerem.  
-
 ## Instalacja przez Composera
 
 Jeśli preferujesz instalację za pomocą Composera lub projekt wymaga dodatkowych pakietów:
@@ -96,7 +92,60 @@ composer install
 
 Instalacja przez Composera utworzy autoloading oraz pobierze wszystkie zależności.
 
-**Uwaga:** Po zainstalowaniu aplikacji przez Composer niezbędne zależoności będą dostępne, wówczas katalog `libraries` można usunąć.
+## Instalacja modułów (opcjonalne dla DbM Platform)
+
+Niektóre moduły (np. Admin) mogą podczas instalacji rejestrować dodatkowe pakiety.
+
+W trybie Composer po instalacji modułu należy ponownie wykonać synchronizację.
+
+**Uwaga**
+
+W trybie Composer katalog `libraries` może zostać usunięty, o ile nie zawiera pakietów instalowanych dynamicznie przez moduły.
+
+## Autoloading
+
+Framework może działać w dwóch trybach:
+
+### 1. Tryb niezależny (bez Composera)
+
+Domyślnie framework posiada własny mechanizm autoloadingu i nie wymaga Composera.  
+
+W tym trybie:
+
+- klasy Core ładowane są przez wewnętrzny autoloader (PSR-4),  
+- zewnętrzne biblioteki znajdują się w katalogu `libraries`,  
+- pakiety instalowane dynamicznie (np. przez moduły) rejestrowane są w pliku: `storage/framework/bundles.php`.
+
+Autoloader odczytuje ten plik automatycznie.
+
+### 2. Tryb Composer
+
+Wykonanie polecenia:
+
+```bash
+composer install
+```
+
+powoduje:
+
+- wygenerowanie autoloadera Composera,  
+- instalację zależności (np. Doctrine DBAL, PHPMailer, Guzzle),  
+- przełączenie frameworka na autoloading Composera.  
+
+Od tego momentu framework korzysta wyłącznie z autoloadera Composera.
+
+### Synchronizacja pakietów (Bundles) z Composerem
+
+W trybie Composer pakiety zarejestrowane w: `storage/framework/bundles.php` należy zsynchronizować z plikiem composer.json.
+
+Wykonaj:
+
+```bash
+php bin/dbm command sync-bundles-to-composer
+composer dump-autoload
+```
+
+Po tej operacji wszystkie dynamiczne pakiety będą dostępne dla autoloadera Composera.
 
 ## Routing
 

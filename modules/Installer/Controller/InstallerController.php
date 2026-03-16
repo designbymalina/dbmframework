@@ -15,9 +15,7 @@ declare(strict_types=1);
 namespace Mod\Installer\Controller;
 
 use Dbm\Core\Module\Package\PackageScanner;
-use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Http\Controller\BaseController;
-use Dbm\Support\Traits\LazyLoaderTrait;
 use Mod\Installer\InstallerKernel;
 use Mod\Installer\InstallerState;
 use Mod\Installer\Resolver\InstallerSteps;
@@ -25,31 +23,11 @@ use Psr\Http\Message\ResponseInterface;
 
 final class InstallerController extends BaseController
 {
-    use LazyLoaderTrait;
-
     public function __construct(
-        ?DatabaseInterface $database = null
-    ) {
-        parent::__construct($database);
-    }
-
-    // === Dependencies (lazy) ===
-
-    protected function state(): InstallerState
-    {
-        return $this->lazy(
-            'state',
-            fn() => $this->container()->get(InstallerState::class)
-        );
-    }
-
-    protected function steps(): InstallerSteps
-    {
-        return $this->lazy(
-            'steps',
-            fn() => $this->container()->get(InstallerSteps::class)
-        );
-    }
+        private readonly InstallerState $state,
+        private readonly InstallerSteps $steps,
+        private readonly PackageScanner $scanner,
+    ) {}
 
     /**
      * Installer
@@ -60,8 +38,8 @@ final class InstallerController extends BaseController
     public function index(): ResponseInterface
     {
         $kernel = new InstallerKernel(
-            $this->state(),
-            $this->steps()->resolve($this->container())
+            $this->state,
+            $this->steps->resolve($this->container())
         );
 
         if ($this->request()->isPost()) {
@@ -80,20 +58,16 @@ final class InstallerController extends BaseController
     }
 
     /**
-     * Doinstaluj moduly - Manualny reset stanu instalatora.
-     *
      * @routing GET '/install/restart' name: install_restart
      */
     public function restart(): ResponseInterface
     {
-        $scanner = $this->container()->get(PackageScanner::class);
-
-        if (!$scanner->hasPendingPackages()) {
-            return $this->redirect('/');
+        if (!$this->scanner->hasPendingPackages()) {
+            return $this->redirect('home');
         }
 
-        $this->state()->clear();
+        $this->state->clear();
 
-        return $this->redirect('/install');
+        return $this->redirect('install');
     }
 }

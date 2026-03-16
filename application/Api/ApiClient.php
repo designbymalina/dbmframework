@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Dbm\Api;
 
-use Dbm\Classes\Log\Logger;
 use RuntimeException;
 
 /**
@@ -38,7 +37,8 @@ class ApiClient implements ApiClientInterface
 
     public function request(string $method, string $endpoint, array $options = []): ApiResponse
     {
-        $url = rtrim($this->baseUrl, '/') . '/' . ltrim($endpoint, '/');
+        $url = str_starts_with($endpoint, 'http')
+            ? $endpoint : rtrim($this->baseUrl, '/') . '/' . ltrim($endpoint, '/');
 
         $headers = $this->defaultHeaders;
         if ($this->token) {
@@ -49,6 +49,7 @@ class ApiClient implements ApiClientInterface
         }
 
         $ch = curl_init($url);
+
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $options['timeout'] ?? 30);

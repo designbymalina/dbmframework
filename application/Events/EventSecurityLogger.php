@@ -22,14 +22,14 @@ final class EventSecurityLogger
     private string $dirTmp;
     private string $logFile;
 
-    private int $limit = 5;  // max unauthorized attempts
+    private int $limit = 5;  // max forbidden access attempts
     private int $windowSeconds = 600; // 10 min.
 
     public function __construct(
         private readonly Logger $logger
     ) {
         $this->dirTmp = BASE_DIRECTORY . '/var/tmp/';
-        $this->logFile = $this->dirTmp . 'unauthorized_access.log';
+        $this->logFile = $this->dirTmp . 'access_attempt.log';
 
         if (!is_dir($this->dirTmp)) {
             mkdir($this->dirTmp, 0o775, true);
@@ -63,13 +63,13 @@ final class EventSecurityLogger
 
         if ($count > $this->limit) {
             $this->logger->alert(
-                "Too many unauthorized attempts from IP: {$event->ip}"
+                "Too many access violations from IP: {$event->ip}"
             );
             $this->addToBlacklist($event->ip);
         } else {
             $user = $event->userId ? "User ID: {$event->userId}" : "Guest";
             $this->logger->alert(
-                "Unauthorized access - {$user}, IP: {$event->ip}, URI: {$event->uri}"
+                "Forbidden access attempt - {$user}, IP: {$event->ip}, URI: {$event->uri}"
             );
         }
     }
@@ -91,7 +91,7 @@ final class EventSecurityLogger
     // INFO! Można rozbudować, dodać blokadę itp. (obecnie dla testu tylko zapisuje dane)
     private function addToBlacklist(string $ip): void
     {
-        $file = $this->dirTmp . 'ip_blacklist.txt';
+        $file = $this->dirTmp . 'access_blacklist.txt';
 
         $current = file_exists($file)
             ? file($file, FILE_IGNORE_NEW_LINES)

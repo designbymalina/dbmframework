@@ -16,8 +16,8 @@ class ExampleUnitTest extends TestCase
      *
      * @return void
      */
-    public function testExample(): void
+    public function testExample(bool $test = true): void
     {
-        $this->assertTrue(true);
+        $this->assertTrue($test);
     }
 }

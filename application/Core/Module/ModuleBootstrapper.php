@@ -8,6 +8,8 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * INFO! Można dopisać module events, module dependencies, module priority.
  */
 
 declare(strict_types=1);
@@ -15,33 +17,53 @@ declare(strict_types=1);
 namespace Dbm\Core\Module;
 
 use Dbm\Core\DependencyContainer;
+use Dbm\Core\Module\Cache\ModuleCache;
+use Dbm\Core\Module\Contracts\TemplateAwareInterface;
+use Dbm\Core\Module\Filesystem\PathResolver;
+use Dbm\Core\Module\Helper\ModuleManifestLoader;
+use Dbm\Views\TemplateEngine;
 use Mod\Installer\InstallerModule;
-use RuntimeException;
 
 final class ModuleBootstrapper
 {
     public function __construct(
-        private DependencyContainer $container,
-        private ModuleRegistry $registry
+        private readonly ModuleRegistry $registry,
+        private readonly ModuleManifestLoader $loader,
+        private readonly PathResolver $paths,
+        private readonly ModuleCache $cache,
+        private readonly DependencyContainer $container,
     ) {}
 
-    public function bootFromConfig(array $config): void
+    public function bootModules(): void
     {
-        foreach ($config['core'] ?? [] as $key => $class) {
-            $this->loadModule($key, $class, true);
+        $modules = $this->cache->load();
+
+        if ($modules === null) {
+            $modules = $this->discoverModules();
+            $this->cache->store($modules);
         }
 
-        foreach ($config['enabled'] ?? [] as $key) {
-            if (!isset($config['plugin'][$key])) {
+        $installationCompleted = self::isInstallationCompleted(
+            $this->paths->installerLock()
+        );
+
+        foreach ($modules as $module) {
+            if (!$this->shouldBootModule($module, $installationCompleted)) {
                 continue;
             }
 
-            $this->loadModule($key, $config['plugin'][$key], false);
-            $this->registry->enable($key);
+            $class = $module['class'];
+
+            $registryModule = new $class(
+                $this->container,
+                $module,
+                $module['path']
+            );
+
+            $this->registry->register($registryModule);
         }
 
-        $this->registerServices();
-        $this->bootModules();
+        $this->boot();
     }
 
     public function bootInstaller(): void
@@ -50,73 +72,106 @@ final class ModuleBootstrapper
             return;
         }
 
-        $this->loadModule('installer', InstallerModule::class, true);
-    }
-
-    private function loadModule(string $key, string $class, bool $core): void
-    {
-        $path = $this->resolveModulePath($class);
-        $manifestPath = $path . '/module.json';
-
-        if (!is_file($manifestPath)) {
-            throw new RuntimeException(
-                "Missing module.json for module '{$key}'. Check your configuration."
-            );
-        }
-
-        $manifest = json_decode(
-            file_get_contents($manifestPath),
-            true,
-            flags: JSON_THROW_ON_ERROR
-        );
-
-        if ($manifest['key'] !== $key) {
-            throw new RuntimeException(
-                "Module key mismatch: config='{$key}', manifest='{$manifest['key']}'"
-            );
-        }
-
-        if (!class_exists($class)) {
-            throw new RuntimeException("Module class not found: {$class}");
-        }
-
-        /** @var AbstractModule $module */
-        $module = new $class(
+        $module = new InstallerModule(
             $this->container,
-            $manifest,
-            $path
+            [],
+            $this->paths->modules('Installer')
         );
 
-        $this->registry->register($module);
+        $view = $this->container->get(TemplateEngine::class);
 
-        if ($core) {
-            $this->registry->enable($module->getKey());
+        $module->register($this->container);
+
+        if ($module instanceof TemplateAwareInterface) {
+            $module->bootTemplates($view);
         }
+
+        $module->boot();
     }
 
-    private function registerServices(): void
+    /**
+     * Scans the modules directory and returns an array of module manifests.
+     *
+     * @return array<string, array{key: string, class: string, enabled: bool, installed: bool, path: string}>
+     */
+    public function discoverModules(): array
     {
+        $modules = [];
+
+        foreach ($this->paths->moduleManifests() as $file) {
+            $dir = basename(dirname($file));
+            $key = strtolower($dir);
+
+            $data = $this->loader->load($key);
+
+            if (!$data || empty($data['class'])) {
+                continue;
+            }
+
+            $enabled = $data['enabled'] ?? false;
+            $installed = $data['installed'] ?? false;
+
+            // Wyjątek dla Instalatora
+            if ($key === 'installer') {
+                $enabled = true;
+                $installed = true;
+            }
+
+            // INFO! Optymalizacja czasu wykonania, cache dla wydajności.
+            $modules[$key] = [
+                'key' => $key,
+                'class' => $data['class'],
+                'enabled' => $enabled,
+                'installed' => $installed,
+                'path' => $this->paths->modules($dir),
+            ];
+        }
+
+        return $modules;
+    }
+
+    // ===== Private =====
+
+    private function shouldBootModule(array $module, bool $installationCompleted): bool
+    {
+        if (!$module['enabled']) {
+            return false;
+        }
+
+        if ($module['key'] === 'installer' && $installationCompleted) {
+            return false;
+        }
+
+        if (!class_exists($module['class'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function boot(): void
+    {
+        $view = $this->container->get(TemplateEngine::class);
+
         foreach ($this->registry->all() as $module) {
             $module->register($this->container);
-        }
-    }
 
-    private function bootModules(): void
-    {
-        foreach ($this->registry->all() as $module) {
+            if ($module instanceof TemplateAwareInterface) {
+                $module->bootTemplates($view);
+            }
+
             $module->boot();
         }
     }
 
-    private function resolveModulePath(string $class): string
+    public static function isInstallationCompleted(string $lockFile): bool
     {
-        $parts = explode('\\', trim($class, '\\'));
-        $moduleDir = $parts[1] ?? null;
-
-        if (!$moduleDir) {
-            throw new RuntimeException("Invalid module class: {$class}");
+        if (!is_file($lockFile)) {
+            return false;
         }
 
-        return BASE_DIRECTORY . '/modules/' . $moduleDir;
+        $data = json_decode(file_get_contents($lockFile), true);
+
+        return ($data['admin'] ?? false) === true;
     }
 }

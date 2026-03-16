@@ -1,0 +1,31 @@
+/* --- 
+ Custom Bootstrap 5.3 Colors
+ Link: https://getbootstrap.com/docs/5.3/customize/color/
+*/
+
+/* --- CYAN TEXT COLORS --- */
+.text-cyan-100 { color: #cff4fc !important; }
+.text-cyan-200 { color: #9eeaf9 !important; }
+.text-cyan-300 { color: #6edff6 !important; }
+.text-cyan-400 { color: #3dd5f3 !important; }
+.text-cyan-500, .text-cyan { color: #0dcaf0 !important; } /* Standardowy cyan */
+.text-cyan-600 { color: #0aa2c0 !important; }
+.text-cyan-700 { color: #087990 !important; }
+.text-cyan-800 { color: #055160 !important; }
+.text-cyan-900 { color: #032830 !important; }
+
+/* --- CYAN BACKGROUND COLORS --- */
+.bg-cyan-100 { background-color: #cff4fc !important; }
+.bg-cyan-200 { background-color: #9eeaf9 !important; }
+.bg-cyan-300 { background-color: #6edff6 !important; }
+.bg-cyan-400 { background-color: #3dd5f3 !important; }
+.bg-cyan-500, .bg-cyan { background-color: #0dcaf0 !important; }
+.bg-cyan-600 { background-color: #0aa2c0 !important; }
+.bg-cyan-700 { background-color: #087990 !important; }
+.bg-cyan-800 { background-color: #055160 !important; }
+.bg-cyan-900 { background-color: #032830 !important; }
+
+/* --- CYAN BORDER COLORS --- */
+.border-cyan-100 { border-color: #cff4fc !important; }
+.border-cyan-500, .border-cyan { border-color: #0dcaf0 !important; }
+.border-cyan-900 { border-color: #032830 !important; }

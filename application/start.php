@@ -8,6 +8,9 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * INFO! Plik (bootstrap) rozrósł się i robi za dużo,
+ * dobrze byłoby przenieść zawartość do klas.
  */
 
 // Strict typing
@@ -15,7 +18,7 @@ declare(strict_types=1);
 
 // Importing required classes from namespace
 use Dbm\Core\DependencyContainer;
-use Dbm\Core\Module\InstallerContext;
+use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\ModuleBootstrapper;
 use Dbm\Core\Module\ModuleRegistry;
 use Dbm\Core\Module\Package\PackageScanner;
@@ -23,11 +26,8 @@ use Dbm\Exceptions\ExceptionHandler;
 use Dbm\Infrastructure\Session\SessionManager;
 use Dbm\Routing\MiddlewareStack;
 use Dbm\Routing\RouteBuilder;
-use Dbm\Routing\RouteCache;
-use Dbm\Routing\RouteCollection;
 use Dbm\Routing\Router;
 use Dbm\Support\Helpers\DebugHelper;
-use Dbm\Views\TemplateEngine;
 
 ### Error / debug functions ###
 
@@ -109,6 +109,7 @@ function configurationSettings(string $pathConfig): void
  */
 function autoloadingWithWithoutComposer(string $pathComposerAutoload): void
 {
+    // If there is a Composer, we only use him
     if (is_file($pathComposerAutoload)) {
         require_once $pathComposerAutoload;
         return;
@@ -116,15 +117,16 @@ function autoloadingWithWithoutComposer(string $pathComposerAutoload): void
 
     $base = rtrim(BASE_DIRECTORY, '/');
 
-    // --- MAIN PSR-4 MAP ---
+    // ===== CORE PSR-4 MAP =====
     $psr4 = [
         'App\\' => $base . '/src/',
         'Dbm\\' => $base . '/application/',
         'Mod\\' => $base . '/modules/',
-        'Lib\\' => $base . '/application/Libraries/', // fallback
     ];
 
-    // --- BUNDLED / EXTERNAL LIBRARIES ---
+    // ===== BUNDLED LIBRARIES =====
+
+    // Vendor-like libraries (can be removed in Composer install mode)
     $libraries = [
         'Psr\\Http\\Message\\' => $base . '/libraries/psr/http-message/src/',
         'Psr\\Http\\Client\\' => $base . '/libraries/psr/http-client/src/',
@@ -135,19 +137,28 @@ function autoloadingWithWithoutComposer(string $pathComposerAutoload): void
         'GuzzleHttp\\' => $base . '/libraries/guzzlehttp/guzzle/src/',
     ];
 
-    // --- FRAMEWORK-BUNDLED PACKAGES ---
-    $bundles = [
-        'Lib\\DataTables\\' => $base . '/application/Libraries/DataTables/src/',
-        'Lib\\Search\\' => $base . '/application/Libraries/Search/src/',
-    ];
+    $bundles = [];
 
-    // order matters: more specific first
+    // Auto bundle discovery (if libraries have their own bundle.php file)
+    foreach (glob($base . '/libraries/*/bundle.php') as $bundleFile) {
+        $bundles += require $bundleFile;
+    }
+
+    // Runtime bundles (modifiable - can be transferred to the Database)
+    $runtimeBundles = $base . '/storage/framework/bundles.php';
+
+    if (is_file($runtimeBundles)) {
+        $bundles += require $runtimeBundles;
+    }
+
+    // Merge maps (priority: bundles > libraries > core)
+    // Order matters: more specific first
     $maps = $bundles + $libraries + $psr4;
 
     spl_autoload_register(
         static function (string $class) use ($maps): void {
 
-            if ($class[0] === '_') {
+            if ($class === '' || $class[0] === '_') {
                 return;
             }
 
@@ -200,46 +211,19 @@ function isConfigDatabase(): bool
  */
 function runRoutingKernel(DependencyContainer $container): void
 {
-    $cache = new RouteCache(BASE_DIRECTORY . '/var/cache/__routes.php');
-
-    $routes = $container->get(RouteCollection::class);
     $routeBuilder = $container->get(RouteBuilder::class);
     $middleware = $container->get(MiddlewareStack::class);
 
-    $sources = [
-        BASE_DIRECTORY . '/application/web.php',
-        BASE_DIRECTORY . '/application/api.php',
-    ];
+    loadRoutes($routeBuilder, $container);
 
-    // === 1. Załaduj standardowe trasy z web.php + api.php ===
-    if (!InstallerContext::isRunning() || !$cache->isFresh($sources)) {
-        loadRoutes($routeBuilder, $container);
-    } else {
-        $routes->import($cache->load());
-    }
-
-    // === 2. Rejestracja modułów ===
     /** @var ModuleRegistry $moduleRegistry */
     $moduleRegistry = $container->get(ModuleRegistry::class);
-    foreach (iterator_to_array($moduleRegistry->all()) as $module) {
-        $moduleRegistry->enable($module->getKey());
-    }
-
-    // Dodaj trasy modułów (last wins)
     $moduleRegistry->registerRoutes($routeBuilder);
 
-    // === 3. Zapisz cache, jeśli jest włączony ===
-    if (!$cache->isFresh($sources) && getenv('CACHE_ENABLED') === 'true') {
-        $cache->write($routes);
-    }
+    loadMiddleware($middleware); // routes from modules
 
-    // === 4. Middleware ===
-    loadMiddleware($middleware);
-
-    // === 5. Router (po middleware) ===
     $router = $container->get(Router::class);
 
-    // === 6. Dispatch ===
     dispatchRequest($router);
 }
 
@@ -269,43 +253,30 @@ function dispatchRequest(Router $router): void
 
 /**
  * Registering modules
- * INFO: Opcjonalnie można rozbudować, modules.php (manifest),
- * cache listy modułów, tryb APP_ENV=prod -> bez skanowania FS
  *
  * @param DependencyContainer $container
  */
 function registerModules(DependencyContainer $container): void
 {
-    $modulesDir = BASE_DIRECTORY . '/modules';
-    $pathConfig = BASE_DIRECTORY . '/config/modules.php';
-    $installedLock = BASE_DIRECTORY . '/modules/installed.lock';
+    $installedLock = PathResolver::installerLock();
 
-    if (!is_dir($modulesDir)) {
-        return;
-    }
-
-    $registry = $container->get(ModuleRegistry::class);
     $bootstrapper = $container->get(ModuleBootstrapper::class);
     $scanner = $container->get(PackageScanner::class);
     $session = $container->get(SessionManager::class);
 
-    /** BOOTSTRAP MODUŁÓW */
-    if (is_file($pathConfig)) {
-        $bootstrapper->bootFromConfig(require $pathConfig);
+    // Boot modułów
+    if (is_dir(BASE_DIRECTORY . '/modules')) {
+        $bootstrapper->bootModules();
     }
 
-    // Installer
-    if (!is_file($installedLock)
+    // Boot instalatora
+    if (
+        !is_file($installedLock)
         || $scanner->hasPendingPackages()
-        || $session->getSession('installer_active') // INFO! FinishStep::SESSION_ACTIVE
+        || $session->getSession('dbmInstallerActive')
     ) {
         $bootstrapper->bootInstaller();
     }
-
-    $registry->bootAll(
-        $container->get(RouteBuilder::class),
-        $container->get(TemplateEngine::class)
-    );
 }
 
 ### Registering helper functions ###

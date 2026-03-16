@@ -14,48 +14,25 @@ declare(strict_types=1);
 
 namespace Dbm\Console;
 
-final class CommandRunner
+final class CommandRunner extends AbstractConsoleRunner
 {
-    public function run(string $name): void
+    protected function getDirectory(): string
     {
-        $normalized = $this->normalizeName($name);
-        $class = "App\\Console\\Command\\{$normalized}Command";
-
-        if (!class_exists($class)) {
-            throw new \RuntimeException("Command not found: $name");
-        }
-
-        $command = new $class();
-        $command->execute();
+        return BASE_DIRECTORY . '/src/Console/Command';
     }
 
-    public function list(): void
+    protected function getNamespace(): string
     {
-        foreach ($this->discoverCommands() as $name => $class) {
-            printf(
-                "  %-15s %s\n",
-                strtolower($name),
-                (new \ReflectionClass($class))->getShortName()
-            );
-        }
+        return 'App\\Console\\Command';
     }
 
-    public function discoverCommands(): array
+    protected function getSuffix(): string
     {
-        $commands = [];
-
-        foreach (glob(BASE_DIRECTORY . '/src/Console/Command/*Command.php') as $file) {
-            $name = basename($file, 'Command.php');
-            $commands[$name] = "App\\Console\\Command\\{$name}Command";
-        }
-
-        return $commands;
+        return 'Command';
     }
 
-    private function normalizeName(string $name): string
+    protected function execute(string $class): void
     {
-        return str_replace(' ', '', ucwords(
-            str_replace(['-', '_'], ' ', strtolower($name))
-        ));
+        (new $class())->execute();
     }
 }

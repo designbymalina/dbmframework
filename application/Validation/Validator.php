@@ -262,8 +262,7 @@ class Validator
      */
     private function formatErrorKey(string $field): string
     {
-        $base = preg_replace('/^.*_/', '', $field);
-        return 'error_' . strtolower($base);
+        return 'error_' . strtolower($field);
     }
 
     /**

@@ -1,12 +1,17 @@
 <?php
 
 /**
- * Application: DbM Framework
- * A lightweight PHP framework for building web applications.
+ * Module: DbM DataTables
+ * PHP library for efficient CRUD operations and high-performance database management.
+ *
+ * This software is proprietary and licensed.
+ * Use of this software is subject to the terms of the DbM Platform License.
  *
  * @author Artur Malinowski
- * @copyright Design by Malina (All Rights Reserved)
- * @license MIT
+ * @copyright Design by Malina
+ * @license Proprietary
+ *
+ * @see /LICENSE_DBM_PLATFORM.txt
  * @link https://www.dbm.org.pl
  */
 
@@ -28,15 +33,18 @@ abstract class AbstractRepository
 
     /**
      * Pobranie rekordu po ID.
+     *
+     * @return array<string, mixed>|null
      */
-    public function find(int $id): ?object
+    public function find(int $id): ?array
     {
         $row = $this->database->fetch(
             "SELECT * FROM {$this->table} WHERE id = :id",
             ['id' => $id]
         );
 
-        return $this->database->hydrate($row);
+        // return $this->database->hydrate($row); // TODO! Co lepiej tablica czy obiekt?
+        return $row ?: null;
     }
 
     /**

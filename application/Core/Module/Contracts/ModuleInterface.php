@@ -22,8 +22,14 @@ interface ModuleInterface
     /** Klucz modułu (np. cmslite) */
     public function getKey(): string;
 
+    /** Ścieżka do modułu */
+    public function getPath(): string;
+
     /** Czy moduł jest core */
     public function isCore(): bool;
+
+    /** Czy moduł jest aktywny */
+    public function isEnabled(): bool;
 
     /** Rejestracja serwisów */
     public function register(DependencyContainer $container): void;

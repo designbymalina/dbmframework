@@ -14,18 +14,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Http\Controller\BaseApiController;
 use Psr\Http\Message\ResponseInterface;
 
 class IndexApiController extends BaseApiController
 {
-    public function __construct(
-        ?DatabaseInterface $database = null
-    ) {
-        parent::__construct($database);
-    }
-
     /**
      * @routing GET '/api' name: api_index
      */

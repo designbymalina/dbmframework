@@ -148,8 +148,6 @@ abstract class AbstractInstallerStep implements InstallerStepInterface
 
     /**
      * Ustawia flagę, czy krok jest krokiem instalacyjnym.
-     * Domyślnie większość to kroki instalacyjne inne tylko sprawdzające lub koniec.
-     * Zwykle przydatne w "progress bar".
      */
     public function isInstallStep(): bool
     {

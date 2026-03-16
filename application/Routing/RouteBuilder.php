@@ -94,7 +94,6 @@ final class RouteBuilder
         );
     }
 
-
     private function normalizePath(string $prefix, string $path): string
     {
         $full = rtrim($prefix, '/') . '/' . ltrim($path, '/');

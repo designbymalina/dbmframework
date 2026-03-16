@@ -23,11 +23,9 @@ final class DependencyContainer
     private array $definitions = [];
     private array $instances = [];
     private array $singletons = [];
+    private array $tags = [];
     private array $autowireNamespaces = ['App\\', 'Mod\\'];
 
-    /**
-     * Metoda set() to factory() jako zdefiniowanych zadań.
-     */
     public function set(string $id, callable $factory): void
     {
         $this->definitions[$id] = $factory;
@@ -36,6 +34,11 @@ final class DependencyContainer
     public function singleton(string $id, ?callable $factory = null): void
     {
         $this->singletons[$id] = $factory ?? fn() => new $id();
+    }
+
+    public function tag(string $id, string $tag): void
+    {
+        $this->tags[$tag][] = $id;
     }
 
     public function has(string $id): bool
@@ -80,6 +83,21 @@ final class DependencyContainer
         }
 
         throw new \RuntimeException("Service {$id} not found.");
+    }
+
+    public function getByTag(string $tag): array
+    {
+        if (!isset($this->tags[$tag])) {
+            return [];
+        }
+
+        $services = [];
+
+        foreach ($this->tags[$tag] as $id) {
+            $services[] = $this->get($id);
+        }
+
+        return $services;
     }
 
     private function autowire(string $id): object

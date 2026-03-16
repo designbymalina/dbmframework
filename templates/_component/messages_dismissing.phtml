@@ -1,9 +1,9 @@
-            <!-- Flash Message Dismissing -->
-            {% $flash = $this->getFlash(); %}
-            {% if ($flash): %}
-                <div class="alert {{ \Dbm\Views\Flash\FlashBag::cssClass($flash['type']) }} alert-dismissible fade show">
-                    <strong>{{ strtoupper(str_replace('message', '', $flash['type'])) }}:</strong>
-                    <span>{{{ $flash['message'] }}}</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endif; %}
+                        <!-- Flash Message Dismissing -->
+                        {% $flashMessage = $this->getFlash(); %}
+                        {% if ($flashMessage): %}
+                        <div class="alert {{ \Dbm\Views\Flash\FlashBag::cssClass($flashMessage['type']) }} alert-dismissible fade show">
+                            <strong>{{ strtoupper(str_replace('message', '', $flashMessage['type'])) }}:</strong>
+                            <span>{{{ $flashMessage['message'] }}}</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif; %}

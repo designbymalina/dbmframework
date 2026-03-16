@@ -41,7 +41,7 @@ final class ActionArgumentResolver
     }
 
     private function resolveParameter(
-        \ReflectionParameter $param,
+        ReflectionParameter $param,
         array $routeParams
     ): mixed {
         $name = $param->getName();
@@ -49,10 +49,16 @@ final class ActionArgumentResolver
 
         // Parametry z URL
         if (array_key_exists($name, $routeParams)) {
-            return $routeParams[$name];
+            $value = $routeParams[$name];
+
+            if ($type instanceof \ReflectionNamedType && $type->isBuiltin()) {
+                return $this->castToBuiltinType($value, $type->getName());
+            }
+
+            return $value;
         }
 
-        // Request
+        // Request injection
         if ($type && !$type->isBuiltin()) {
             $class = $type->getName();
 
@@ -60,24 +66,30 @@ final class ActionArgumentResolver
                 return $this->request;
             }
 
-            // DI
             if ($this->container->has($class)) {
                 return $this->container->get($class);
             }
 
-            // fallback
             if (class_exists($class)) {
                 return new $class();
             }
         }
 
-        // Default
         if ($param->isDefaultValueAvailable()) {
             return $param->getDefaultValue();
         }
 
-        throw new \RuntimeException(
-            "Cannot resolve argument \${$name}"
-        );
+        throw new \RuntimeException("Cannot resolve argument \${$name}");
+    }
+
+    private function castToBuiltinType(mixed $value, string $type): mixed
+    {
+        return match ($type) {
+            'int' => (int) $value,
+            'float' => (float) $value,
+            'bool' => filter_var($value, FILTER_VALIDATE_BOOL),
+            'string' => (string) $value,
+            default => $value,
+        };
     }
 }

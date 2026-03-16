@@ -15,55 +15,77 @@ declare(strict_types=1);
 namespace Dbm\Core\Module;
 
 use Dbm\Core\Module\Exception\InvalidModulePackageException;
+use Dbm\Core\Module\Package\PackageDescriptor;
 use Dbm\Core\Module\Service\ModulePackageService;
 
 final class ModuleInstaller
 {
     public function __construct(
-        private ModulePackageService $service,
+        private readonly ModulePackageService $service,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function install(string $sourcePath): array
     {
+        $sourcePath = $this->service->extractIfNeeded($sourcePath);
         $packageRoot = $this->service->resolvePackageRoot($sourcePath);
 
         if (!$packageRoot) {
             throw new InvalidModulePackageException('Invalid package structure');
         }
 
-        $moduleDir = $this->service->resolveModuleDir($packageRoot);
-        $manifest = $this->service->readManifest($moduleDir);
+        try {
+            $moduleDir = $this->service->resolveModuleDir($packageRoot);
+            $manifest = $this->service->readManifest($moduleDir);
 
-        /** @var Dbm\Core\Module\Package\PackageDescriptor $package */
-        $package = $this->service->loadPackageDescriptor($moduleDir, $sourcePath);
+            /** @var PackageDescriptor $package */
+            $package = $this->service->loadPackageDescriptor($moduleDir, $sourcePath);
 
-        // === FILES ===
-        $this->service->copyWithBackup($packageRoot . '/modules', BASE_DIRECTORY . '/modules', $manifest['key']);
-        $this->service->copyWithBackup($packageRoot . '/config', BASE_DIRECTORY . '/config', $manifest['key']);
-        $this->service->copyWithBackup($packageRoot . '/public', BASE_DIRECTORY . '/public', $manifest['key']);
-        $this->service->copyWithBackup($packageRoot . '/templates', BASE_DIRECTORY . '/templates', $manifest['key']);
-        $this->service->copyWithBackup($packageRoot . '/translations', BASE_DIRECTORY . '/translations', $manifest['key']);
-        $this->service->copyWithBackup($packageRoot . '/src/Shared', BASE_DIRECTORY . '/src/Shared', $manifest['key']);
-        // INFO! Można dopisać zabezpieczenie dla folderu 'src'. Auto-modyfikacje dozwolone tylko w 'Shared'.
+            // === COPY DIRECTORIES AND FILES AND CONFLICTS ===
+            $timestamp = (new \DateTimeImmutable())->format('Ymd_His');
 
-        // === FILE MIGRATIONS ===
-        $this->service->fileMigrations($package->fileMigrations(), $packageRoot);
+            $dirs = [
+                'data', 'modules', 'public', 'storage', 'templates', 'translations', 'src/Shared',
+            ];
 
-        // === DATABASE MIGRATIONS ===
-        $this->service->databaseMigrations($package->databaseMigrations(), $packageRoot);
+            $conflicts = [];
 
-        // === CONFIG ===
-        $this->service->writeConfig($manifest);
+            foreach ($dirs as $dir) {
+                $conflicts = array_merge(
+                    $conflicts,
+                    $this->service->copyDirectoryFiles($dir, $packageRoot, $timestamp)
+                );
+            }
 
-        // === ENV ===
-        $this->service->writeEnv($manifest);
+            // === FILE MIGRATIONS ===
+            $this->service->fileMigrations($package->fileMigrations(), $packageRoot);
 
-        // === CLEANUP (tylko ta paczka) ===
-        $this->service->cleanupExtracted($packageRoot);
+            // === DATABASE MIGRATIONS ===
+            $this->service->databaseMigrations($package->databaseMigrations(), $packageRoot);
+
+            // === CONFIG MANIFEST STATE ===
+            $this->service->writeInstallManifest($manifest, $packageRoot);
+
+            // === ENV ===
+            $this->service->writeEnv($manifest);
+        } catch (\Throwable $e) {
+            throw new InvalidModulePackageException(
+                'Package error: ' . $e->getMessage(),
+                previous: $e
+            );
+        } finally {
+            // === CLEANUP (only for package) ===
+            $this->service->cleanupExtracted($packageRoot);
+        }
 
         return [
             'manifest' => $manifest,
             'module' => $manifest['key'],
+            'conflicts' => $conflicts,
+            'status' => 'success',
+            'stage' => 'install',
         ];
     }
 }

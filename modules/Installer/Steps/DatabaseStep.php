@@ -17,6 +17,7 @@ namespace Mod\Installer\Steps;
 use Dbm\Core\DependencyContainer;
 use Dbm\Core\Module\Repository\InstallRepository;
 use Mod\Installer\Constants\InstallerConstant;
+use Mod\Installer\InstallerState;
 
 final class DatabaseStep extends AbstractInstallerStep
 {
@@ -84,11 +85,12 @@ final class DatabaseStep extends AbstractInstallerStep
         $dbHost = getenv('DB_HOST');
         $dbName = getenv('DB_NAME');
         $dbUser = getenv('DB_USER');
+
         // INFO! Tymczasowo, można rozbudować.
         // Zamiast zgadywać po tabelach, wprowadź np. installation.lock.
         $dbTable = 'dbm_user';
 
-        $enabledModules = $this->getInstallStepNames();
+        $pendingPackages = $this->getPendingPackages();
 
         if (!$dbHost) {
             return $this->fail('installer.database.msg.host_missing');
@@ -110,11 +112,11 @@ final class DatabaseStep extends AbstractInstallerStep
             return $this->fail('installer.database.msg.not_exists');
         }
 
-        if (!in_array('authentication', $enabledModules, true)) {
+        if (!in_array('authentication', $pendingPackages, true)) {
             if ($this->repository->tableExists($dbTable)) {
                 return $this->fail('installer.database.msg.table_exists');
             }
-        } elseif (!in_array('admin', $enabledModules, true)) {
+        } elseif (!in_array('admin', $pendingPackages, true)) {
             if (!$this->repository->tableExists($dbTable)) {
                 return $this->fail('installer.database.msg.table_not_exists');
             }
@@ -143,22 +145,12 @@ final class DatabaseStep extends AbstractInstallerStep
     /**
      * @return array<int, string>
      */
-    private function getInstallStepNames(): array
+    private function getPendingPackages(): array
     {
-        $configPath = BASE_DIRECTORY . '/config/modules.php';
+        $state = $this->container->get(InstallerState::class);
 
-        if (!is_file($configPath)) {
-            return [];
-        }
+        $packages = $state->get('pending_packages');
 
-        $modules = require $configPath;
-
-        if (!is_array($modules)) {
-            return [];
-        }
-
-        $enabled = $modules['enabled'] ?? [];
-
-        return array_values($enabled);
+        return is_array($packages) ? $packages : [];
     }
 }

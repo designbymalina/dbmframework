@@ -4,7 +4,7 @@
  * Library: Filesystem
  * A class designed for the DbM Framework and for use in any PHP application.
  *
- * @package Lib\FileSystem
+ * @package Dbm\Libraries\Files\FileSystem
  * @author Artur Malinowski
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
@@ -13,14 +13,14 @@
 
 declare(strict_types=1);
 
-namespace Lib\Files;
+namespace Dbm\Libraries\Files;
 
 use RuntimeException;
 
 /**
  * Class FileSystem
  */
-class FileSystem
+final class FileSystem
 {
     /**
      * Sprawdza, czy plik istnieje.
@@ -41,11 +41,17 @@ class FileSystem
      */
     public function readFile(string $filePath): ?string
     {
-        if (!is_file($filePath) || !file_exists($filePath) || filesize($filePath) === 0) {
+        if (!is_file($filePath) || filesize($filePath) === 0) {
             return null;
         }
 
-        return file_get_contents($filePath);
+        $content = file_get_contents($filePath);
+
+        if ($content === false) {
+            return null;
+        }
+
+        return $content;
     }
 
     /**
@@ -78,7 +84,7 @@ class FileSystem
      * @param int $chmod Uprawnienia dla pliku i katalogu.
      * @throws RuntimeException Jeśli nie można utworzyć katalogu, zapisać lub ustawić uprawnień.
      */
-    public function saveFile(string $filePath, string $fileContent, int $chmod = 0o755): void
+    public function saveFile(string $filePath, string $fileContent, int $chmod = 0o644, int $flags = LOCK_EX): void
     {
         $directory = dirname($filePath);
 
@@ -86,7 +92,7 @@ class FileSystem
             throw new RuntimeException("Failed to create directory: $directory");
         }
 
-        if (file_put_contents($filePath, $fileContent) === false) {
+        if (file_put_contents($filePath, $fileContent, $flags) === false) {
             throw new RuntimeException("Unable to write to file: $filePath");
         }
 
@@ -120,7 +126,7 @@ class FileSystem
      */
     public function deleteFile(string $filePath): void
     {
-        if (is_file($filePath) && file_exists($filePath)) {
+        if (is_file($filePath)) {
             unlink($filePath);
         }
     }
@@ -145,10 +151,10 @@ class FileSystem
     /**
      * Usuwa wiele plików (lub jeden) i zwraca komunikat o błędzie, jeśli coś pójdzie nie tak.
      *
-     * @param string|array $images Ścieżka lub tablica ścieżek do plików.
+     * @param string|array<int, string> $images Ścieżka lub tablica ścieżek do plików.
      * @return string|null Komunikat błędu lub null, jeśli wszystko OK.
      */
-    public function fileMultiDelete($images): ?string
+    public function fileMultiDelete(mixed $images): ?string
     {
         if (is_array($images)) {
             foreach ($images as $image) {
@@ -185,7 +191,13 @@ class FileSystem
      */
     public function readFileStream(string $filePath, string $mode = 'r'): ?string
     {
-        if (!is_file($filePath) || filesize($filePath) === 0) {
+        if (!is_file($filePath)) {
+            return null;
+        }
+
+        $size = filesize($filePath);
+
+        if ($size === false || $size === 0) {
             return null;
         }
 
@@ -195,13 +207,13 @@ class FileSystem
             throw new RuntimeException("Unable to open file for reading: $filePath");
         }
 
-        // Blokada współdzielona (tylko odczyt)
         if (!flock($handle, LOCK_SH)) {
             fclose($handle);
             throw new RuntimeException("Unable to lock file for reading: $filePath");
         }
 
-        $content = fread($handle, filesize($filePath));
+        $content = fread($handle, $size);
+
         flock($handle, LOCK_UN);
         fclose($handle);
 
@@ -253,7 +265,7 @@ class FileSystem
      * Zwraca listę plików katalogu (pomija katalogi).
      *
      * @param string $directory
-     * @return array
+     * @return array<int, string>
      */
     public function listFiles(string $directory, ?string $extension = null): array
     {
@@ -261,9 +273,15 @@ class FileSystem
             return [];
         }
 
+        $files = scandir($directory);
+
+        if ($files === false) {
+            return [];
+        }
+
         $result = [];
 
-        foreach (scandir($directory) as $item) {
+        foreach ($files as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
@@ -288,6 +306,8 @@ class FileSystem
 
     /**
      * Zwraca listę plików w katalogu rekursywnie (tylko pliki).
+     *
+     * @return array<int, string>
      */
     public function listFilesRecursively(string $directory): array
     {
@@ -327,18 +347,27 @@ class FileSystem
     /**
      * Zwraca listę plików w katalogu, z pominięciem określonych elementów.
      *
-     * @param string $directory Ścieżka do katalogu.
-     * @param int $sort Sortowanie (0 = rosnąco, 1 = malejąco).
-     * @param array $arraySkip Pliki/katalogi do pominięcia.
-     * @return array|null Lista plików lub null, jeśli katalog nie istnieje.
+     * @param string $directory
+     * @param 0|1|2 $sort
+     * @param array<int, string> $arraySkip
+     * @return array<int, string>|null
      */
-    public function scanDir(string $directory, int $sort = 0, array $arraySkip = ['..', '.']): ?array
+    public function scanDir(string $directory, int $sort = SCANDIR_SORT_ASCENDING, array $arraySkip = ['..', '.']): ?array
     {
-        if (is_dir($directory)) {
-            return array_diff(scandir($directory, $sort), $arraySkip);
+        if (!is_dir($directory)) {
+            return null;
         }
 
-        return null;
+        $files = scandir($directory, $sort);
+
+        if ($files === false) {
+            return null;
+        }
+
+        /** @var array<int, string> $filtered */
+        $filtered = array_values(array_diff($files, $arraySkip));
+
+        return $filtered;
     }
 
     /**
@@ -372,7 +401,13 @@ class FileSystem
             mkdir($to, 0o755, true);
         }
 
-        foreach (scandir($from) as $item) {
+        $files = scandir($from);
+
+        if ($files === false) {
+            return;
+        }
+
+        foreach ($files as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
@@ -400,7 +435,13 @@ class FileSystem
             return;
         }
 
-        foreach (scandir($path) as $item) {
+        $files = scandir($path);
+
+        if ($files === false) {
+            return;
+        }
+
+        foreach ($files as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
@@ -416,7 +457,7 @@ class FileSystem
      * Zwraca listę katalogów w katalogu (tylko katalogi, bez rekursji)
      *
      * @param string $directory
-     * @return array
+     * @return array<int, string>
      */
     public function listDirs(string $directory): array
     {
@@ -424,9 +465,15 @@ class FileSystem
             return [];
         }
 
+        $files = scandir($directory);
+
+        if ($files === false) {
+            return [];
+        }
+
         $dirs = [];
 
-        foreach (scandir($directory) as $item) {
+        foreach ($files as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
@@ -466,6 +513,29 @@ class FileSystem
     }
 
     /**
+     * Tworzy katalog, jeśli nie istnieje i ustawia uprawnienia.
+     *
+     * @param string $path Ścieżka do katalogu.
+     * @param int $mode Uprawnienia katalogu (domyślnie 755).
+     */
+    public function mkdir(string $path, int $mode = 0o755): void
+    {
+        if (!@mkdir($path, $mode, true) && !is_dir($path)) {
+            throw new RuntimeException("Cannot create directory: {$path}");
+        }
+    }
+
+    /**
+     * Sprawdza, czy podana ścieżka jest plikiem.
+     * @param string $path
+     * @return bool
+     */
+    public function isFile(string $path): bool
+    {
+        return is_file($path);
+    }
+
+    /**
      * Zwraca zawartość pliku w formacie HTML (zamienia nowe linie na <br>).
      *
      * @param string $pathFile Ścieżka do pliku.
@@ -473,14 +543,25 @@ class FileSystem
      */
     public function contentPreview(string $pathFile): ?string
     {
-        if (is_file($pathFile) && file_exists($pathFile) && (filesize($pathFile) > 0)) {
-            $contentPreview = file_get_contents($pathFile);
-            $contentPreview = str_replace([PHP_EOL], ["<br>"], $contentPreview);
+        if (!is_file($pathFile) || filesize($pathFile) <= 0) {
+            return null;
         }
 
-        return $contentPreview ?? null;
+        $content = file_get_contents($pathFile);
+
+        if ($content === false) {
+            return null;
+        }
+
+        return str_replace(PHP_EOL, '<br>', $content);
     }
 
+    /**
+     * Normalizuje ścieżkę do formatu zgodnego z systemem operacyjnym.
+     *
+     * @param string $path Ścieżka do normalizacji.
+     * @return string Normalizowana ścieżka.
+     */
     public function normalizePath(string $path): string
     {
         return rtrim(str_replace('\\', '/', $path), '/');

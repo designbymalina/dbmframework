@@ -150,10 +150,16 @@ interface ExtendedRequestInterface extends PsrRequestInterface
 
     /**
      * Returns a single uploaded file by key, or null if missing.
+     *
      * @param string $key
      * @return array|null
      */
     public function getUploadedFile(string $key): ?array;
+
+    /**
+     * Checks if the request contains an uploaded file by key.
+     */
+    public function hasUploadedFile(string $key): bool;
 
     /**
      * Returns a single GET (query string) parameter or default if missing.

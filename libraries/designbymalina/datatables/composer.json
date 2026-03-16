@@ -1,0 +1,15 @@
+{
+  "name": "designbymalina/datatables",
+  "description": "DbM DataTables PHP optional AJAX or API",
+  "type": "library",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Datatables\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0"
+  }
+}

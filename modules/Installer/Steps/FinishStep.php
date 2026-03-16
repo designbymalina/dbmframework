@@ -15,17 +15,19 @@ declare(strict_types=1);
 namespace Mod\Installer\Steps;
 
 use Dbm\Core\DependencyContainer;
-use Dbm\Core\Module\InstalledModules;
+use Dbm\Core\Module\Cache\ModuleCache;
+use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\ModuleRegistry;
 use Dbm\Infrastructure\Session\SessionManager;
-use Lib\Files\FileSystem;
+use Dbm\Libraries\Files\FileSystem;
 use Mod\Installer\Constants\InstallerConstant;
 
 final class FinishStep extends AbstractInstallerStep
 {
     protected DependencyContainer $container;
 
-    public const SESSION_ACTIVE = 'installer_active';
+    // INFO! Nazwa sesji musi być zgodna z start.php -> registerModules().
+    public const SESSION_ACTIVE = 'dbmInstallerActive';
 
     public function getName(): string
     {
@@ -39,14 +41,8 @@ final class FinishStep extends AbstractInstallerStep
 
     public function getDescription(): string
     {
-        return ''; // optional: 'installer.step.finish.content';
+        return '';
     }
-
-    // INFO! Optional (default is true).
-    // public function isInstallStep(): bool
-    // {
-    //     return false;
-    // }
 
     public function boot(): void
     {
@@ -54,6 +50,7 @@ final class FinishStep extends AbstractInstallerStep
         $session->setSession(self::SESSION_ACTIVE, true);
 
         if ($this->isCompleted()) {
+
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'success',
@@ -66,14 +63,13 @@ final class FinishStep extends AbstractInstallerStep
                     ],
                     [
                         'label' => 'installer.button.add_modules',
-                        'class' => 'btn-light',
+                        'class' => 'btn-dark',
                         'path' => 'install_restart',
                     ],
                 ],
             ]);
 
             $session->unsetSession(self::SESSION_ACTIVE);
-
             return;
         }
 
@@ -83,62 +79,67 @@ final class FinishStep extends AbstractInstallerStep
         ]);
     }
 
-    /**
-     * @param array<string, mixed> $input
-     */
     public function handle(array $input): void
     {
         if ($this->isCompleted()) {
             return;
         }
 
-        $this->writeModulesConfig($this->container->get(ModuleRegistry::class));
+        $registry = $this->container->get(ModuleRegistry::class);
 
-        if (!$this->modulesInstalledCorrectly()) {
+        if (!$this->modulesInstalledCorrectly($registry)) {
+
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'danger',
                 'text' => 'installer.alert.module_verification_failed',
             ]);
+
             return;
         }
 
+        $this->writeInstalledLock($registry);
+        $this->disableInstaller($registry);
         $this->markCompleted();
     }
 
-    private function writeModulesConfig(ModuleRegistry $registry): void
+    private function writeInstalledLock(ModuleRegistry $registry): void
     {
         $fileSystem = $this->container->get(FileSystem::class);
 
-        $arrLock = json_encode([
-            "installed" => true,
-            "admin" => $this->container->get(InstalledModules::class)->isInstalled('admin'),
-            "completed_at" => date('c'),
+        $content = json_encode([
+            'installed' => true,
+            'admin' => $registry->has('admin'),
+            'completed_at' => date('c'),
         ]);
 
-        $fileSystem->saveFile(BASE_DIRECTORY . '/modules/installed.lock', $arrLock);
+        $fileSystem->saveFile(
+            PathResolver::installerLock(),
+            $content
+        );
     }
 
-    private function modulesInstalledCorrectly(): bool
+    private function modulesInstalledCorrectly(ModuleRegistry $registry): bool
     {
-        $installed = $this->container->get(InstalledModules::class);
+        return !empty($registry->enabled());
+    }
 
-        foreach ($this->getRequiredModules() as $module) {
-            if (!$installed->isInstalled($module)) {
-                return false;
-            }
+    private function disableInstaller(ModuleRegistry $registry): void
+    {
+        if (!$registry->has('admin')) {
+            return;
         }
 
-        return true;
-    }
+        $cache = $this->container->get(ModuleCache::class);
 
-    /**
-     * @return array<string, string>
-     */
-    private function getRequiredModules(): array
-    {
-        $config = require BASE_DIRECTORY . '/config/modules.php';
+        $modules = $cache->load();
 
-        return $config['enabled'] ?? [];
+        if ($modules === null || !isset($modules['installer'])) {
+            return;
+        }
+
+        $modules['installer']['enabled'] = false;
+
+        $cache->store($modules);
     }
 }

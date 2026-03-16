@@ -18,17 +18,25 @@ use Dbm\Database\Contracts\RequiresDatabaseInterface;
 use Dbm\Database\Validator\DatabaseEnvValidator;
 use Dbm\Database\DatabaseFactory;
 
-final class WorkerRunner
+final class WorkerRunner extends AbstractConsoleRunner
 {
-    public function run(string $name): void
+    protected function getDirectory(): string
     {
-        $normalized = $this->normalizeName($name);
-        $class = "App\\Console\\Worker\\{$normalized}Worker";
+        return BASE_DIRECTORY . '/src/Console/Worker';
+    }
 
-        if (!class_exists($class)) {
-            throw new \RuntimeException("Worker not found: $name");
-        }
+    protected function getNamespace(): string
+    {
+        return 'App\\Console\\Worker';
+    }
 
+    protected function getSuffix(): string
+    {
+        return 'Worker';
+    }
+
+    protected function execute(string $class): void
+    {
         $start = microtime(true);
         $database = null;
 
@@ -37,8 +45,6 @@ final class WorkerRunner
         echo "----------\n";
 
         try {
-            // INFO: Czy klasa jest zadeklarowana, ze wymaga bazy danych?
-            // Jesli nie implementuje RequiresDatabaseInterface nie waliduje env, nie tworzy DB.
             if (is_subclass_of($class, RequiresDatabaseInterface::class)) {
                 DatabaseEnvValidator::validate(requireDatabase: true);
                 $database = DatabaseFactory::createDatabase();
@@ -63,35 +69,5 @@ final class WorkerRunner
             echo "Status: {$status}\n";
             echo "==========\n";
         }
-    }
-
-    public function list(): void
-    {
-        foreach ($this->discoverWorkers() as $name => $class) {
-            printf(
-                "  %-15s %s\n",
-                strtolower($name),
-                (new \ReflectionClass($class))->getShortName()
-            );
-        }
-    }
-
-    public function discoverWorkers(): array
-    {
-        $commands = [];
-
-        foreach (glob(BASE_DIRECTORY . '/src/Console/Worker/*Worker.php') as $file) {
-            $name = basename($file, 'Worker.php');
-            $commands[$name] = "App\\Console\\Worker\\{$name}Worker";
-        }
-
-        return $commands;
-    }
-
-    private function normalizeName(string $name): string
-    {
-        return str_replace(' ', '', ucwords(
-            str_replace(['-', '_'], ' ', strtolower($name))
-        ));
     }
 }

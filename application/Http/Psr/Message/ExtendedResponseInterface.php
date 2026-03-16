@@ -70,4 +70,13 @@ interface ExtendedResponseInterface extends ResponseInterface
      * @throws \JsonException
      */
     public static function json(array $data, int $statusCode = 200): self;
+
+    /**
+     * Creates a response that triggers a file download in the browser.
+     *
+     * @param string      $filePath      Ścieżka do pliku na serwerze.
+     * @param string|null $downloadName  Nazwa pliku do pobrania (opcjonalna).
+     * @return static
+     */
+    public static function download(string $filePath, ?string $downloadName = null): self;
 }

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Mod\Installer\Steps;
 
-use Dbm\Core\Module\PackageInstaller;
+use Dbm\Core\Module\Lifecycle\ModuleLifecycleManager;
 use Mod\Installer\Constants\InstallerConstant;
 use Mod\Installer\Steps\Helper\AlertHelper;
 
@@ -73,7 +73,7 @@ final class CmsLiteStep extends AbstractInstallerStep
             return;
         }
 
-        $installer = $this->container->get(PackageInstaller::class);
+        $installer = $this->container->get(ModuleLifecycleManager::class);
 
         if (!AlertHelper::installOrFail($installer, $this)) {
             return;

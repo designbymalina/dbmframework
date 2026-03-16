@@ -4,7 +4,7 @@
  * Library: On-Page Advertising Handling System
  * A class designed for the DbM Framework and for use in any PHP application.
  *
- * @package Lib\AdvertisementCache
+ * @package Dbm\Libraries\Adverts\AdvertisementCache
  * @author Artur Malinowski
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Lib\Adverts;
+namespace Dbm\Libraries\Adverts;
 
 final class AdvertisementCache
 {
@@ -94,6 +94,9 @@ final class AdvertisementCache
         return true;
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function loadAdsFromFiles(): array
     {
         $ads = [];

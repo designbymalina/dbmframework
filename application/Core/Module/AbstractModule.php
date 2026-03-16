@@ -20,24 +20,33 @@ use Dbm\Routing\RouteBuilder;
 
 abstract class AbstractModule implements ModuleInterface
 {
-    protected RouteBuilder $routes;
-
+    /**
+     * @param array<string, mixed> $manifest
+     */
     public function __construct(
         protected DependencyContainer $container,
         protected array $manifest,
         protected string $path
-    ) {
-        $this->routes = $container->get(RouteBuilder::class);
-    }
+    ) {}
 
     public function getKey(): string
     {
         return strtolower($this->manifest['key']);
     }
 
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
     public function isCore(): bool
     {
         return ($this->manifest['type'] ?? 'plugin') === 'core';
+    }
+
+    public function isEnabled(): bool
+    {
+        return (bool) ($this->manifest['enabled'] ?? true);
     }
 
     public function register(DependencyContainer $container): void

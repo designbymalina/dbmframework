@@ -4,7 +4,7 @@
  * Library: Image Upload
  * A class designed for the DbM Framework and for use in any PHP application.
  *
- * @package Lib\ResizeUploadImage
+ * @package Dbm\Libraries\Upload\ResizeUploadImage
  * @author Artur Malinowski
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
@@ -39,21 +39,28 @@
 
 declare(strict_types=1);
 
-namespace Lib\Upload;
+namespace Dbm\Libraries\Upload;
 
 use Exception;
 
 class UploadImage
 {
     private string $targetDir = "upload/";
+    /** @var array<int, string> */
     private array $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp"];
     private int $maxFileSize = 6291456; // 6MB (1MB = 1048576 in bytes)
     private ?int $maxWidth = null;
     private ?int $maxHeight = null;
     private bool $renameIfExist = false;
+    /** @var array<string, array<string, string>> */
     private array $translations = [];
     private string $lang = 'en';
 
+    /**
+     * @param array<string, mixed> $file
+     * @return array<string, mixed>
+     * @throws Exception
+     */
     public function uploadImage(array $file): array
     {
         try {
@@ -107,6 +114,9 @@ class UploadImage
         $this->targetDir = $targetDir;
     }
 
+    /**
+     * @param array<int, string> $allowedTypes
+     */
     public function setAllowedTypes(array $allowedTypes): void
     {
         $this->allowedTypes = array_filter($allowedTypes, 'is_string');
@@ -134,13 +144,19 @@ class UploadImage
         $this->renameIfExist = $rename;
     }
 
+    /**
+     * @param array<string, array<string, string>> $translations
+     */
     public function setTranslator(array $translations, ?string $lang = null): void
     {
         $this->translations = $translations;
 
-        $lang = strtolower($lang);
-        if (($lang !== null) && array_key_exists($lang, $translations)) {
-            $this->lang = $lang;
+        if ($lang !== null) {
+            $lang = strtolower($lang);
+
+            if (array_key_exists($lang, $translations)) {
+                $this->lang = $lang;
+            }
         }
     }
 
@@ -151,7 +167,7 @@ class UploadImage
         }
     }
 
-    private function validateFileSize($size): void
+    private function validateFileSize(int $size): void
     {
         if ($size > $this->maxFileSize) {
             throw new Exception($this->trans('File exceeds the maximum allowed size of ' . $this->formatFileSize($this->maxFileSize)));

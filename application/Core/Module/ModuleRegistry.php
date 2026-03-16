@@ -8,119 +8,64 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * Example usage in Kernel:
+ *
+ * foreach ($registry->enabled() as $module) {
+ *     $module->boot();
+ * }
  */
 
 declare(strict_types=1);
 
 namespace Dbm\Core\Module;
 
-use Dbm\Core\DependencyContainer;
 use Dbm\Core\Module\Contracts\ModuleInterface;
-use Dbm\Core\Module\Contracts\TemplateAwareModule;
 use Dbm\Routing\RouteBuilder;
-use Dbm\Views\TemplateEngine;
-use RuntimeException;
 
 final class ModuleRegistry
 {
     /** @var array<string, ModuleInterface> */
     private array $modules = [];
 
-    /** @var array<string, bool> */
-    private array $enabled = [];
-
-    public function __construct(
-        private DependencyContainer $container
-    ) {}
-
-    /**
-     * Rejestruje moduł w systemie
-     */
-    public function register(ModuleInterface $module): void
+    public function register(AbstractModule $module): void
     {
-        $key = $module->getKey();
-        $this->modules[$key] = $module;
-
-        // Automatycznie aktywuje core moduły
-        if ($module->isCore()) {
-            $this->enabled[$key] = true;
-        }
+        $this->modules[$module->getKey()] = $module;
     }
 
     /**
-     * Włącza moduł (plugin)
+     * @return array<string, ModuleInterface>
      */
-    public function enable(string $key): void
+    public function all(): array
     {
-        if (!isset($this->modules[$key])) {
-            throw new RuntimeException("Module '{$key}' not registered.");
-        }
-
-        $this->enabled[$key] = true;
+        return $this->modules;
     }
 
-    /**
-     * Zwraca wszystkie aktywne moduły
-     *
-     * @return iterable<ModuleInterface>
-     */
-    public function all(): iterable
+    public function get(string $key): ?ModuleInterface
     {
-        foreach ($this->enabled as $key => $_) {
-            yield $this->modules[$key];
-        }
+        return $this->modules[$key] ?? null;
     }
 
-    /**
-     * Rejestracja routów modułów
-     */
-    public function registerRoutes(RouteBuilder $routes): void
-    {
-        foreach ($this->all() as $module) {
-            $module->registerRoutes($routes);
-        }
-    }
-
-    /**
-     * Rejestracja serwisów modułów
-     */
-    public function registerServices(): void
-    {
-        foreach ($this->all() as $module) {
-            $module->register($this->container);
-        }
-    }
-
-    /**
-     * Boot aktywnych modułów
-     */
-    public function boot(): void
-    {
-        foreach ($this->all() as $module) {
-            $module->boot();
-        }
-    }
-
-    public function bootAll(RouteBuilder $routes, TemplateEngine $templates): void
-    {
-        $this->registerServices();
-        $this->registerRoutes($routes);
-        $this->boot();
-
-        foreach ($this->all() as $module) {
-            if ($module instanceof TemplateAwareModule) {
-                $module->bootTemplates($templates);
-            }
-        }
-    }
-
-    public function isInstalled(string $key): bool
+    public function has(string $key): bool
     {
         return isset($this->modules[$key]);
     }
 
-    public function isEnabled(string $key): bool
+    /**
+     * @return array<string, ModuleInterface>
+     */
+    public function enabled(): array
     {
-        return $this->enabled[$key] ?? false;
+        return array_filter(
+            $this->modules,
+            static fn(ModuleInterface $module) => $module->isEnabled()
+        );
+    }
+
+    public function registerRoutes(RouteBuilder $routes): void
+    {
+        foreach ($this->enabled() as $module) {
+            $module->registerRoutes($routes);
+        }
     }
 }

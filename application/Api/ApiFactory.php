@@ -23,7 +23,7 @@ class ApiFactory
 {
     public static function create(string $baseUrl, ?string $token = null): ApiClientInterface
     {
-        $driver = strtolower(getenv('API_CLIENT_DRIVER'));
+        $driver = strtolower(getenv('API_CLIENT_DRIVER') ?: 'auto');
 
         return match ($driver) {
             'guzzle' => new ApiGuzzleClient($baseUrl, $token),

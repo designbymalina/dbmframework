@@ -76,13 +76,9 @@ Next, configure: Cache settings, Database settings, Mailer settings, API setting
 
 **Note:** After launching the application, set CACHE_ENABLED=true to enable caching and speed up the page.
 
-## Autoloading
+## Installing via Composer
 
-Manual installation makes the framework independent of other tools, equipped with its own autoloading. Executing the `composer install` command will automate the framework, create a Composer autoloader, and install selected packages, such as email sending and development packages. After executing the command, the framework will work with Composer.
-
-## Installing with Composer
-
-If you prefer to install with Composer or your project requires additional packages:
+If you prefer to install via Composer or your project requires additional packages:
 
 ```bash
 git clone https://github.com/designbymalina/dbmframework.git
@@ -94,9 +90,63 @@ If you want to use external libraries, you can use Composer:
 composer install
 ```
 
-Installing with Composer will create autoloading and download all dependencies.
+Installing via Composer will create autoloading and download all dependencies.
 
-**Note:** After installing the application with Composer, the necessary dependencies will be available, and the `libraries` directory can be removed.
+## Installing Modules (optional for DbM Platform)
+
+Some modules (e.g., Admin) may register additional packages during installation.
+
+In Composer mode, you must re-sync after installing the module.
+
+**Note**
+
+In Composer mode, the `libraries` directory can be deleted, as long as it does not contain packages dynamically installed by modules.
+
+## Autoloading
+
+The framework can operate in two modes:
+
+### 1. Standalone Mode (without Composer)
+
+By default, the framework has its own autoloading mechanism and does not require Composer.
+
+In this mode:
+
+- Core classes are loaded by the internal autoloader (PSR-4),
+- External libraries are located in the `libraries` directory,
+
+- Dynamically installed packages (e.g., by modules) are registered in the file: `storage/framework/bundles.php`.
+
+The autoloader reads this file automatically.
+
+### 2. Composer Mode
+
+Executing the command:
+
+```bash
+composer install
+```
+
+causes:
+
+- generating the Composer autoloader,
+- installing dependencies (e.g., Doctrine DBAL, PHPMailer, Guzzle),
+- switching the framework to Composer autoloading.
+
+From this point on, the framework uses only the Composer autoloader.
+
+### Synchronizing Bundles with Composer
+
+In Composer mode, bundles registered in `storage/framework/bundles.php` should be synchronized with the composer.json file.
+
+Execute:
+
+```bash
+php bin/dbm command sync-bundles-to-composer
+composer dump-autoload
+```
+
+After this operation, all dynamic bundles will be available to the Composer autoloader.
 
 ## Routing
 

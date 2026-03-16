@@ -18,18 +18,28 @@ abstract class AbstractCommand
 {
     abstract public function execute(): void;
 
-    protected function success(string $msg): void
+    protected function success(string $msg, bool $background = false): void
     {
-        echo "\033[42m$msg\033[0m \n";
+        $this->output($msg, $background ? '42' : '32');
     }
 
-    protected function info(string $msg): void
+    protected function info(string $msg, bool $background = false): void
     {
-        echo "\033[36m$msg\033[0m\n";
+        $this->output($msg, $background ? '46' : '36');
     }
 
-    protected function error(string $msg): void
+    protected function warning(string $msg, bool $background = false): void
     {
-        echo "\033[31m$msg\033[0m\n";
+        $this->output($msg, $background ? '43' : '33');
+    }
+
+    protected function error(string $msg, bool $background = false): void
+    {
+        $this->output($msg, $background ? '41' : '31');
+    }
+
+    private function output(string $msg, string $colorCode): void
+    {
+        echo "\033[{$colorCode}m{$msg}\033[0m" . PHP_EOL;
     }
 }

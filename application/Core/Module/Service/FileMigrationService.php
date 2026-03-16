@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dbm\Core\Module\Service;
 
-use Lib\Files\FileSystem;
+use Dbm\Libraries\Files\FileSystem;
 
 final class FileMigrationService
 {

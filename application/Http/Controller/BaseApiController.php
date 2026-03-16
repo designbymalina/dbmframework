@@ -15,14 +15,12 @@ declare(strict_types=1);
 namespace Dbm\Http\Controller;
 
 use Dbm\Core\DependencyContainer;
-use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Http\Contracts\BaseApiInterface;
 use Dbm\Http\Message\Request;
 use Dbm\Http\Message\Response;
 use Dbm\Http\Message\Stream;
 use Dbm\Infrastructure\Cookie\CookieManager;
 use Dbm\Infrastructure\Session\SessionManager;
-use Dbm\Localization\Translation;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -31,16 +29,15 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class BaseApiController implements BaseApiInterface
 {
+    /* ===== Internal (framework only) ===== */
+
     protected ?DependencyContainer $container = null;
+
+    /* ===== Core infrastructure (injected by kernel/router) ===== */
+
     protected ?Request $request = null;
     protected ?SessionManager $session = null;
     protected ?CookieManager $cookie = null;
-    protected ?DatabaseInterface $database = null;
-
-    public function __construct(?DatabaseInterface $database = null)
-    {
-        $this->database = $database;
-    }
 
     /* ===== Framework injection hooks ===== */
 
@@ -68,11 +65,8 @@ abstract class BaseApiController implements BaseApiInterface
 
     protected function container(): DependencyContainer
     {
-        if (!$this->container) {
-            throw new \RuntimeException('DependencyContainer not available in controller.');
-        }
-
-        return $this->container;
+        return $this->container
+            ?? throw new \RuntimeException('DependencyContainer not available in API controller.');
     }
 
     protected function request(): Request
@@ -90,26 +84,33 @@ abstract class BaseApiController implements BaseApiInterface
     protected function cookie(): CookieManager
     {
         return $this->cookie
-            ?? throw new \LogicException('CookieManager not injected into controller.');
+            ?? throw new \LogicException('CookieManager not injected into API controller.');
     }
 
-    // INFO: Nowa architektura tłumaczeń.
-    protected function trans(string $key, ?array $data = null, ?array $sprintf = null): string
+    /* ===== Session helpers (optional - compatibility) ===== */
+
+    protected function getUserId(): int
     {
-        return $this->container()->get(Translation::class)->trans($key, $data, $sprintf);
+        return (int) $this->session()->getSession(getenv('APP_SESSION_KEY'));
     }
 
-    /* ===== API helpers ===== */
+    /* ===== JSON Response helper ===== */
 
     protected function jsonResponse(
         array|string|int|float|bool|null $data,
         int $status = 200,
         array $headers = []
     ): ResponseInterface {
-        $headers = array_merge(['Content-Type' => 'application/json'], $headers);
+        $headers = array_merge(
+            ['Content-Type' => 'application/json'],
+            $headers
+        );
 
         if (!is_string($data)) {
-            $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $data = json_encode(
+                $data,
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+            );
         }
 
         return new Response(
@@ -117,10 +118,5 @@ abstract class BaseApiController implements BaseApiInterface
             $headers,
             new Stream($data ?? '')
         );
-    }
-
-    protected function getDatabase(): ?DatabaseInterface
-    {
-        return $this->database;
     }
 }

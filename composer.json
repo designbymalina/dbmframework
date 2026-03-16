@@ -1,7 +1,12 @@
 {
     "name": "designbymalina/dbmframework",
     "description": "DbM Framework",
-    "keywords": ["dbm framework", "php framework", "framework", "php"],
+    "keywords": [
+        "dbm framework",
+        "php framework",
+        "framework",
+        "php"
+    ],
     "homepage": "https://github.com/designbymalina/dbmframework",
     "type": "library",
     "license": "MIT",
@@ -28,10 +33,7 @@
             "App\\": "src/",
             "Dbm\\": "application/",
             "Mod\\": "modules/"
-        },
-        "classmap": [
-            "application/Libraries/"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

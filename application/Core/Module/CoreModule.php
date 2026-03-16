@@ -20,6 +20,9 @@ abstract class CoreModule extends AbstractModule
 {
     protected DependencyContainer $container;
 
+    /**
+     * @param array<string, mixed> $manifest
+     */
     public function __construct(
         DependencyContainer $container,
         protected array $manifest,

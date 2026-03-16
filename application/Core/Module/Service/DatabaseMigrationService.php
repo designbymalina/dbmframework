@@ -22,6 +22,9 @@ final class DatabaseMigrationService
         private InstallRepository $repository
     ) {}
 
+    /**
+     * @param array<string,string> $files
+     */
     public function migrate(array $files, string $packageRoot): void
     {
         if (!$this->repository->isConnected()) {
@@ -32,9 +35,7 @@ final class DatabaseMigrationService
 
         $db = $this->repository->getDatabase();
 
-        if (method_exists($db, 'beginTransaction')) {
-            $db->beginTransaction();
-        }
+        $db->beginTransaction();
 
         try {
             foreach ($files as $file) {
@@ -55,11 +56,11 @@ final class DatabaseMigrationService
                 }
             }
 
-            if (method_exists($db, 'inTransaction') && $db->inTransaction()) {
+            if ($db->inTransaction()) {
                 $db->commit();
             }
         } catch (\Throwable $e) {
-            if (method_exists($db, 'inTransaction') && $db->inTransaction()) {
+            if ($db->inTransaction()) {
                 $db->rollback();
             }
             throw $e;

@@ -26,7 +26,7 @@ final class InstallerState implements InstallerStateInterface
     /**
      * Klucz sesji, pod którym przechowywany jest stan instalatora.
      */
-    private const KEY = 'dbm_installer';
+    private const KEY = 'dbmInstaller';
 
     public function __construct(
         private SessionManager $session

@@ -14,18 +14,26 @@ declare(strict_types=1);
 
 namespace Dbm\Core\Module\Package;
 
-use Dbm\Core\Module\InstalledModules;
+use Dbm\Core\Module\Filesystem\PathResolver;
+use Dbm\Core\Module\Service\ModuleState;
 use Dbm\Infrastructure\Log\Logger;
-use Lib\Files\FileSystem;
+use Dbm\Libraries\Files\FileSystem;
 use ZipArchive;
 use Throwable;
 
 final class PackageScanner
 {
+    /** @var PackageDescriptor[]|null */
+    private ?array $cache = null;
+
+    /** @var array<string,PackageDescriptor>|null */
+    private ?array $byKey = null;
+
     public function __construct(
-        private FileSystem $filesystem,
-        private InstalledModules $installed,
-        private Logger $logger
+        private readonly ModuleState $moduleState,
+        private readonly PathResolver $paths,
+        private readonly FileSystem $filesystem,
+        private readonly Logger $logger
     ) {}
 
     /**
@@ -33,20 +41,21 @@ final class PackageScanner
      */
     public function scan(): array
     {
-        $packagesDir = BASE_DIRECTORY . '/_Documents/packages';
+        if ($this->cache !== null) {
+            return $this->cache;
+        }
+
+        $packagesDir = $this->paths->packages();
 
         if (!$this->filesystem->isDir($packagesDir)) {
-            return [];
+            return $this->cache = [];
         }
 
         $results = [];
 
         foreach ($this->filesystem->listFiles($packagesDir, 'zip') as $zipPath) {
             try {
-                $descriptor = $this->readPackageDescriptor($zipPath);
-                if ($descriptor) {
-                    $results[] = $descriptor;
-                }
+                $results[] = $this->readPackageDescriptor($zipPath);
             } catch (Throwable $e) {
                 $this->logger->error(
                     'Invalid package ZIP: ' . basename($zipPath),
@@ -55,20 +64,20 @@ final class PackageScanner
             }
         }
 
-        return $results;
+        return $this->cache = $results;
     }
 
     public function hasPendingPackages(): bool
     {
         foreach ($this->scan() as $package) {
-            if (!$this->installed->isInstalled($package->key())) {
+            if (!$this->moduleState->isInstalled($package->key())) {
                 return true;
             }
         }
         return false;
     }
 
-    private function readPackageDescriptor(string $zipPath): ?PackageDescriptor
+    private function readPackageDescriptor(string $zipPath): PackageDescriptor
     {
         $zip = new ZipArchive();
 
@@ -81,7 +90,7 @@ final class PackageScanner
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = $zip->getNameIndex($i);
 
-            if (str_ends_with($name, 'module.json')) {
+            if (preg_match('#(^|/)' . $this->paths->moduleFile() . '$#', $name)) {
                 $manifestContent = $zip->getFromIndex($i);
                 break;
             }
@@ -101,8 +110,21 @@ final class PackageScanner
 
         return new PackageDescriptor(
             $manifest['key'],
+            $manifest,
             $zipPath,
-            $manifest
         );
+    }
+
+    public function findByKey(string $key): ?PackageDescriptor
+    {
+        if ($this->byKey === null) {
+            $this->byKey = [];
+
+            foreach ($this->scan() as $package) {
+                $this->byKey[$package->key()] = $package;
+            }
+        }
+
+        return $this->byKey[$key] ?? null;
     }
 }

@@ -180,7 +180,7 @@ final class CheckRequirementsStep extends AbstractInstallerStep
      */
     private function areNotWritableDirectories(string $baseDir): array
     {
-        $requiredDirs = ['/modules', '/public', '/templates', '/translations'];
+        $requiredDirs = ['/modules', '/public', '/storage', '/templates', '/translations'];
 
         $invalid = [];
 

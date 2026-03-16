@@ -9,6 +9,8 @@
  * @license MIT
  * @link https://www.dbm.org.pl
  *
+ * Klasa do wdrożenia zamiast BASE_DIRECTORY.
+ * - - -
  * Przykład jak używać w kodzie
  * - - -
  * Zamiast:

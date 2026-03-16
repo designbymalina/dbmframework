@@ -120,6 +120,28 @@ class Response extends Message implements ExtendedResponseInterface
         return new self($statusCode, ['Content-Type' => 'application/json; charset=UTF-8'], $stream);
     }
 
+    /** {@inheritdoc} */
+    public static function download(string $filePath, ?string $downloadName = null): self
+    {
+        if (!is_file($filePath)) {
+            return new self(404);
+        }
+
+        $downloadName ??= basename($filePath);
+
+        $stream = new Stream(file_get_contents($filePath));
+
+        return new self(
+            200,
+            [
+                'Content-Type' => 'application/zip',
+                'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
+                'Content-Length' => (string) filesize($filePath),
+            ],
+            $stream
+        );
+    }
+
     /**
      * Zwraca domyślną nazwę statusu HTTP (reason phrase).
      *

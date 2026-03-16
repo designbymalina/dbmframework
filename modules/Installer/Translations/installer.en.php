@@ -16,7 +16,7 @@ return [
     'installer.progressbar.not_started' => 'Progress bar is not included!',
     'installer.button.next_step' => 'Next step',
     'installer.button.home_page' => 'Go to the home page',
-    'installer.button.add_modules' => 'Add modules',
+    'installer.button.add_modules' => 'Install additional modules',
     'installer.step.start.title' => 'Start installation',
     'installer.step.start.content' => '
         <p><strong>DbM CMS</strong> is a fast and modern content management system, designed with simplicity of use and installation in mind. A ready-made solution based on a framework for those who want to quickly launch a website or application without having to code. It supports both simple pages and complex database-driven projects. If you don&amp;t have time to create your own modules, you can use ready-made tools for managing content, SEO and site structure. There are also ready-made modules (plugins) available, such as CMS Lite, CMS Core, CMS Pro and others, which you can quickly install and customize to your needs. An effective solution that speeds up project development without losing the flexibility of the framework.</p>
@@ -68,33 +68,50 @@ return [
     ',
     'installer.step.authentication.title' => 'Create authentication system',
     'installer.step.authentication.content' => '
-        <p>In this step, the authentication system will be prepared.</p>
-        <p>The system will set up the basic structure required for:</p>
+        <p>In this step the authentication system will be prepared.</p>
+        <p>The system will configure the basic structure required for:</p>
         <ul>
             <li>User accounts</li>
             <li>Login and logout mechanisms</li>
-            <li>Session handling and security</li>
+            <li>Session management and security</li>
         </ul>
-        <p>This functionality is required for accessing the administration panel and managing protected areas of the application.</p>
-        <p>You will be able to extend authentication features later if needed.</p>
+        <p>The authentication system allows access to the administration panel and protected areas of the application.</p>
+        <p>Authentication features can be easily extended later with additional modules.</p>
     ',
-    'installer.step.admin.title' => 'Create an admin panel',
+    'installer.step.admin.title' => 'Create administration panel',
     'installer.step.admin.content' => '
-        <p>This step installs and configures the administrative panel.</p>
-        <p>The admin panel allows you to:</p>
+        <p>This step installs and configures the administration panel.</p>
+        <p>The administration panel allows you to:</p>
         <ul>
-            <li>Manage website content</li>
-            <li>Configure system settings</li>
+            <li>Manage page content</li>
             <li>Control users and permissions</li>
+            <li>Manage modules and plugins</li>
         </ul>
-        <p>After installation, you will be able to log in using the administrator account and manage your website through a user-friendly interface.</p>
+        <p>During installation the system will automatically create starter accounts:</p>
+        <ul>
+            <li><strong>Admin</strong> (login or email) - password: <strong>Admin123</strong></li>
+            <li><strong>Lucy</strong> - password: <strong>Test123</strong></li>
+            <li><strong>John</strong> - password: <strong>Test123</strong></li>
+        </ul>
+        <p>After installation you will be able to log in to the administrator account and manage your website using a user-friendly interface.</p>
+        <p><strong>Security recommendation:</strong> change the default account passwords after the first login.</p>
     ',
     'installer.step.finish.title' => 'Congratulations!',
     'installer.step.finish.content' => '
-        <p>Your <strong>DbM CMS Platform</strong> installation has been successfully completed.</p>
-        <p>Your system is now ready to use. You can start building your website, managing content, and expanding functionality with additional modules.</p>
-        <p>For security reasons, please ensure the installer is no longer accessible.</p>
-        <p>Enjoy working with DbM CMS!</p>
+        <p>The installation of <strong>DbM CMS Platform</strong> has been completed.</p>
+        <p>The system is now ready to run with the homepage module. If the <strong>packages</strong> directory also contains packages for the <strong>Authentication</strong> and <strong>Administration Panel</strong> modules, the installer can automatically detect and add them to the system.</p>
+        <p>The best experience with the system is achieved with the three core modules:</p>
+        <ul>
+            <li>Homepage</li>
+            <li>Authentication</li>
+            <li>Administration panel</li>
+        </ul>
+        <p>Together they create a complete DbM CMS configuration, allowing convenient management of content, users and additional modules directly from the panel.</p>
+        <p><em>DbM CMS is designed as a modular platform – you can start with the basics and expand the system as your project grows.</em></p>
+        <p>If you have the additional modules: `authentication.zip` and `admin.zip`, copy their archives to the <strong>packages</strong> directory, and then select <strong>add modules</strong> in the next step. Otherwise, you can proceed to the main page.</p>
+        <p>If you have just installed additional modules, please continue to return to the main page.</p>
+        <p>For security reasons, make sure the installer is no longer available.</p>
+        <p>Thank you for using DbM CMS.</p>
     ',
     'installer.requirements.msg.core requirements' => 'Essential system requirements',
     'installer.requirements.msg.cms_requirements' => 'Essential requirements for CMS Lite',
@@ -119,6 +136,6 @@ return [
     'installer.alert.installation_error' => 'An error occurred during installation!', // not used
     'installer.alert.installation_process' => 'Package installation process... prepare the archive or remove any remnants if you are reinstalling!',
     'installer.alert.installation_ready' => 'Installation has already been performed... clear your browser cache and cookies if you want to retry the installation process!',
-    'installer.alert.installation_success' => 'The installation was completed successfully.',
+    'installer.alert.installation_success' => 'Installation completed successfully. You can now add optional extensions or go to the homepage.',
     'installer.alert.installation_completed' => 'Installation complete.', // not used
 ];

@@ -148,7 +148,8 @@ class Request extends Message implements ExtendedRequestInterface
         $this->queryParams = $_GET;
         $this->postParams = $_POST;
         $this->filesParams = $_FILES;
-        $this->method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        // $this->method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        $this->method = $this->detectMethod();
 
         // Build URI from globals
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -418,6 +419,13 @@ class Request extends Message implements ExtendedRequestInterface
         return $this->filesParams[$key] ?? null;
     }
 
+    /** @inheritdoc */
+    public function hasUploadedFile(string $key): bool
+    {
+        return isset($this->filesParams[$key])
+            && ($this->filesParams[$key]['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK;
+    }
+
     // --- ADDED Framework methods ---
 
     /** @inheritdoc */
@@ -511,5 +519,49 @@ class Request extends Message implements ExtendedRequestInterface
     public static function capture(): static
     {
         return self::fromGlobals();
+    }
+
+    // ===== PRIVATE =====
+
+    /**
+     * Detects the effective HTTP method.
+     *
+     * Supports method overriding via:
+     * - X-HTTP-Method-Override header (API standard)
+     * - _method POST parameter (HTML form spoofing)
+     *
+     * Keeps original method for non-POST requests.
+     */
+    private function detectMethod(): string
+    {
+        // Base method from server
+        $serverParams = $this->getServerParams();
+        $method = strtoupper($serverParams['REQUEST_METHOD'] ?? 'GET');
+
+        if ($method !== 'POST') {
+            return $method;
+        }
+
+        // Header override (REST API standard)
+        $headerOverride = $this->headers['X-HTTP-Method-Override'][0] ?? null;
+
+        if ($headerOverride) {
+            $override = strtoupper($headerOverride);
+            if (in_array($override, ['PUT', 'PATCH', 'DELETE'], true)) {
+                return $override;
+            }
+        }
+
+        // Form override (_method)
+        $spoofed = $this->postParams['_method'] ?? null;
+
+        if ($spoofed) {
+            $override = strtoupper($spoofed);
+            if (in_array($override, ['PUT', 'PATCH', 'DELETE'], true)) {
+                return $override;
+            }
+        }
+
+        return $method;
     }
 }

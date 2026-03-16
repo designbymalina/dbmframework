@@ -15,17 +15,21 @@ declare(strict_types=1);
 namespace Dbm\Core\Module\Service;
 
 use Dbm\Core\Module\Exception\InvalidModulePackageException;
+use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Package\PackageDescriptor;
-use Dbm\Support\Config\ModuleConfigWriter;
-use Lib\Files\FileSystem;
+use Dbm\Libraries\Files\FileSystem;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 final class ModulePackageService
 {
+    public const DIR_CONFLICTS = '_conflicts';
+
     public function __construct(
         private FileSystem $filesystem,
         private FileMigrationService $fileMigration,
         private DatabaseMigrationService $dbMigration,
-        private ModuleConfigWriter $configWriter
+        private PathResolver $paths
     ) {}
 
     public function loadPackageDescriptor(
@@ -33,12 +37,14 @@ final class ModulePackageService
         string $zipPath
     ): PackageDescriptor {
         $manifest = $this->readManifest($moduleDir);
+        $manifest = $this->normalizeManifest($manifest);
+
         $this->validateManifest($manifest);
 
         return new PackageDescriptor(
             $manifest['key'],
+            $manifest,
             $zipPath,
-            $manifest
         );
     }
 
@@ -47,7 +53,8 @@ final class ModulePackageService
         $zipPath = $this->filesystem->normalizePath($zipPath);
 
         $hash = md5($zipPath);
-        $target = BASE_DIRECTORY . '/_Documents/extracted/' . $hash;
+
+        $target = $this->paths->documents('extracted/' . $hash);
 
         if ($this->filesystem->isDir($target)) {
             return $target;
@@ -67,37 +74,76 @@ final class ModulePackageService
     }
 
     /**
-     * Kopiuje pliki z katalogu źródłowego do docelowego, tworząc kopię zapasową tylko plików nadpisywanych w katalogu docelowym.
-     * Wykonywana jest tylko kopia oryginału do rollbacku, jeśli plik istnieje już w kopii nie zmieniamy go (zostaje pierwszy oryginał).
+     * @return array<int, string>
      */
-    public function copyWithBackup(string $from, string $to, string $moduleKey): void
-    {
+    public function copyDirectoryFiles(
+        string $prefix,
+        string $packageRoot,
+        string $timestamp
+    ): array {
+        $from = rtrim($packageRoot, '/') . '/' . $prefix;
+        $to = $this->paths->basePath($prefix);
+
         if (!$this->filesystem->isDir($from)) {
-            return;
+            return [];
         }
 
-        foreach ($this->filesystem->listFilesRecursively($from) as $file) {
+        $conflicts = [];
 
-            // ścieżka względna względem źródła modułu
-            $relative = substr($file, strlen($from));
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($from, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
 
-            // docelowa ścieżka w aplikacji
-            $target = rtrim($to, '/') . $relative;
+        foreach ($iterator as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $relative = substr($file->getPathname(), strlen($from) + 1);
+
+            $target = $to . '/' . $relative;
+
+            $this->filesystem->ensureDir(dirname($target));
 
             if ($this->filesystem->fileExists($target)) {
 
-                // backup zachowuje katalog docelowy
-                $backup = BASE_DIRECTORY . '/_Documents/backup/' . $moduleKey
-                    . str_replace(BASE_DIRECTORY, '', $target);
+                $existingHash = md5_file($target);
+                $newHash = md5_file($file->getPathname());
 
-                if (!$this->filesystem->fileExists($backup)) {
-                    $this->filesystem->ensureDir(dirname($backup));
-                    $this->filesystem->copyFile($target, $backup);
+                if ($existingHash !== $newHash) {
+
+                    $projectPath = $prefix . '/' . $relative;
+
+                    $this->backupConflict(
+                        $projectPath,
+                        $target,
+                        $timestamp
+                    );
+
+                    $conflicts[] = $projectPath;
                 }
             }
 
-            $this->filesystem->ensureDir(dirname($target));
-            $this->filesystem->copyFile($file, $target);
+            $this->filesystem->copyFile($file->getPathname(), $target);
+        }
+
+        return $conflicts;
+    }
+
+    private function backupConflict(
+        string $projectPath,
+        string $target,
+        string $timestamp
+    ): void {
+
+        $backupDir = $this->paths->backups(self::DIR_CONFLICTS . '/' . $timestamp);
+
+        $backupFile = $backupDir . '/' . $projectPath;
+
+        $this->filesystem->ensureDir(dirname($backupFile));
+
+        if (!$this->filesystem->fileExists($backupFile)) {
+            $this->filesystem->copyFile($target, $backupFile);
         }
     }
 
@@ -126,38 +172,60 @@ final class ModulePackageService
         return null;
     }
 
-    /**
-     * Zwraca katalog modułu w pakiecie.
-     */
     public function resolveModuleDir(string $root): string
     {
         $dirs = glob($root . '/modules/*', GLOB_ONLYDIR);
 
         if (!$dirs) {
-            throw new InvalidModulePackageException('No module directories found.');
+            throw new InvalidModulePackageException(
+                'No module directories found in /modules'
+            );
         }
 
-        // Assumes one module per package - INFO! Można dopisać -> count($dirs) === 1
-        return $dirs[0];
+        foreach ($dirs as $dir) {
+            if (is_file($dir . '/module.json')) {
+                return $dir;
+            }
+        }
+
+        throw new InvalidModulePackageException(
+            'No module.json found in modules directory'
+        );
     }
 
     /**
-     * Odczytuje manifest modułu (module.json).
+     * @return array<string, mixed>
      */
     public function readManifest(string $moduleDir): array
     {
         $file = $moduleDir . '/module.json';
 
         if (!$this->filesystem->fileExists($file)) {
-            throw new InvalidModulePackageException('Manifest file module.json not found');
+            throw new InvalidModulePackageException(
+                "Manifest not found: {$file}"
+            );
         }
 
         $content = $this->filesystem->readFile($file);
 
+        if (!is_string($content) || $content === '') {
+            throw new InvalidModulePackageException(
+                "Cannot read manifest file: {$file}"
+            );
+        }
+
         $data = json_decode($content, true);
 
+        if (!is_array($data)) {
+            throw new InvalidModulePackageException(
+                "Invalid module.json structure in {$file}"
+            );
+        }
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidModulePackageException('Invalid module.json: ' . json_last_error_msg());
+            throw new InvalidModulePackageException(
+                'Invalid module.json: ' . json_last_error_msg()
+            );
         }
 
         return $data;
@@ -165,6 +233,8 @@ final class ModulePackageService
 
     /**
      * Kopiowanie plików (flatfile) modułu do katalogów aplikacji.
+     *
+     * @param array<string, string> $migrations
      */
     public function fileMigrations(array $migrations, string $packageRoot): void
     {
@@ -174,7 +244,7 @@ final class ModulePackageService
 
         foreach ($migrations as $target => $relativePath) {
             $source = $packageRoot . '/' . ltrim($relativePath, '/');
-            $destination = BASE_DIRECTORY . '/data/' . $target;
+            $destination = $this->paths->basePath('data/' . $target);
 
             if (!$this->filesystem->isDir($source)) {
                 continue;
@@ -188,6 +258,8 @@ final class ModulePackageService
 
     /**
      * Migracja plików bazy danych.
+     *
+     * @param array<string, string> $files
      */
     public function databaseMigrations(array $files, string $packageRoot): void
     {
@@ -199,23 +271,9 @@ final class ModulePackageService
     }
 
     /**
-     * Zapisuje konfiguracje modułu.
-     */
-    public function writeConfig(array $manifest): void
-    {
-        $key = $manifest['key'];
-        $class = $manifest['class'];
-        $type = $manifest['type'] ?? 'plugin';
-
-        if ($type === 'core') {
-            $this->configWriter->addCore($key, $class);
-        } else {
-            $this->configWriter->addPlugin($key, $class);
-        }
-    }
-
-    /**
      * Zapisuje zmienne do pliku .env.
+     *
+     * @param array<string, mixed> $manifest
      */
     public function writeEnv(array $manifest): void
     {
@@ -223,7 +281,7 @@ final class ModulePackageService
             return;
         }
 
-        $envFile = BASE_DIRECTORY . '/.env';
+        $envFile = $this->paths->env();
 
         $env = $this->filesystem->fileExists($envFile)
             ? $this->filesystem->readFile($envFile)
@@ -264,7 +322,7 @@ final class ModulePackageService
     {
         $hashDir = dirname($packageRoot);
 
-        if (!str_contains($hashDir, '/_Documents/extracted/')) {
+        if (!str_contains($hashDir, $this->paths->documents('extracted/'))) {
             throw new \RuntimeException(
                 'Refusing to cleanup non-extracted directory: ' . $hashDir
             );
@@ -275,10 +333,40 @@ final class ModulePackageService
         }
     }
 
+    /**
+     * Zapisuje manifest instalacji modułu.
+     *
+     * @param array<string, mixed> $manifest
+     */
+    public function writeInstallManifest(array $manifest, string $packageRoot): void
+    {
+        $files = $this->collectInstalledFiles($packageRoot);
+
+        // INFO! Powinno być zgodne z ModuleBootstrapper -> normalizeManifest()
+        $installMeta = [
+            'key' => $manifest['key'],
+            'installed' => true,
+            'enabled' => true,
+            'installed_at' => date('Y-m-d H:i:s'),
+            'files' => $files,
+        ];
+
+        $manifestPath = $this->paths->manifest($manifest['key']);
+
+        $content = json_encode(
+            $installMeta,
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+        );
+
+        $this->filesystem->saveFile($manifestPath, $content);
+    }
+
     // --- Helpers ---
 
     /**
      * Waliduje manifest modułu.
+     *
+     * @param array<string, mixed> $manifest
      */
     private function validateManifest(array $manifest): void
     {
@@ -293,5 +381,69 @@ final class ModulePackageService
         if (!empty($manifest['type']) && !in_array($manifest['type'], ['core', 'plugin'], true)) {
             throw new InvalidModulePackageException('Invalid module type.');
         }
+    }
+
+    /**
+     * Zbiera informacje o plikach, które zostały zainstalowane w projekcie.
+     *
+     * @return array<array{path: string, hash: string}>
+     */
+    private function collectInstalledFiles(string $packageRoot): array
+    {
+        $files = [];
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($packageRoot, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $file) {
+
+            if (!$file->isFile()) {
+                continue;
+            }
+
+            $relativeFromPackage = substr($file->getPathname(), strlen($packageRoot) + 1);
+
+            // Docelowa ścieżka w projekcie
+            $absoluteInstalledPath = $this->paths->basePath($relativeFromPackage);
+
+            if (!is_file($absoluteInstalledPath)) {
+                continue;
+            }
+
+            $files[] = [
+                'path' => str_replace('\\', '/', $relativeFromPackage),
+                'hash' => md5_file($absoluteInstalledPath),
+            ];
+        }
+
+        return $files;
+    }
+
+    /**
+     * @param array<string, mixed> $manifest
+     * @return array<string, mixed>
+     */
+    private function normalizeManifest(array $manifest): array
+    {
+        $manifest['env'] ??= [];
+
+        if (!is_array($manifest['env'])) {
+            throw new InvalidModulePackageException('env must be object');
+        }
+
+        $manifest['file_migrations'] ??= [];
+
+        if (!is_array($manifest['file_migrations'])) {
+            throw new InvalidModulePackageException('file_migrations must be object');
+        }
+
+        $manifest['database']['migrations'] ??= [];
+
+        if (!is_array($manifest['database']['migrations'])) {
+            throw new InvalidModulePackageException('database.migrations must be array');
+        }
+
+        return $manifest;
     }
 }

@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Mod\Installer\Resolver;
 
 use Dbm\Core\DependencyContainer;
-use Dbm\Core\Module\InstalledModules;
+use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Package\PackageScanner;
 use Mod\Installer\Contracts\InstallerStepInterface;
 use Mod\Installer\InstallerState;
@@ -34,7 +34,7 @@ final class InstallerSteps
 {
     public function __construct(
         private PackageScanner $scanner,
-        private InstalledModules $installed,
+        private PathResolver $paths,
         private InstallerState $state
     ) {}
 
@@ -91,7 +91,10 @@ final class InstallerSteps
         $pendingKeys = [];
 
         foreach ($this->scanner->scan() as $package) {
-            if (!$this->installed->isInstalled($package->key())) {
+
+            $manifest = $this->paths->manifest($package->key());
+
+            if (!is_file($manifest)) {
                 $pendingKeys[] = $package->key();
             }
         }
@@ -109,6 +112,7 @@ final class InstallerSteps
     private function needsDatabase(array $pendingKeys): bool
     {
         foreach ($this->scanner->scan() as $package) {
+
             if (
                 in_array($package->key(), $pendingKeys, true)
                 && $package->requiresDatabase()

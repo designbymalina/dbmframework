@@ -10,12 +10,13 @@
  * @link https://www.dbm.org.pl
  *
  * Example of usage:
- * protected function service(): AccountService
+ * use LazyLoaderTrait;
+ * protected function className(): ClassName
  * {
- *     return $this->lazy('service', fn () => new AccountService($this->repository()));
+ *     return $this->lazy('className', fn () => new className());
  * }
  * Call:
- * $this->service()->someMethod();
+ * $this->className()->someMethod();
  */
 
 declare(strict_types=1);

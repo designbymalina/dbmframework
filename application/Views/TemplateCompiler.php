@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Dbm\Views;
 
 /**
- * TemplateCompiler — kompiluje składnię szablonu (.phtml-like) do czystego PHP.
+ * TemplateCompiler - kompiluje składnię szablonu (.phtml-like) do czystego PHP.
  *
  * Obsługuje dyrektywy typu {% block %}, {% include %}, {{ variable|filter }},
  * {% if %}, {% for %}, itp. Kolejność reguł ma kluczowe znaczenie.
@@ -270,22 +270,17 @@ class TemplateCompiler
         );
 
         // 12) {% for ... %} / {% endfor %} - line-aware
-        $content = preg_replace(
-            '/^[ \t]*\{\%\s*for\s*(.*?)\s*\:\s*\%\}[ \t]*\n?/imu',
-            "<?php for ($1): ?>\n",
-            $content
-        );
+        $content = preg_replace_callback(
+            '/\{\%\s*for\s*(.*?)\s*(?:\:)?\s*\%\}/isu',
+            function ($m) {
+                $expr = trim($m[1]);
 
-        $content = preg_replace(
-            '/^[ \t]*\{\%\s*endfor\s*(?:;)?\s*\%\}[ \t]*\n?/imu',
-            "<?php endfor; ?>\n",
-            $content
-        );
+                if (str_starts_with($expr, '(')) {
+                    return "<?php for {$expr}: ?>";
+                }
 
-        // for (...) - inline
-        $content = preg_replace(
-            '/\{\%\s*for\s*(.*?)\s*:\s*\%\}/isu',
-            "<?php for ($1): ?>",
+                return "<?php for ({$expr}): ?>";
+            },
             $content
         );
 

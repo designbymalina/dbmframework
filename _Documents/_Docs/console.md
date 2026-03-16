@@ -115,7 +115,7 @@ final class ExampleCommand extends AbstractCommand
 {
     public function execute(): void
     {
-        $this->success('OK!');
+        $this->success('OK!', true);
     }
 }
 ```
@@ -160,7 +160,7 @@ final class ClearCacheWorker extends AbstractWorker
     public function run(): void
     {
         $this->log('Cache cleared');
-        $this->success('Done');
+        $this->success('Done', true);
     }
 }
 ```

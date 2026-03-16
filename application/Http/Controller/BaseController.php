@@ -15,54 +15,31 @@ declare(strict_types=1);
 namespace Dbm\Http\Controller;
 
 use Dbm\Core\DependencyContainer;
-use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Http\Contracts\BaseInterface;
 use Dbm\Http\Message\Request;
 use Dbm\Http\Message\Response;
 use Dbm\Infrastructure\Cookie\CookieManager;
 use Dbm\Infrastructure\Session\SessionManager;
-use Dbm\Localization\Contracts\TranslationInterface;
-use Dbm\Localization\Translation;
-use Dbm\Security\CsrfTokenManager;
-use Dbm\Support\Traits\LazyLoaderTrait;
-use Dbm\Views\Flash\FlashBag;
+use Dbm\Routing\RoutingContext;
 use Dbm\Views\TemplateEngine;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 /**
- * Base controller for all HTTP (web) controllers.
- *
- * Provides optional access to: Request, Session, Cookies, Translation, View engine
- * All dependencies are injected by the framework at runtime.
- * Controllers may use only what they need.
+ * Base controller for all HTTP (web) controllers..
  */
 abstract class BaseController implements BaseInterface
 {
-    /* ===== Lazy loading of dependencies ===== */
-    use LazyLoaderTrait;
-
-    /* ===== Infrastructure ===== */
+    /* ===== Internal - The method should only be used by the framework, not by controllers ===== */
     protected ?DependencyContainer $container = null;
 
-    /* ===== Request lifecycle ===== */
+    /* ===== Core infrastructure (injected by framework) ===== */
     protected ?Request $request = null;
     protected ?SessionManager $session = null;
     protected ?CookieManager $cookie = null;
-
-    /* ===== Persistence ===== */
-    protected ?DatabaseInterface $database = null;
-    protected ?TranslationInterface $translation = null;
-
-    /* ===== Presentation ===== */
     protected ?TemplateEngine $view = null;
-    protected ?FlashBag $flash = null;
 
-    public function __construct(?DatabaseInterface $database = null)
-    {
-        $this->database = $database;
-    }
-
-    /* ===== Framework injection hooks ===== */
+    /* ===== Framework injection hooks (called by router/kernel) ===== */
 
     final public function setContainer(DependencyContainer $container): void
     {
@@ -87,11 +64,6 @@ abstract class BaseController implements BaseInterface
     final public function setView(TemplateEngine $view): void
     {
         $this->view = $view;
-    }
-
-    final public function setTranslation(TranslationInterface $translation): void
-    {
-        $this->translation = $translation;
     }
 
     /* ===== Protected accessors (fail-fast) ===== */
@@ -123,30 +95,10 @@ abstract class BaseController implements BaseInterface
             ?? throw new \LogicException('CookieManager not injected into controller.');
     }
 
-    public function view(): TemplateEngine
+    protected function view(): TemplateEngine
     {
         return $this->view
             ?? throw new \LogicException('View not injected into controller.');
-    }
-
-    protected function translation(): TranslationInterface
-    {
-        return $this->lazy(
-            'translation',
-            fn() => $this->container()->get(Translation::class)
-        );
-    }
-
-    protected function trans(string $key, ?array $data = null, ?array $sprintf = null): string
-    {
-        return $this->translation()->trans($key, $data, $sprintf);
-    }
-
-    /* ===== View helpers ===== */
-
-    protected function render(string $template, array $data = []): ResponseInterface
-    {
-        return $this->view()->render($template, $data);
     }
 
     /* ===== Session & flash helpers ===== */
@@ -176,23 +128,6 @@ abstract class BaseController implements BaseInterface
         return $this->session()->getSessionByReference($key);
     }
 
-    /* ===== Flash helpers ===== */
-
-    protected function flash(): FlashBag
-    {
-        return $this->flash ??= new FlashBag($this->session()); // INFO: new FlashBag() - kompromis architektoniczny.
-    }
-
-    public function setFlash(string $message, string $type = 'messageInfo'): void
-    {
-        $this->flash()->set($message, $type);
-    }
-
-    public function getFlash(?string $type = null): ?array
-    {
-        return $this->flash()->get($type);
-    }
-
     /* ===== Cookie helpers ===== */
 
     public function setCookie(
@@ -215,42 +150,40 @@ abstract class BaseController implements BaseInterface
         $this->cookie()->unsetCookie($name);
     }
 
-    /* ===== Infrastructure helpers ===== */
+    /* ===== User helpers ===== */
 
-    public function getDatabase(): ?DatabaseInterface
+    protected function getUserId(): int
     {
-        return $this->database;
+        return (int) $this->getSession(getenv('APP_SESSION_KEY'));
     }
 
-    protected function redirect(string $path, array $params = []): ResponseInterface
+    /* ===== Response helpers ===== */
+
+    protected function path(string $name, array $params = []): string
     {
-        $server = $this->request()->getServerParams();
+        $url = RoutingContext::url();
 
-        $dir = dirname($server['PHP_SELF'] ?? '/');
-        $base = '/';
-
-        if (str_contains($dir, 'public')) {
-            $base = rtrim(strstr($dir, 'public', true), '/');
+        foreach ($params as $key => $value) {
+            if (is_string($value) && str_contains($value, ' ')) {
+                $params[$key] = $url->generateSeoFriendlyUrl($value);
+            }
         }
 
-        $scheme = empty($server['HTTPS']) ? 'http' : 'https';
-        $host = $server['HTTP_HOST'] ?? 'localhost';
+        return $url->path($name, $params);
+    }
 
-        if ($params) {
-            $path .= '?' . http_build_query($params);
-        }
-
-        $path = '/' . ltrim($path, '/');
-
+    protected function redirect(string $route, array $params = []): ResponseInterface
+    {
         return new Response(302, [
-            'Location' => "{$scheme}://{$host}{$base}{$path}",
+            'Location' => RoutingContext::url()->absolute($route, $params),
         ]);
     }
 
-    /* ===== Security helpers ===== */
-
-    protected function csrfToken(): CsrfTokenManager
+    /**
+     * Render for InstallerModule
+     */
+    protected function render(string $template, array $data = []): ResponseInterface
     {
-        return $this->lazy('csrfToken', fn() => new CsrfTokenManager($this->session()));
+        return $this->view()->render($template, $data);
     }
 }
