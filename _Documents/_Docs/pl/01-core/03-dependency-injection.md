@@ -138,6 +138,6 @@ Inne klasy aplikacji - np. do obsługi bazy danych, logowania, czy obsługi żą
 
 System Dependency Injection w DbM Framework umożliwia efektywne i wydajne zarządzanie zależnościami w aplikacji. Dzięki ręcznej rejestracji usług w pliku services.php, deweloper ma pełną kontrolę nad tym, które klasy są dostępne w kontenerze oraz w jaki sposób tworzone są ich instancje.
 
-Brak automatycznych skanów, refleksji i nadmiarowych warstw przekłada się na prostotę oraz szybkość działania kontenera. W połączeniu z możliwością dynamicznego tworzenia klas i autowiringu metod, rozwiązanie to stanowi lekki i bardzo wydajny mechanizm wstrzykiwania zależności — działa szybko i sprawnie, ponieważ nie ładuje nadmiarowych komponentów.
+Brak automatycznych skanów, refleksji i nadmiarowych warstw przekłada się na prostotę oraz szybkość działania kontenera. W połączeniu z możliwością dynamicznego tworzenia klas i autowiringu metod, rozwiązanie to stanowi lekki i bardzo wydajny mechanizm wstrzykiwania zależności - działa szybko i sprawnie, ponieważ nie ładuje nadmiarowych komponentów.
 
 Framework oferuje również wsparcie dla autowiringu metod kontrolera oraz dynamicznego tworzenia obiektów, co zwiększa elastyczność. Dzięki autowiringowi kod działa "magicznie", ale poprawnie. Dla zachowania przejrzystości i ułatwienia debugowania zaleca się jednak jawne rejestrowanie klas zależnych. Łącząc oba podejścia, DbM Framework zapewnia lekkie, szybkie i niezawodne zarządzanie zależnościami w aplikacji.

@@ -41,14 +41,14 @@ abstract class AbstractConsoleRunner
     {
         foreach ($this->discover() as $name => $class) {
             printf(
-                "  %-20s %s\n",
-                strtolower($name),
+                "  %-30s %s\n",
+                $this->toKebabCase($name),
                 (new \ReflectionClass($class))->getShortName()
             );
         }
     }
 
-    protected function discover(): array
+    public function discover(): array
     {
         $map = [];
         $dir = $this->getDirectory();
@@ -63,14 +63,15 @@ abstract class AbstractConsoleRunner
         return $map;
     }
 
-    protected function normalizeName(string $name): string
+    private function normalizeName(string $name): string
     {
-        if (preg_match('/[A-Z]/', $name)) {
-            return $name;
-        }
-
         return str_replace(' ', '', ucwords(
             str_replace(['-', '_'], ' ', strtolower($name))
         ));
+    }
+
+    private function toKebabCase(string $input): string
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $input));
     }
 }

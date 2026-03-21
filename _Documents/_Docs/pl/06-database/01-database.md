@@ -3,7 +3,7 @@
 Moduł Database dla DbM Framework  
 Obsługa baz danych przy pomocy PDO lub Doctrine DBAL (wymienne, konfigurowalne, transparentne dla aplikacji).
 
-## Moduł został zapprojektowany, aby:
+## Moduł został zaprojektowany, aby:
 
 - działał w trybie PDO lub Doctrine,
 - był wymienny - kod aplikacji działa tak samo z obydwoma driverami,
@@ -17,18 +17,25 @@ Plik .env - parametry.
 
 ### Database driver: 'PDO|pdo_mysql' (default) / pdo_pgsql, opcjonalnie DOCTRINE - requires Composer installation
 
+```shell
 DB_DRIVER=PDO|pdo_mysql
+```
 
 ### Podstawowa konfiguracja bazy
+
+```shell
 DB_HOST=127.0.0.1
 DB_NAME=test
 DB_USER=root
 DB_PASSWORD=
+```
 
 ### Zmiana drivera:
 
+```shell
 DB_DRIVER=PDO       # klasyczny szybki adapter, brak zależności  
 DB_DRIVER=DOCTRINE  # wymaga doctrine/dbal - composer install
+```
 
 ## Adaptery PDO i Doctrine
 
@@ -48,7 +55,10 @@ DB_DRIVER=DOCTRINE  # wymaga doctrine/dbal - composer install
 ## Przełączenie drivera: DB_DRIVER=PDO / DOCTRINE
 
 Po zmianie .env:
+
+```shell
 DB_DRIVER=DOCTRINE
+```
 
 Twoje repositories i services działają identycznie - bez zmian w kodzie.
 
@@ -63,8 +73,7 @@ dlatego dla Doctrine DBAL zalecamy:
 - korzystać z vendor/autoload.php
 - nie próbować ręcznie ładować DBAL, bo zależności są rozproszone
 
-Uruchamiane za pomocą polecenia "composer install".
-
+Uruchamiane za pomocą polecenia "composer install".  
 
 ## Query Builder
 
@@ -181,10 +190,7 @@ class AccountRepository extends AbstractRepository
 
 2) Przykład z użyciem specjalnych funkcji Doctrine (opcjonalnie)
 
-Ten kod zadziała tylko gdy:
-
-DB_DRIVER=DOCTRINE
-
+Ten kod zadziała tylko gdy `DB_DRIVER=DOCTRINE`:
 
 ```php
 public function searchAdvanced(string $emailPart): array
@@ -237,7 +243,7 @@ Uniwersalny styl - działa ZAWSZE:
 - builder()->buildUpdateQuery()
 - builder()->buildDeleteQuery()
 
-Tylko gdy DB_DRIVER = DOCTRINE:
+Tylko gdy `DB_DRIVER = DOCTRINE`:
 
 - createQueryBuilder()
 - ExpressionBuilder

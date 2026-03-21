@@ -120,8 +120,6 @@ Każdy moduł wymaga pliku `module.json` w katalogu głównym modułu, który de
 - **`files`** - Obiekt zawierający mapowanie kluczy na ścieżki źródłowe plików/katalogów modułu (względem katalogu głównego projektu)
 - **`target`** - Obiekt zawierający mapowanie kluczy na ścieżki docelowe, gdzie pliki/katalogi mają zostać skopiowane (względem katalogu głównego projektu)
 
-```
-
 #### Ważne informacje dotyczące ścieżek
 
 **Ścieżki dla instalatora:**

@@ -98,7 +98,7 @@ lub sprawdzasz istnienie:
 
 Wewnątrz każdego szablonu $this jest instancją klasy TemplateFeature, co daje dostęp do przydatnych metod pomocniczych:
 
-Szczegóły w dokumentacji: [TemplateFeature](_Documents/Docs/template-feature.md)
+Szczegóły w dokumentacji: "Template Engine".
 
 ## Przykład kompletnego szablonu
 
@@ -157,18 +157,19 @@ Dzięki temu możesz pisać widoki w .twig, korzystać z dziedziczenia layoutów
 
 Łączy moc PHP (swoboda) + ekspresję Twiga (składnia) + wydajność C (cache klasowy).  
 
-```html-table
-Cechy | Twig | Blade | DBM Template Engine
-Szybkość | średnia | dobra | najwyższa
-PHP-friendly | X | ! | tak
-Filtry | tak | tak | tak proste i rozszerzalne
-Pluginy | trudne | brak | tak runtime callbacks
-Dziedziczenie bloków | tak | tak | tak + append/prepend
-Cache | tak | tak | tak (klasy z OPcache)
-Sandbox | tak | brak | tak opcjonalny
-Zależności | duże | średnie | brak
-Waga | >400KB | ~200KB | ~50KB
-```
+
+| Cechy                | Twig    | Blade   | DBM Template Engine |
+|----------------------|---------|---------|---------------------|
+| Szybkość             | średnia | dobra   | najwyższa |
+| PHP-friendly         | X       | !       | tak |
+| Filtry               | tak     | tak     | tak proste i rozszerzalne |
+| Pluginy              | trudne  | brak    | tak runtime callbacks |
+| Dziedziczenie bloków | tak     | tak     | tak + append/prepend |
+| Cache                | tak     | tak     | tak (klasy z OPcache) |
+| Sandbox              | tak     | brak    | tak opcjonalny |
+| Zależności           | duże    | średnie | brak |
+| Waga                 | >400KB  | ~200KB  | ~50KB |
+
 
 ## Podsumowanie
 

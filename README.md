@@ -17,13 +17,25 @@ Website: [www.dbm.org.pl](http://www.dbm.org.pl)
 
 ## About the Framework
 
-DBM Framework v5 is a **modular monolith** PHP designed for building long-lasting, maintainable applications with full control over architecture and performance. The framework combines the lightweight simplicity of classic MVC/MVP with a modern approach to application expansion through clearly separated modules, without imposing redundant abstractions or hidden logic.
+**DBM Framework** do modułu monolitowego z myślą o tworzeniu dostępnych i łatwych w aplikacji PHP. Zapewnij dostęp do systemu nad architekturą, korzystając z tworzenia systemów o cyklu życia.
 
-Earlier versions of the DBM Framework were based on a classic monolithic architecture. Version 5 introduces modularity, enabling the logical separation of responsibilities within a single system implemented as a whole. This approach preserves the simplicity and efficiency of the monolith while ensuring scalability, readability, and long-term architectural stability.
+W przypadku wersji, która jest stosowana na klasycznym monolicie, wersja 5 wprowadza **architekturę modułową**. Umożliwia na strukturę aplikacji z zmiennymi, odizolowanymi, które są stosowane jako spójne system.
 
-The framework also forms the foundation of the **DBM platform**, including the **DBM CMS** turnkey solution enabling rapid website and application launches without the need to build your own infrastructure from scratch. The CMS can operate as a lightweight file- and template-based system or be extended with administrative and database modules, maintaining full control over the application's code and structure.
+Rozwiązanie to łączy prostotę i wydajność **monolitu** z **skalowalnością i podziałem odpowiedzialności (Separation of Concerns) charakterystycznym dla **systemów modułowych**.
 
-The DBM Framework is designed for teams and projects that require predictable operation, high performance, and an architecture that is resilient to growth and long-term development.
+Framework zawiera również **Platformy DBM**, w tym **DBM CMS** - gotowe rozwiązania dotyczące szybkiego uruchamiania stron i aplikacji bez konieczności tworzenia własnej infrastruktury od podstaw. CMS może być lekkim systemem opartym na plikach i szablonach lub rozszerzonym o moduły administracyjne i bazodanowe, zapewniające pełne sterowanie nad kodem i strukturą aplikacji.
+
+## Core Idea
+
+**DbM Framework is a lightweight application engine,  
+while CMS Lite is an optional content management layer.**  
+
+In short:  
+
+**Micro framework + optional CMS**
+
+For developers: full control and performance  
+For clients: simple content management panel  
 
 ### DbM Framework is:  
 **Ultra-fast core** - Optimized request Routing and Caching  

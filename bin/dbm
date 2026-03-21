@@ -125,7 +125,7 @@ TXT;
             $hasAnything = false;
             echo "Available console entries\n----------\n";
             echo "Commands:\n";
-            $commands = (new CommandRunner())->discoverCommands();
+            $commands = (new CommandRunner())->discover();
             if ($commands === []) {
                 echo "  No commands found\n";
             } else {
@@ -133,7 +133,7 @@ TXT;
                 (new CommandRunner())->list();
             }
             echo "Workers:\n";
-            $workers = (new WorkerRunner(DatabaseFactory::createDatabase()))->discoverWorkers();
+            $workers = (new WorkerRunner(DatabaseFactory::createDatabase()))->discover();
             if ($workers === []) {
                 echo "  No workers found\n";
             } else {

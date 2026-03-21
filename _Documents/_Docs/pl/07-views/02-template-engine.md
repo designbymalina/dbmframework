@@ -5,22 +5,6 @@ Zaprojektowany z myślą o czytelności, testowalności i prostocie integracji z
 
 ---
 
-## Spis treści
-
-- [Wprowadzenie](#wprowadzenie)
-- [Cechy](#cechy)
-- [Instalacja](#instalacja)
-- [Szybki start](#szybki-start)
-- [API — klasy i ich role](#api---klasy-i-ich-role)
-- [Składnia szablonów](#składnia-szablonów)
-- [Filtry domyślne i rozszerzenia](#filtry-domyślne-i-rozszerzenia)
-- [Obsługa błędów i debugowanie](#obsługa-błędów-i-debugowanie)
-- [Testowanie](#testowanie)
-- [Dobre praktyki i wskazówki migracyjne](#dobre-praktyki-i-wskazówki-migracyjne)
-- [Licencja](#licencja)
-
----
-
 ## Wprowadzenie
 
 DbM Template Engine to prosty system szablonów, który konwertuje składnię podobną do Twig/Blade do czystego PHP, zapisuje skompilowany kod w cache i uruchamia go w bezpiecznym kontekście runtime.  
@@ -42,10 +26,7 @@ Celem było uzyskanie dobrego kompromisu pomiędzy **wydajnością** (cache), **
 ## Instalacja
 
 1. Umieść kod pod namespace `Dbm\Views` w swoim projekcie (PSR-4).
-2. Upewnij się, że masz zdefiniowane globalnie stałe (projekt przykładowy):
-```php
-define('BASE_DIRECTORY', dirname(__DIR__));
-```
+2. Upewnij się, że masz zdefiniowane globalnie stałe (projekt przykładowy): `define('BASE_DIRECTORY', dirname(__DIR__));`.
 3. Ustaw katalog `templates` i `var/cache` z prawidłowymi uprawnieniami do zapisu.
 
 ---
@@ -73,7 +54,7 @@ $engine = TemplateEngine::createFromComponents($compiler, $cache);
 echo $engine->render('home.phtml', ['title' => 'Witaj']);
 ```
 
-> Sugerowane podejście: użyj fabryki `createFromComponents()` zamiast konstruktora. To czystsze i bardziej przewidywalne API.
+Sugerowane podejście: użyj fabryki `createFromComponents()` zamiast konstruktora. To czystsze i bardziej przewidywalne API.
 
 ---
 
@@ -201,16 +182,3 @@ final class TemplateEngineTest extends TestCase
 - **Nie używaj `@`**: nie tłumisz ostrzeżeń — radź sobie z nimi jawnie (throw/exceptions) lub obsłuż w logiczny sposób.
 - **Zadbaj o uprawnienia**: katalog cache musi być zapisywalny przez proces PHP.
 - **Filtry**: rejestruj nowe filtry w jednym miejscu (konfiguracja lub container).
-
----
-
-## Licencja
-
-Umieść tutaj swoją licencję (MIT, proprietary itp.). Domyślnie traktuj repo jako prywatne, a licencję dopisz według potrzeb.
-
----
-
-> Jeśli chcesz, mogę:  
-> - dopracować README na format Markdown GitHub (README.md) z przykładami plików i strukturą katalogów;  
-> - wygenerować Javadoc-like API w pliku HTML;  
-> - przygotować skrypt instalacyjny composer.json.  
