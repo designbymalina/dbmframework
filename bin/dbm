@@ -1,0 +1,159 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Application: DbM Framework
+ * A lightweight PHP framework for building web applications.
+ *
+ * @author Artur Malinowski
+ * @copyright Design by Malina (All Rights Reserved)
+ * @license MIT
+ * @link https://www.dbm.org.pl
+ * 
+ * DOCUMENTATION: Examples can be found in the README documentation -> Console
+ * Future plans: php bin/dbm doctor, php bin/dbm schedule:run
+ * 
+ * -------------
+ * Console entrypoint: bin/dbm
+ *
+ * Available commands:
+ *   php bin/dbm list
+ *   php bin/dbm command example (for ExampleCommand)
+ *   php bin/dbm worker example (for ExampleWorker)
+ *
+ * CRON (example):
+ *   (*star)/5 * * * * php /var/www/project/bin/dbm worker example
+ *
+ * EXAMPLE CLASSES
+ * ---------------
+ * Command:
+ * namespace App\Console\Command;
+ * use Dbm\Console\AbstractCommand;
+ * class ExampleCommand extends AbstractCommand
+ * {
+ *     public function execute(): void
+ *     {
+ *         $this->success('OK!');
+ *     }
+ * }
+ *
+ * Worker:
+ * namespace App\Console\Worker;
+ * use Dbm\Console\AbstractWorker;
+ * use Dbm\Database\Contracts\DatabaseInterface;
+ * use Dbm\Database\Contracts\RequiresDatabaseInterface;
+ * class ClearCacheWorker extends AbstractWorker
+ * {
+ *     public function run(): void
+ *     {
+ *         $this->log('Clearing cache...', 'info_dark');
+ *         sleep(1);
+ *         $this->success("Finished successfully");
+ *     }
+ * }
+ * 
+ * Worker witch needs a database:
+ * class ExampleWorker extends AbstractWorker implements RequiresDatabaseInterface
+ * {
+ *     public function __construct(
+ *         private readonly DatabaseInterface $database
+ *     ) {}
+ *     public function run(): void
+ *     {
+ *         $this->log("Running ExampleWorker...", 'info_dark');
+ *         $users = $this->database->fetchAll("SELECT id, login, email, verified FROM dbm_user");
+ *         sleep(1);
+ *         $this->success("Finished successfully");
+ *     }
+ * }
+ */
+
+declare(strict_types=1);
+
+use Dbm\Console\ConsoleRequest;
+use Dbm\Console\CommandRunner;
+use Dbm\Console\WorkerRunner;
+use Dbm\Core\DotEnv;
+use Dbm\Database\DatabaseFactory;
+
+// --- Define paths ---
+define('BASE_DIRECTORY', rtrim(str_replace('\\', '/', realpath(__DIR__ . '/..')), '/'));
+
+// --- Bootstrap ---
+require BASE_DIRECTORY . '/application/start.php';
+
+// --- Configuration ---
+configurationSettings(BASE_DIRECTORY . '/.env');
+autoloadingWithWithoutComposer(BASE_DIRECTORY . '/vendor/autoload.php');
+
+// --- Console request ---
+$request = new ConsoleRequest($_SERVER['argv'] ?? []);
+
+// --- Load environment variables ---
+$dotenv = new DotEnv(BASE_DIRECTORY . '/.env');
+$dotenv->load();
+
+// --- Process request ---
+$mode = $request->command();
+$name = $request->name();
+
+// --- START ---
+try {
+    if ($mode === null) {
+    echo <<<TXT
+DbM Framework Console
+----------
+Usage:
+  php bin/dbm list
+  php bin/dbm command:list
+  php bin/dbm worker:list
+  php bin/dbm command example
+  php bin/dbm worker example
+
+TXT;
+    exit(0); // OK
+}
+
+    if (in_array($mode, ['command', 'worker'], true) && !$name) {
+        echo "\033[31mERROR:\033[0m Name is required for '{$mode}'.\n";
+        echo "Usage: php bin/dbm {$mode} <name>\n";
+        exit(1);
+    }
+
+    match ($mode) {
+        'list' => (function () {
+            $hasAnything = false;
+            echo "Available console entries\n----------\n";
+            echo "Commands:\n";
+            $commands = (new CommandRunner())->discover();
+            if ($commands === []) {
+                echo "  No commands found\n";
+            } else {
+                $hasAnything = true;
+                (new CommandRunner())->list();
+            }
+            echo "Workers:\n";
+            $workers = (new WorkerRunner(DatabaseFactory::createDatabase()))->discover();
+            if ($workers === []) {
+                echo "  No workers found\n";
+            } else {
+                $hasAnything = true;
+                (new WorkerRunner(DatabaseFactory::createDatabase()))->list();
+            }
+
+            if (!$hasAnything) {
+                echo "\033[33mNo console commands or workers registered.\033[0m\n";
+            }
+        })(),
+        'command' => (new CommandRunner())->run($name),
+        'command:list' => (new CommandRunner())->list(),
+        'worker' => (new WorkerRunner(DatabaseFactory::createDatabase()))->run($name),
+        'worker:list' => (new WorkerRunner(DatabaseFactory::createDatabase()))->list(),
+        default => throw new RuntimeException("Unknown mode: $mode"),
+    };
+
+    exit(0); // OK
+} catch (Throwable $e) {
+    echo "\033[31mERROR:\033[0m {$e->getMessage()}\n";
+    exit(1); // ERROR
+}

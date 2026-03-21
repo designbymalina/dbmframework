@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.3" version="2.3" srcLang="en" trgLang="pl">
+  <file id="main">
+
+    <unit id="lang">
+      <segment>
+        <source>Language</source>
+        <target>pl</target>
+      </segment>
+    </unit>
+
+    <unit id="charset">
+      <segment>
+        <source>Charset</source>
+        <target>utf-8</target>
+      </segment>
+    </unit>
+
+    <unit id="meta.robots">
+      <segment>
+        <source>index,follow</source>
+        <target>index,follow</target>
+      </segment>
+    </unit>
+
+    <unit id="meta.title">
+      <segment>
+        <source>DbM Web Application Framework and CMS</source>
+        <target>DbM Framework aplikacji internetowych i system CMS</target>
+      </segment>
+    </unit>
+
+    <unit id="meta.description">
+      <segment>
+        <source>Build modern web applications with the framework and built-in CMS for content management.</source>
+        <target>Twórz nowoczesne aplikacje webowe z pomocą frameworka i wbudowanego systemu CMS do zarządzania treścią.</target>
+      </segment>
+    </unit>
+
+    <unit id="meta.keywords">
+      <segment>
+        <source>dbmframework, dbm framework, php framework, simple cms, framework for web applications, content management system</source>
+        <target>dbmframework, dbm framework, php framework, simple cms, framework dla aplikacji internetowych, system zarządzania treścią</target>
+      </segment>
+    </unit>
+
+    <unit id="website.name">
+      <segment>
+        <source>Tool for creating websites and web applications</source>
+        <target>Narzędzie do tworzenia stron internetowych i aplikacji webowych</target>
+      </segment>
+    </unit>
+
+    <unit id="website.footer">
+      <segment>
+        <source>&amp;copy; 2021-%s Design by Malina. All rights reserved.</source>
+        <target>&amp;copy; 2021-%s Design by Malina. Wszelkie prawa zastrzeżone.</target>
+      </segment>
+    </unit>
+
+    <!-- Words -->
+    <unit id="login">
+      <segment>
+        <source>Login</source>
+        <target>Login</target>
+      </segment>
+    </unit>
+
+    <unit id="email">
+      <segment>
+        <source>Email</source>
+        <target>E-mail</target>
+      </segment>
+    </unit>
+
+    <unit id="password">
+      <segment>
+        <source>Password</source>
+        <target>Hasło</target>
+      </segment>
+    </unit>
+
+    <unit id="username">
+      <segment>
+        <source>Username</source>
+        <target>Nazwa użytkownika</target>
+      </segment>
+    </unit>
+
+    <unit id="more">
+      <segment>
+        <source>More</source>
+        <target>więcej</target>
+      </segment>
+    </unit>
+
+    <unit id="or">
+      <segment>
+        <source>or</source>
+        <target>lub</target>
+      </segment>
+    </unit>
+
+    <unit id="logo">
+      <segment>
+        <source>Logo</source>
+        <target>logo</target>
+      </segment>
+    </unit>
+
+    <!-- Phrases -->
+    <unit id="dbm_framework">
+      <segment>
+        <source>DbM Framework</source>
+        <target>DbM Framework</target>
+      </segment>
+    </unit>
+
+    <unit id="more_dots">
+      <segment>
+        <source>More...</source>
+        <target>więcej...</target>
+      </segment>
+    </unit>
+
+    <unit id="email_address">
+      <segment>
+        <source>Email address</source>
+        <target>Adres e-mail</target>
+      </segment>
+    </unit>
+
+    <unit id="username_or_email">
+      <segment>
+        <source>Username or email address</source>
+        <target>Nazwa użytkownika lub adres e-mail</target>
+      </segment>
+    </unit>
+
+    <unit id="remember_me">
+      <segment>
+        <source>Remember me</source>
+        <target>Zapamiętaj mnie</target>
+      </segment>
+    </unit>
+
+    <unit id="forgot_password">
+      <segment>
+        <source>Forgot your password?</source>
+        <target>Nie pamiętasz hasła?</target>
+      </segment>
+    </unit>
+
+    <unit id="sign_in">
+      <segment>
+        <source>Sign in</source>
+        <target>Zaloguj się</target>
+      </segment>
+    </unit>
+
+    <unit id="dont_have_account">
+      <segment>
+        <source>Don't have an account?</source>
+        <target>Nie masz konta?</target>
+      </segment>
+    </unit>
+
+    <unit id="sign_up_register">
+      <segment>
+        <source>Register!</source>
+        <target>Zarejestruj się!</target>
+      </segment>
+    </unit>
+
+    <unit id="continue_with_facebook">
+      <segment>
+        <source>Continue with Facebook</source>
+        <target>Kontynuuj na Facebooku!</target>
+      </segment>
+    </unit>
+
+    <unit id="register_to">
+      <segment>
+        <source>Register</source>
+        <target>Zarejestruj się</target>
+      </segment>
+    </unit>
+
+    <unit id="repeat_password">
+      <segment>
+        <source>Repeat password</source>
+        <target>Powtórz hasło</target>
+      </segment>
+    </unit>
+
+    <unit id="your_login">
+      <segment>
+        <source>Your login</source>
+        <target>Twój login</target>
+      </segment>
+    </unit>
+
+    <unit id="reset_password">
+      <segment>
+        <source>Reset password</source>
+        <target>Zresetuj hasło</target>
+      </segment>
+    </unit>
+
+    <unit id="log_out">
+      <segment>
+        <source>Log out</source>
+        <target>Wyloguj się</target>
+      </segment>
+    </unit>
+
+    <!-- Alerts -->
+    <unit id="alert.unexpected_error">
+      <segment>
+        <source>An unexpected error occurred!</source>
+        <target>Wystąpił nieoczekiwany błąd!</target>
+      </segment>
+    </unit>
+
+    <unit id="alert.unexpected_error_try_again">
+      <segment>
+        <source>An unexpected error occurred! Please try again or contact the administrator.</source>
+        <target>Wystąpił nieoczekiwany błąd! Spróbuj ponownie lub zgłoś błąd administracji.</target>
+      </segment>
+    </unit>
+
+    <unit id="alert.invalid_csrf_token">
+      <segment>
+        <source>Invalid CSRF token! The request was aborted for security reasons. Please try again.</source>
+        <target>Nieprawidłowy token CSRF! Żądanie zostało przerwane, aby zapobiec naruszeniu zabezpieczeń. Proszę spróbować ponownie.</target>
+      </segment>
+    </unit>
+
+    <!-- Errors -->
+    <unit id="error.template_not_rendered">
+      <segment>
+        <source>Template rendering error {template}</source>
+        <target>Błąd renderowania szablonu {template}</target>
+      </segment>
+    </unit>
+
+    <!-- Index -->
+    <unit id="index.index_meta_title">
+      <segment>
+        <source>Your application name</source>
+        <target>Nazwa Twojej aplikacji internetowej</target>
+      </segment>
+    </unit>
+
+    <unit id="index.index_meta_description">
+      <segment>
+        <source>Web application description...</source>
+        <target>Opis aplikacji internetowej...</target>
+      </segment>
+    </unit>
+
+    <unit id="index.index_meta_keywords">
+      <segment>
+        <source>application keywords</source>
+        <target>słowa kluczowe aplikacji</target>
+      </segment>
+    </unit>
+
+    <unit id="index.start_meta_title">
+      <segment>
+        <source>Welcome to DbM Framework!</source>
+        <target>Witamy w DbM Framework!</target>
+      </segment>
+    </unit>
+
+    <unit id="index.start_meta_description">
+      <segment>
+        <source>Your lightweight and flexible environment for building efficient web applications.</source>
+        <target>Twoje lekkie i elastyczne środowisko do tworzenia wydajnych aplikacji internetowych.</target>
+      </segment>
+    </unit>
+
+    <unit id="index.start_meta_keywords">
+      <segment>
+        <source>high performance, easy configuration, full documentation</source>
+        <target>wysoka wydajność, łatwa konfiguracja, kompleksowa dokumentacja</target>
+      </segment>
+    </unit>
+
+    <!-- Navigation -->
+    <unit id="navbar.nav.home">
+      <segment>
+        <source>Home</source>
+        <target>Strona główna</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.pages">
+      <segment>
+        <source>Pages</source>
+        <target>Strony</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.blog">
+      <segment>
+        <source>Blog</source>
+        <target>Blog</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.about">
+      <segment>
+        <source>About us</source>
+        <target>O nas</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.contact">
+      <segment>
+        <source>Contact</source>
+        <target>Kontakt</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.starter">
+      <segment>
+        <source>Starter</source>
+        <target>Starter</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.service">
+      <segment>
+        <source>Service</source>
+        <target>Serwis</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.portfolio">
+      <segment>
+        <source>Portfolio</source>
+        <target>Portfolio</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.regulations">
+      <segment>
+        <source>Regulations</source>
+        <target>Regulamin</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.user_account">
+      <segment>
+        <source>Your account</source>
+        <target>Twoje konto</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.user_login">
+      <segment>
+        <source>Log in to your account</source>
+        <target>Zaloguj się na swoje konto</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.upgrade">
+      <segment>
+        <source>Upgrade</source>
+        <target>Rozszerz CMS Lite + Admin</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.your_profile">
+      <segment>
+        <source>Your profile</source>
+        <target>Twój profil</target>
+      </segment>
+    </unit>
+
+    <unit id="navbar.nav.dashboard">
+      <segment>
+        <source>Admin dashboard</source>
+        <target>Panel administracyjny</target>
+      </segment>
+    </unit>
+
+  </file>
+</xliff>

@@ -1,0 +1,113 @@
+DbM Platform License
+Version 1.0
+
+Copyright (c) Design by Malina
+Author: Artur Malinowski
+https://www.dbm.org.pl
+
+1. Definitions
+
+Software – DbM Admin, DbM Authentication and other commercial modules distributed under this license.
+
+Framework – DbM Framework and DbM CMS Lite (MIT licensed, excluded from this license).
+
+You / Licensee – the individual or legal entity that purchased the license.
+
+Site – a single production website or application.
+
+Developer – a person or company creating websites for themselves or clients.
+
+2. License Grant
+
+This license grants you a non-exclusive, non-transferable, commercial license to use the Software under the terms described below.
+
+3. License Types
+
+3.1 Single Site License
+
+You may:
+
+Use the Software on one (1) production site
+
+Use it on unlimited local or staging environments for that site
+
+You may NOT:
+
+Use it on multiple production sites
+
+Resell or redistribute the Software
+
+Modify or replace the core Software files
+
+3.2 Developer License
+
+You may:
+
+Use the Software on unlimited production sites
+
+Use it for your own projects or client projects
+
+Install it as part of a commercial service
+
+You may NOT:
+
+Resell the Software as a standalone product
+
+Distribute the source code outside your projects
+
+Modify or fork the core Software
+
+4. Modifications & Extensions
+
+You may extend the Software only via public APIs, hooks, events, or plugins.
+
+You may NOT:
+
+Modify core files
+
+Reverse engineer
+
+Remove copyright or license notices
+
+This restriction does NOT apply to:
+
+DbM Framework
+
+DbM CMS Lite (MIT licensed)
+
+5. Updates & Subscription
+
+The license includes updates for the period defined at purchase time.
+
+Continued access to updates may require an active subscription.
+
+Existing installations may continue to operate without updates.
+
+6. Redistribution
+
+You may NOT:
+
+Redistribute the Software
+
+Sell, sublicense, or share the Software
+
+Publish the Software or parts of it publicly
+
+7. Termination
+
+This license terminates automatically if:
+
+You violate any terms of this license
+
+You redistribute or modify the core Software
+
+Upon termination, you must remove the Software from all installations.
+
+8. Warranty Disclaimer
+
+The Software is provided "as is", without warranty of any kind.
+The author is not liable for any damages resulting from the use of this Software.
+
+9. Governing Law
+
+This license is governed by the laws of the European Union / Poland.

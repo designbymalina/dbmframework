@@ -1,0 +1,270 @@
+/*** Custom Stylesheets ***/
+:root {
+    --green-color: #16a34a;
+    --gold-color: #efbf04;
+    --grey-light-color: #e2e8f0;
+    --blue-color: #106eea;
+    --red-primary-color: #e11d48;
+}
+
+/* .dbm-bg-green {
+    background: var(--green-color);
+} */
+
+.dbm-color-red-primary {
+    color: var(--red-primary-color) !important;
+}
+
+.dbm-bg-deepskyblue {
+    background-color: #00bfff;
+}
+
+.dbm-gradient-main {
+    background: linear-gradient(to right, #ec4899, #8b5cf6, #4f46e5);
+}
+
+.dbm-form-primary .btn-primary {
+    color: #fff;
+    background-color: #7952b3;
+    border-color: #7952b3;
+}
+
+.dbm-form-primary .btn-primary:hover, .dbm-form-primary .btn-primary:active, .dbm-form-primary .btn-primary:focus, .dbm-form-primary .btn-primary:disabled {
+    color: #fff;
+    background-color: #9152b3;
+    border-color: #9152b3;
+}
+
+.dbm-form-primary .btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(121,82,179,0.25);
+}
+
+.dbm-form-primary .input-group .input-group-text {
+    color: #fff;
+    background-color: #7952b3;
+}
+
+.dbm-form-primary input:focus {
+    border-color: #9152b3;
+    box-shadow: 0 0 0 0.25rem rgba(97, 82, 179, 0.25);
+}
+
+.dbm-form-primary .form-check-input:checked {
+    background-color: #7952b3;
+    border-color: #7952b3;
+}
+
+.dbm-btn-facebook {
+    background-color: #4C69BA;
+    color: #fff;
+}
+
+.dbm-btn-facebook:hover, .dbm-btn-facebook:focus {
+    background-color: #5B7BD5;
+    color: #fff;
+}
+
+.dbm-divider-1:after, .dbm-divider-1:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+ul.dbm-list-language {
+    float: right;
+}
+
+ul.dbm-list-language li.active, ul.dbm-list-language li:active {
+    background-color: #e2e8f0;
+}
+
+ul.dbm-list-language a {
+    text-decoration: none;
+    color: #000;
+}
+
+ul.dbm-list-language li ul {
+    min-width: 80px;
+}
+
+.dbm-nav-img-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.dbm-x-small {
+    font-size:.750em;
+}
+
+.dbm-info-content .dbm-header {
+	color: var(--red-primary-color);
+}
+
+.dbm-btn-gradient {
+    background-image: linear-gradient(to right, #e11d48 0%, #be123c 51%, #e11d48 100%);
+}
+
+.dbm-btn-gradient {
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    background-position: right center;
+    color: white;            
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+}
+
+.dbm-btn-gradient:hover {
+    background-position: left center;
+    color: #fff;
+    text-decoration: none;
+}
+
+/*--- Modification: main.css ---*/
+.header .topbar {
+    height: 66px;
+}
+
+.footer {
+    padding-bottom: 0;
+    background-color: #f8fafc;
+}
+
+.footer .footer-newsletter {
+    background-color: var(--gold-color);
+}
+
+.footer .copyright {
+    background-color: #f1f5f9;
+}
+
+.stats .stats-item {
+    background-color: var(--gold-color);
+}
+
+.faq .faq-container .faq-active {
+    background: color-mix(in srgb, var(--gold-color), transparent 92%);
+    border-color: var(--gold-color);
+    color: var(--default-color);
+}
+
+/*** Media queries ***/
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+    .dbm-nav-max-width {
+        max-width: 60px;
+    }
+}
+
+/* Navmenu - Desktop */
+@media (min-width: 1200px) {
+    .navmenu .dropdown ul li a:focus {
+        background-color: var(--grey-light-color);
+    }
+    .navmenu .dropdown ul.dbm-list-language-one {
+        padding: 5px 0;
+    }
+    .navmenu .dropdown ul.dbm-list-language-one li {
+        min-width: 80px;
+    }
+    .navmenu .dropdown ul.dbm-list-language-one a {
+        padding: 5px 10px;
+    }
+    .navmenu .dropdown ul.dbm-list-language-one a img {
+        margin-right: 5px;
+    }
+    .navmenu .dropdown ul.dbm-list-language-one li.active {
+        background-color: var(--grey-light-color);
+        color: var(--blue-color);
+    }
+}
+
+/*** Sql CMS ***/
+.bg-facebook {
+    background-color: #5d82d1;
+    color: #fff;
+}
+.bg-facebook:hover {
+    background-color: #5475bc;
+    color: #fff;
+}
+.text-facebook {
+    color: #5d82d1;
+}
+.text-facebook:hover {
+    color: #5475bc;
+}
+.bg-youtube {
+    background-color: #ff0000;
+    color: #fff;
+}
+.bg-youtube:hover {
+    background-color: #e60000;
+    color: #fff;
+}
+.text-youtube {
+    color: #ff0000;
+}
+.text-youtube:hover {
+    color: #e60000;
+}
+.bg-instagram {
+    background: #c22b72;
+    color: #fff;
+}
+.bg-instagram:hover {
+    background-color: #af2767;
+    color: #fff;
+}  
+.text-instagram {
+    color: #c22b72;
+}
+.text-instagram:hover {
+    color: #af2767;
+}  
+.bg-instagram-gradient {
+    background: radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background: -webkit-radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    color: #fff;
+    background-size: 120% 120%;
+    background-position: right bottom;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    border: 0;
+}
+.bg-instagram-gradient:hover {
+    background: radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background: -webkit-radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    color: #fff;
+    background-size: 100% 100%;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-position: left bottom;
+}
+.text-instagram-gradient {
+    color: transparent;
+    background: radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background: -webkit-radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-size: 120% 120%;
+}
+.text-instagram-gradient:hover {
+    color: transparent;
+    background: radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background: -webkit-radial-gradient(circle at 20% 130%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-size: 100% 100%;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.text-white-force *:not(.btn):not(.dropdown-item):not(.dropdown-item > *):not(.badge) {
+    color: #fff;
+}

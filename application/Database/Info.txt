@@ -1,0 +1,44 @@
+
+Jesli w class PdoDatabaseAdapter ustawisz:
+PDO::ATTR_EMULATE_PREPARES => false,
+
+Wówczas rozszerz metodę query().
+
+// Cache
+
+private bool $forceEmulation = false;
+
+// Metoda
+
+public function query(string $sql, array $params = [], array $types = []): \PDOStatement
+{
+	$sql = $this->cleanSql($sql);
+
+	try {
+		if ($this->forceEmulation) {
+			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+		}
+
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($params);
+		return $stmt;
+	} catch (PDOException $exception) {
+		if ($exception->getCode() === 'HY093' && !$this->forceEmulation) {
+			$this->forceEmulation = true;
+			$this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute($params);
+
+			return $stmt;
+		}
+
+		$this->logger->critical("PDO query: " . $exception->getMessage(), [
+			'sql' => $sql,
+			'params' => $params,
+			'exception' => $exception
+		]);
+
+		throw new QueryException($sql, $params, $exception);
+	}
+}

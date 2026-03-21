@@ -1,0 +1,122 @@
+# ADVANCED GITIGNORE - Whitelist
+
+# =========================
+# IGNORUJ WSZYSTKO
+# =========================
+*
+
+# =========================
+# POZWÓL NA KATALOGI
+# =========================
+!*/
+
+# =========================
+# GLOBALNE PLIKI (DOŁACZ)
+# =========================
+!.env.example
+!.gitattributes
+!.gitignore
+!composer.json
+!LICENSE.txt
+!phpunit.xml
+!README.md
+!README.pl.md
+
+# =========================
+# FRAMEWORK (DOŁĄCZ)
+# =========================
+!/application/**
+!/bin/dbm
+!/libraries/**
+!/public/**
+
+# =========================
+# DOCUMENTS (TYLKO WYBRANE)
+# =========================
+!/_Documents/_Docs/**
+!/_Documents/_Server/**
+!/_Documents/packages/cmslite.zip
+# ignoruj
+/_Documents/backups
+/_Documents/extracted
+
+# =========================
+# MODULES (TYLKO WYBRANE)
+# =========================
+/modules/*
+!/modules/Installer
+!/modules/Installer/**
+# INFO! Nie podświetla?
+# !/modules/Installer/Constants/InstallerConstant.php
+# !/modules/Translations/installer.en.php
+# !/modules/Translations/installer.pl.php
+
+# =========================
+# PUBLIC (TYLKO WYBRANE)
+# =========================
+!/public
+!/public/.htaccess
+!/public/favicon.ico
+!/public/index.php
+
+# =========================
+# SRC (TYLKO WYBRANE)
+# =========================
+!/src/Console/**
+!/src/Controller/**
+!/src/Service/**
+# ignoruj
+/src/Shared
+
+# =========================
+# TEMPLATES (TYLKO WYBRANE)
+# =========================
+/templates/*
+
+!/templates/_component
+!/templates/_include
+!/templates/index
+
+!/templates/base_start.phtml
+!/templates/_component/messages_dismissing.phtml
+!/templates/_include/start_footer.phtml
+!/templates/_include/start_header.phtml
+!/templates/_include/start_navbar.phtml
+!/templates/index/index.phtml
+!/templates/index/start.phtml
+
+# =========================
+# TRANSLATIONS
+# =========================
+/translations/*
+
+!/translations/main.en.xlf
+!/translations/main.pl.xlf
+!/translations/validation.en.xlf
+!/translations/validation.pl.xlf
+
+# =========================
+# TESTY
+# =========================
+/tests/*
+
+!/tests/bootstrap.php
+!/tests/App
+/tests/App/*
+!/tests/App/ExampleUnitTest.php
+
+# =========================
+# IGNOROWANE (NA KOŃCU!)
+# =========================
+
+## Framework
+/vendor
+/var
+.env
+
+## Project
+/__Dokumenty
+/data
+/public/modules
+/storage
+.vscode

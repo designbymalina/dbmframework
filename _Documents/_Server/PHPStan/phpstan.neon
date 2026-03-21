@@ -1,0 +1,16 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    bootstrapFiles:
+        - .phpstan-bootstrap.php
+
+    paths:
+        - application
+        - src
+        - modules
+
+    dynamicConstantNames:
+        - BASE_DIRECTORY
+
+    checkMissingIterableValueType: true

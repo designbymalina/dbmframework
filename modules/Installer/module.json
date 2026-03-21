@@ -1,0 +1,9 @@
+{
+  "name": "DbM Installer",
+  "description": "Advanced module management tool that allows you to install and uninstall components system-wide.",
+  "version": "2.0.0",
+  "key": "installer",
+  "type": "core",
+  "stage": "pre-install",
+  "class": "Mod\\Installer\\InstallerModule"
+}
