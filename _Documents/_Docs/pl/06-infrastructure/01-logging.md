@@ -1,14 +1,14 @@
-# System rejestrowania
+# System logowania
 
 ## Przegląd
 
-System rejestrowania zapewnia standardowy interfejs do rejestrowania aplikacji.
+System logowania zapewnia standardowy interfejs do rejestrowania zdarzeń w aplikacji.
 
-Ma strukturę podobną do PSR-3.
+Jego struktura jest zbliżona do standardu PSR-3.
 
 ---
 
-## Interfejs rejestratora
+## Interfejs Loggera
 
 ```php
 use Dbm\Infrastructure\Log\Contracts\LoggerInterface;
@@ -16,7 +16,7 @@ use Dbm\Infrastructure\Log\Contracts\LoggerInterface;
 
 ---
 
-## Poziomy rejestrowania
+## Poziomy logowania
 
 | Poziom | Opis |
 |-----------|--------------------------|
@@ -72,10 +72,10 @@ $logger->log('info', 'Wiadomość');
 
 ## Integracja
 
-Używane w:
+System logowania wykorzystywany jest m.in. w:
 
-* Klient API (Guzzle)
-* Obsługa błędów
-* Systemy monitorowania
+* kliencie API
+* obsłudze błędów
+* systemach monitoringu
 
 ---
