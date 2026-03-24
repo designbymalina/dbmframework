@@ -1,66 +1,66 @@
-# Localization (Translations)
+# Lokalizacja (Tłumaczenia)
 
-## Overview
+## Przegląd
 
-The `Translation` class provides a lightweight and flexible way to handle application translations.
+Klasa `Translation` zapewnia lekki i elastyczny sposób obsługi tłumaczeń w aplikacji.
 
-It supports:
+Obsługuje:
 
-* Named placeholders `{key}`
-* `sprintf` formatting (`%s`, `%1$s`)
-* Fallback to key if translation is missing
+* Placeholdery nazwane `{key}`
+* Formatowanie `sprintf` (`%s`, `%1$s`)
+* Fallback do klucza, jeśli tłumaczenie nie istnieje
 
 ---
 
-## Basic Usage
+## Podstawowe użycie
 
 ```php
 use Dbm\Localization\Translation;
 
 $translations = [
-    'hello' => 'Hello {name}',
+    'hello' => 'Witaj {name}',
 ];
 
 $translator = new Translation($translations);
 
-echo $translator->trans('hello', ['name' => 'John']);
-// Hello John
+echo $translator->trans('hello', ['name' => 'Jan']);
+// Witaj Jan
 ```
 
 ---
 
-## Translation Method
+## Metoda tłumaczenia
 
 ```php
 trans(string $key, ?array $data = null): string
 ```
 
-### Behavior
+### Działanie
 
-1. Finds translation by key
-2. Replaces placeholders
-3. Returns key if not found
-
----
-
-## Placeholders
-
-### Named placeholders
-
-```php
-'hello' => 'Hello {name}'
-```
-
-```php
-$translator->trans('hello', ['name' => 'John']);
-```
+1. Wyszukuje tłumaczenie po kluczu
+2. Zamienia placeholdery
+3. Zwraca klucz, jeśli tłumaczenie nie istnieje
 
 ---
 
-### sprintf placeholders
+## Placeholdery
+
+### Placeholdery nazwane
 
 ```php
-'items' => 'You have %d items'
+'hello' => 'Witaj {name}'
+```
+
+```php
+$translator->trans('hello', ['name' => 'Jan']);
+```
+
+---
+
+### Placeholdery sprintf
+
+```php
+'items' => 'Masz %d elementów'
 ```
 
 ```php
@@ -69,15 +69,15 @@ $translator->trans('items', [5]);
 
 ---
 
-## Fallback Behavior
+## Zachowanie fallback
 
-If translation is missing:
+Jeśli tłumaczenie nie istnieje:
 
 ```php
 $translator->trans('unknown.key');
 ```
 
-Returns:
+Zwraca:
 
 ```
 unknown.key
@@ -85,9 +85,9 @@ unknown.key
 
 ---
 
-## Integration with Validator
+## Integracja z Validator
 
-Validator automatically uses translation:
+Validator automatycznie obsługuje tłumaczenia:
 
 ```php
 $validator = new Validator($translator);
@@ -95,21 +95,21 @@ $validator = new Validator($translator);
 
 ---
 
-## Best Practices
+## Dobre praktyki
 
-* Keep translations in separate files
-* Use consistent keys (`validation.required`)
-* Avoid hardcoding messages
+* Przechowuj tłumaczenia w osobnych plikach
+* Używaj spójnych kluczy (`validation.required`)
+* Unikaj hardcodowania komunikatów
 
 ---
 
-## Summary
+## Podsumowanie
 
-The translation system is:
+System tłumaczeń jest:
 
-* Lightweight
-* Dependency-free
-* Flexible
-* Safe (no crashes on errors)
+* lekki
+* bez zależności
+* elastyczny
+* bezpieczny (nie powoduje błędów aplikacji)
 
 ---

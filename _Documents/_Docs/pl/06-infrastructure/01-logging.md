@@ -1,14 +1,14 @@
-# Logging System
+# System rejestrowania
 
-## Overview
+## Przegląd
 
-The logging system provides a standard interface for application logging.
+System rejestrowania zapewnia standardowy interfejs do rejestrowania aplikacji.
 
-It follows a structure similar to PSR-3.
+Ma strukturę podobną do PSR-3.
 
 ---
 
-## Logger Interface
+## Interfejs rejestratora
 
 ```php
 use Dbm\Infrastructure\Log\Contracts\LoggerInterface;
@@ -16,66 +16,66 @@ use Dbm\Infrastructure\Log\Contracts\LoggerInterface;
 
 ---
 
-## Log Levels
+## Poziomy rejestrowania
 
-| Level     | Description               |
-| --------- | ------------------------- |
-| emergency | System unusable           |
-| alert     | Immediate action required |
-| critical  | Critical conditions       |
-| error     | Runtime errors            |
-| warning   | Warnings                  |
-| notice    | Normal but significant    |
-| info      | Informational             |
-| debug     | Debug-level messages      |
+| Poziom | Opis |
+|-----------|--------------------------|
+| awaryjny | System nie nadaje się do użytku |
+| alert | Wymagane natychmiastowe działanie |
+| krytyczny | Warunki krytyczne |
+| błąd | Błędy w czasie wykonywania |
+| ostrzeżenie | Ostrzeżenia |
+| uwaga | Normalne, ale istotne |
+| informacje | Informacje |
+| debugowanie | Komunikaty na poziomie debugowania |
 
 ---
 
-## Example Usage
+## Przykładowe użycie
 
 ```php
-$logger->info('User logged in', [
+$logger->info('Użytkownik zalogowany', [
     'user_id' => 1
 ]);
 ```
 
 ---
 
-## Context Data
+## Dane kontekstowe
 
-Supports placeholders:
+Obsługuje symbole zastępcze:
 
 ```php
 $logger->info(
-    'User {id} logged in',
+    'Użytkownik {id} zalogowany',
     ['id' => 1]
 );
 ```
 
 ---
 
-## Generic Log Method
+## Ogólna metoda logowania
 
 ```php
-$logger->log('info', 'Message');
+$logger->log('info', 'Wiadomość');
 ```
 
 ---
 
-## Best Practices
+## Najlepsze praktyki
 
-* Use appropriate log levels
-* Avoid logging sensitive data
-* Use structured context
+* Używaj odpowiednich poziomów logowania
+* Unikaj rejestrowania danych wrażliwych
+* Używaj kontekstu strukturalnego
 
 ---
 
-## Integration
+## Integracja
 
-Used in:
+Używane w:
 
-* API Client (Guzzle)
-* Error handling
-* Monitoring systems
+* Klient API (Guzzle)
+* Obsługa błędów
+* Systemy monitorowania
 
 ---

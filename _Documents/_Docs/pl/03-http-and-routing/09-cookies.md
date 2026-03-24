@@ -1,30 +1,28 @@
-# Cookie Management
+# Zarządzanie cookies
 
-## Overview
+## Opis
 
-The `CookieManager` provides a simple interface for working with cookies.
+Klasa `CookieManager` zapewnia interfejs do pracy z cookies.
 
 ---
 
-## Basic Usage
+## Podstawowe użycie
 
 ```php
 use Dbm\Infrastructure\Cookie\CookieManager;
+```
 
+```php
 $cookie = new CookieManager();
 ```
 
----
-
-## Set Cookie
+## Ustawienie cookie
 
 ```php
 $cookie->setCookie('token', 'abc123');
 ```
 
----
-
-## Options
+### Opcje
 
 ```php
 setCookie(
@@ -36,35 +34,26 @@ setCookie(
 )
 ```
 
----
-
-## Get Cookie
+## Pobranie cookie
 
 ```php
 $value = $cookie->getCookie('token');
 ```
 
----
-
-## Delete Cookie
+## Usunięcie cookie
 
 ```php
 $cookie->unsetCookie('token');
 ```
 
----
+## Bezpieczeństwo
 
-## Security
+`secure = true` - tylko HTTPS  
 
-* `secure = true` → HTTPS only
-* `httpOnly = true` → not accessible via JS
+`httpOnly = true` - brak dostępu z JavaScript  
 
----
+## Dobre praktyki
 
-## Best Practices
-
-* Always use `secure` in production
-* Use `httpOnly` for sensitive data
-* Avoid storing sensitive info in cookies
-
----
+- Zawsze używaj secure w produkcji
+- Używaj httpOnly dla danych wrażliwych
+- Nie przechowuj wrażliwych danych w cookies

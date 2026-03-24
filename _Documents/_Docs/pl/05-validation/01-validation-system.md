@@ -1,23 +1,23 @@
-# DBM Validation System
+# System walidacji DBM
 
-## Overview
+## Przegląd
 
-The `Validator` class provides a flexible and extensible way to validate form data.
+Klasa `Validator` zapewnia elastyczny i rozszerzalny sposób walidacji danych w formularzu.
 
-### Features
+### Funkcje
 
-* Rule-based validation system
-* Custom validation rules
-* CSRF protection support
-* Translation support (multi-language)
-* Normalized error output (API-friendly)
-* Extendable via inheritance
+* System walidacji oparty na regułach
+* Niestandardowe reguły walidacji
+* Obsługa ochrony CSRF
+* Obsługa tłumaczeń (wielojęzycznych)
+* Znormalizowane wyjście błędów (przyjazne dla API)
+* Możliwość rozszerzenia poprzez dziedziczenie
 
 ---
 
-## Basic Usage
+## Podstawowe użycie
 
-### Without Translation
+### Bez tłumaczenia
 
 ```php
 use Dbm\Validation\Validator;
@@ -30,7 +30,7 @@ $errors = $validator->rules([
 
 ---
 
-### With Translation
+### Z tłumaczeniem
 
 ```php
 $validator = new Validator($translation);
@@ -39,148 +39,148 @@ $errors = $validator->rules($rules, $data);
 
 ---
 
-## Validation Flow
+## Przebieg walidacji
 
-1. Define rules
-2. Pass input data
-3. Validation runs through each rule
-4. Errors are collected and returned
+1. Zdefiniuj reguły
+2. Przekaż dane wejściowe
+3. Walidacja przechodzi przez każdą regułę
+4. Zbieranie i zwracanie błędów
 
 ```php
 $errors = $validator->rules($rules, $data);
 
 if ($validator->isValid()) {
-    // success
+    // powodzenie
 }
 ```
 
 ---
 
-## Available Validation Rules
+## Dostępne reguły walidacji
 
-### Required
+### Wymagane
 
 ```php
 'required'
 ```
 
-Field must not be empty.
+Pole nie może być puste.
 
 ---
 
-### String
+### Ciąg znaków
 
 ```php
 'string'
 ```
 
-Value must be a string.
+Wartość musi być ciągiem znaków.
 
 ---
 
-### Min Length
+### Minimalna długość
 
 ```php
 'min:3'
 ```
 
-Minimum number of characters.
+Minimalna liczba znaków.
 
 ---
 
-### Max Length
+### Maksymalna długość
 
 ```php
 'max:255'
 ```
 
-Maximum number of characters.
+Maksymalna liczba znaków.
 
 ---
 
-### Email
+### Adres e-mail
 
 ```php
 'email'
 ```
 
-Valid email format.
+Prawidłowy format adresu e-mail.
 
 ---
 
-### URL
+### Adres URL
 
 ```php
 'url'
 ```
 
-Valid URL format.
+Prawidłowy format adresu URL.
 
 ---
 
-### Phone
+### Telefon
 
 ```php
-'phone'
+'telefon'
 ```
 
-Supports formats like:
+Obsługuje formaty takie jak:
 
 * `123 123 123`
 * `+48 123 123 123`
 
 ---
 
-### Letters & Spaces
+### Litery i spacje
 
 ```php
-'letters_spaces'
+'litery_spacje'
 ```
 
-Allows only:
+Dopuszcza tylko:
 
-* letters
-* spaces
-* `'` and `-`
+* litery
+* spacje
+* `'` i `-`
 
 ---
 
-### Password
+### Hasło
 
 ```php
-'password'
+'hasło'
 ```
 
-Requirements:
+Wymagania:
 
-* 8–30 characters
-* at least one lowercase letter
-* one uppercase letter
-* one digit
-* one special character
+* 8–30 znaków
+* co najmniej jedna mała litera
+* jedna wielka litera
+* jedna cyfra
+* jeden znak specjalny
 
 ---
 
-### Confirmed
+### Potwierdzono
 
 ```php
-'confirmed'
+'potwierdzono'
 ```
 
-Checks if value matches:
+Sprawdza, czy wartość pasuje do:
 
 * `{field}_confirmation`
 * `{field}_repeat`
 
 ---
 
-### Regex
+### Wyrażenie regularne
 
 ```php
 'regex:/pattern/'
 ```
 
-Custom regex validation.
+Walidacja niestandardowego wyrażenia regularnego.
 
 ---
 
@@ -190,84 +190,84 @@ Custom regex validation.
 'csrf'
 ```
 
-Requires registering CSRF rule first.
+Wymaga najpierw zarejestrowania reguły CSRF.
 
 ---
 
-## CSRF Protection
+## Ochrona przed CSRF
 
-### Register CSRF Rule
+### Rejestracja reguły CSRF
 
 ```php
 $validator->registerCsrfRule($csrfManager);
 ```
 
-### Usage
+### Użycie
 
 ```php
-'form_csrf' => ['required', 'csrf']
+    'form_csrf' => ['required', 'csrf']
 ```
 
 ---
 
-## Custom Rules
+## Reguły niestandardowe
 
-You can define your own validation rules:
+Możesz zdefiniować własne reguły walidacji:
 
 ```php
 $validator->addRule('alpha_dash', function ($field, $value) {
     return preg_match('/^[A-Za-z0-9_-]+$/', $value)
-        ? null
-        : 'Invalid format';
+    ? null
+    : 'Nieprawidłowy format';
 });
 ```
 
 ---
 
-## Error Handling
+## Obsługa błędów
 
-### Default Error Format
+### Domyślny format błędu
 
 ```php
 [
-    'error_email' => 'Field email is required.'
+    'error_email' => 'Pole adresu e-mail jest wymagane.'
 ]
 ```
 
 ---
 
-### Normalized Errors (API-friendly)
+### Znormalizowane błędy (przyjazne dla API)
 
 ```php
 $validator->getNormalizedErrors();
 ```
 
-Output:
+Dane wyjściowe:
 
 ```php
 [
-    'email' => 'Field email is required.'
+    'email' => 'Pole e-mail jest wymagane.'
 ]
 ```
 
 ---
 
-## Translation Support
+## Obsługa tłumaczeń
 
-### Translation File Example
+### Przykład pliku z tłumaczeniem
 
 ```php
 return [
-    'validation.required' => 'The :field field is required.',
-    'validation.email' => 'The :field must be a valid email address.',
+    'validation.required' => 'Pole :field jest wymagane.',
+    'validation.email' => 'Pole :field musi zawierać prawidłowy adres e-mail.',
 ];
 ```
 
 ---
 
-### Configuration
+### Konfiguracja
 
-Set available languages in `.env`:
+Ustaw dostępne języki w `.env`:
 
 ```env
 APP_LANGUAGES=en,pl
@@ -275,24 +275,24 @@ APP_LANGUAGES=en,pl
 
 ---
 
-### Placeholder Replacement
+### Zastępowanie symboli zastępczych
 
-Supported placeholders:
+Obsługiwane symbole zastępcze:
 
 * `:field`
 * `:value`
 
-Example:
+Przykład:
 
 ```php
-'validation.min' => 'Field :field must be at least :value characters.'
+'validation.min' => 'Pole :field musi mieć co najmniej :value znaków.'
 ```
 
 ---
 
-## Extending Validator (Recommended Approach)
+## Rozszerzanie walidatora (zalecane podejście)
 
-Create form-specific validator:
+Utwórz walidator specyficzny dla formularza:
 
 ```php
 class UserForm extends Validator
@@ -310,7 +310,7 @@ class UserForm extends Validator
 
 ---
 
-## Advanced Example (Real Case)
+## Zaawansowany przykład (przypadek rzeczywisty)
 
 ### PanelUserForm
 
@@ -322,81 +322,81 @@ $errors = $form->validateCreate($_POST);
 
 ---
 
-### Features Demonstrated
+### Prezentowane funkcje
 
-* Base validation rules
-* Conditional validation (create vs update)
-* Password confirmation
-* Database uniqueness checks
-* CSRF validation
+* Reguły walidacji bazy
+* Walidacja warunkowa (tworzenie vs. aktualizacja)
+* Potwierdzenie hasła
+* Sprawdzanie unikalności bazy danych
+* Walidacja CSRF
 
 ---
 
-## Conditional Validation
+## Walidacja warunkowa
 
-Example from real usage:
+Przykład z rzeczywistego użycia:
 
 ```php
 if (!$id) {
-    // create logic
+    // logika tworzenia
 }
 
 if ($id && $password) {
-    // update logic
+    // logika aktualizacji
 }
 ```
 
 ---
 
-## Data Normalization
+## Normalizacja danych
 
-Optional preprocessing:
+Opcjonalne przetwarzanie wstępne:
 
 ```php
 $data = $this->normalize($data);
 ```
 
-Removes unnecessary spaces from strings.
+Usuwa zbędne spacje z ciągów znaków.
 
 ---
 
-## Internal Architecture
+## Architektura wewnętrzna
 
-### Key Methods
+### Kluczowe metody
 
-| Method            | Description          |
-| ----------------- | -------------------- |
-| `rules()`         | Runs validation      |
-| `applyRule()`     | Applies single rule  |
-| `registerError()` | Stores error         |
-| `addRule()`       | Adds custom rule     |
-| `trans()`         | Handles translations |
-
----
-
-## Best Practices
-
-* Always validate input before processing
-* Use `normalizedErrors()` for API responses
-* Keep validation logic inside Form classes
-* Use translation system for user-facing errors
-* Separate business logic from validation
+| Metoda | Opis |
+|-----------------|--------------------|
+| `rules()` | Uruchamia walidację |
+| `applyRule()` | Stosuje pojedynczą regułę |
+| `registerError()` | Przechowuje błąd |
+| `addRule()` | Dodaje niestandardową regułę |
+| `trans()` | Obsługuje tłumaczenia |
 
 ---
 
-## Summary
+## Najlepsze praktyki
 
-The DBM validation system is:
+* Zawsze waliduj dane wejściowe przed przetworzeniem
+* Używaj `normalizedErrors()` dla odpowiedzi API
+* Zachowaj logikę walidacji w klasach formularzy
+* Używaj systemu tłumaczeń dla błędów widocznych dla użytkownika
+* Oddziel logikę biznesową od walidacji
 
-* Lightweight
-* Extensible
-* Translation-ready
-* API-friendly
-* Framework-agnostic
+---
 
-Perfect for both:
+## Podsumowanie
 
-* simple forms
-* complex admin panels
+System walidacji DBM jest:
+
+* Lekki
+* Rozszerzalny
+* Gotowy na tłumaczenia
+* Przyjazny dla API
+* Niezależny od frameworka
+
+Idealny dla:
+
+* prostych formularzy
+* złożonych paneli administracyjnych
 
 ---

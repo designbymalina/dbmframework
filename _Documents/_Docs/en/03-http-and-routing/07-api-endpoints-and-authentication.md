@@ -1,31 +1,37 @@
-# DBM API – Endpointy i Autoryzacja
+# DBM API – Endpoints & Authentication
 
-## Base URL `/api`
+## Base URL
 
-`https://example.com/api` lub `https://api.example.com/`  
+```
+https://api.example.com/
+```
 
 ---
 
-# Autoryzacja (JWT)
+# Authentication (JWT)
 
-API wykorzystuje autoryzację typu Bearer Token.
+API uses Bearer Token authentication.
 
 ## Header
 
+```
 Authorization: Bearer {token}
+```
 
 ---
 
-## Konfiguracja JWT (`.env`)
+## JWT Configuration (`.env`)
 
 ```env
 API_JWT_SECRET=your-secret-key
 API_JWT_EXPIRATION=3600
 ```
 
-## Struktura JWT (Payload)
+---
 
-Przykładowy payload:
+## JWT Payload Structure
+
+Example payload:
 
 ```json
 {
@@ -35,15 +41,17 @@ Przykładowy payload:
 }
 ```
 
-| Pole | Opis |
-|------|------|
-| sub | Identyfikator użytkownika |
-| iat | Czas wygenerowania tokena |
-| exp | Czas wygaśnięcia tokena |
+| Field | Description          |
+| ----- | -------------------- |
+| `sub` | User identifier      |
+| `iat` | Issued at timestamp  |
+| `exp` | Expiration timestamp |
 
-## Generowanie JWT (PHP)
+---
 
-Prosta implementacja bez zewnętrznych bibliotek:
+## JWT Generator (PHP)
+
+Simple implementation without external libraries:
 
 ```php
 function base64UrlEncode(string $data): string
@@ -83,7 +91,9 @@ function generateJwt(string $userId): string
 }
 ```
 
-## Walidacja JWT (Przykład)
+---
+
+## JWT Validation (Example)
 
 ```php
 function validateJwt(string $jwt): bool
@@ -110,13 +120,15 @@ function validateJwt(string $jwt): bool
 }
 ```
 
-## Endpointy REST API
+---
 
-### Health Check
+# REST API Endpoints
 
-#### GET `/health`
+## Health Check
 
-Sprawdza czy API działa.
+### GET `/health`
+
+Check if API is working.
 
 **Response:**
 
@@ -126,11 +138,13 @@ Sprawdza czy API działa.
 }
 ```
 
-### Autoryzacja
+---
 
-#### POST `/auth/token`
+## Authentication
 
-Generuje token JWT.
+### POST `/auth/token`
+
+Generate JWT token.
 
 **Request:**
 
@@ -148,11 +162,15 @@ Generuje token JWT.
 }
 ```
 
-### Użytkownicy
+---
 
-#### GET `/users`
+## Users
 
-Pobiera listę użytkowników.
+### GET `/users`
+
+Get all users.
+
+**Response:**
 
 ```json
 [
@@ -163,13 +181,19 @@ Pobiera listę użytkowników.
 ]
 ```
 
-#### GET `/users/{id}`
+---
 
-Pobiera pojedynczego użytkownika.
+### GET `/users/{id}`
 
-#### POST `/users`
+Get single user.
 
-Tworzy użytkownika.
+---
+
+### POST `/users`
+
+Create user.
+
+**Request:**
 
 ```json
 {
@@ -178,23 +202,33 @@ Tworzy użytkownika.
 }
 ```
 
-#### PUT `/users/{id}`
+---
 
-Aktualizuje użytkownika.
+### PUT `/users/{id}`
 
-#### DELETE `/users/{id}`
+Update user.
 
-Usuwa użytkownika.
+---
 
-### Zamówienia
+### DELETE `/users/{id}`
 
-#### GET `/orders`
+Delete user.
 
-Lista zamówień.
+---
 
-#### POST `/orders`
+## Orders
 
-Tworzy zamówienie.
+### GET `/orders`
+
+List orders.
+
+---
+
+### POST `/orders`
+
+Create order.
+
+**Request:**
 
 ```json
 {
@@ -203,50 +237,64 @@ Tworzy zamówienie.
 }
 ```
 
-#### GET `/orders/{id}`
+---
 
-Szczegóły zamówienia.
+### GET `/orders/{id}`
 
-#### DELETE `/orders/{id}`
+Get order details.
 
-Usuwa zamówienie.
+---
 
-## Błędy
+### DELETE `/orders/{id}`
 
-### Standardowy format
+Delete order.
+
+---
+
+# Error Responses
+
+## Standard Format
 
 ```json
 {
   "error": true,
-  "message": "Opis błędu"
+  "message": "Error description"
 }
 ```
 
-### Najczęstsze kody HTTP
+---
 
-| Kod | Znaczenie |
-|-----|-----------|
-| 200 | OK |
-| 201 | Utworzono |
-| 400 | Błędne żądanie |
-| 401 | Brak autoryzacji |
-| 403 | Zabronione |
-| 404 | Nie znaleziono |
-| 500 | Błąd serwera |
+## Common Status Codes
 
-## Przykład użycia
+| Code | Meaning      |
+| ---- | ------------ |
+| 200  | OK           |
+| 201  | Created      |
+| 400  | Bad Request  |
+| 401  | Unauthorized |
+| 403  | Forbidden    |
+| 404  | Not Found    |
+| 500  | Server Error |
+
+---
+
+# Example Usage
 
 ```php
-$client = ApiFactory::create('https://example.com/api', generateJwt('123'));
+$client = ApiFactory::create('https://api.example.com', generateJwt('123'));
 
 $response = $client->get('/users');
 
 $data = json_decode($response->getBody(), true);
 ```
 
-## Uwagi
+---
 
-- Zawsze waliduj JWT na chronionych endpointach
-- Przechowuj API_JWT_SECRET w bezpiecznym miejscu
-- Używaj HTTPS w środowisku produkcyjnym
-- Zalecany krótki czas życia tokena (np. 1 godzina)
+# Notes
+
+* Always validate JWT on protected endpoints
+* Keep `API_JWT_SECRET` secure
+* Use HTTPS in production
+* Token expiration should be short (recommended: 1h)
+
+---

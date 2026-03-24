@@ -1,35 +1,37 @@
-# DBM API Client Documentation
+# Dokumentacja klienta API DBM
 
-## Overview
+## Przegląd
 
-This package provides a flexible HTTP API client with support for:  
+Pakiet udostępnia elastycznego klienta HTTP API z obsługą:
 
-- Native cURL-based client (no dependencies)
-- Guzzle-based client (recommended with Composer)
-- Automatic driver selection
+* klienta natywnego opartego o cURL (bez zależności)
+* klienta opartego o Guzzle (zalecany z Composerem)
+* automatycznego wyboru drivera
 
 ---
 
-## Environment Configuration (`.env`)
+## Konfiguracja środowiska (`.env`)
 
 ```env
 ### API / JWT CONFIG ###
-# Enable or disable API globally
+# Globalne włączenie API
 API_ENABLED=false
-# HTTP client driver
-# Possible values: "auto" | "native" | "guzzle"
+# Driver klienta HTTP
+# Możliwe wartości: "auto" | "native" | "guzzle"
 API_CLIENT_DRIVER=auto
-# JWT secret key used for token generation
+# Sekretny klucz JWT
 API_JWT_SECRET=your-secret-key
-# Token lifetime in seconds (e.g. 3600 = 1 hour)
+# Czas życia tokenu (sekundy, np. 3600 = 1 godzina)
 API_JWT_EXPIRATION=3600
 ```
 
+---
+
 ## ApiFactory
 
-Factory responsible for creating the appropriate API client.
+Fabryka odpowiedzialna za tworzenie klienta API.
 
-Usage
+### Użycie
 
 ```php
 use Dbm\Api\ApiFactory;
@@ -37,32 +39,34 @@ use Dbm\Api\ApiFactory;
 $client = ApiFactory::create('https://api.example.com', $token);
 ```
 
-Driver Selection Logic  
+### Logika wyboru drivera
 
-| Driver | Description |
-|--------|-------------|
-| auto | Uses Guzzle if available, otherwise falls back to native client |
-| guzzle | Forces Guzzle HTTP client |
-| native | Uses built-in cURL client |
+| Driver | Opis                                                 |
+| ------ | ---------------------------------------------------- |
+| auto   | Używa Guzzle jeśli dostępny, w przeciwnym razie cURL |
+| guzzle | Wymusza użycie Guzzle                                |
+| native | Używa natywnego klienta cURL                         |
 
-Exception  
+### Wyjątek
 
-Throws: 'InvalidArgumentException'
+Rzuca: `InvalidArgumentException`
 
-If an invalid driver is provided.
+Gdy podano nieprawidłowy driver.
 
-## ApiClient (Native cURL Client)
+---
 
-Lightweight HTTP client using PHP cURL.  
+## ApiClient (natywny klient cURL)
 
-Features  
+Lekki klient HTTP oparty o PHP cURL.
 
-- No external dependencies
-- JSON request support
-- Bearer token authentication
-- Compatible with ApiGuzzleClient
+### Funkcje
 
-Constructor
+* brak zależności zewnętrznych
+* obsługa JSON
+* autoryzacja Bearer Token
+* kompatybilność z ApiGuzzleClient
+
+### Konstruktor
 
 ```php
 public function __construct(
@@ -72,108 +76,123 @@ public function __construct(
 )
 ```
 
-Methods
+---
 
-request()
+### Metody
 
 ```php
 request(string $method, string $endpoint, array $options = []): ApiResponse
 ```
 
-Options:
+#### Opcje
 
-- headers - additional headers
-- json - array (auto JSON encoded)
-- body - raw body
-- timeout - request timeout (default: 30s)
+* `headers` – dodatkowe nagłówki
+* `json` – dane (automatycznie konwertowane do JSON)
+* `body` – surowe dane
+* `timeout` – timeout (domyślnie: 30s)
 
 ```php
 get(string $endpoint, array $query = []): ApiResponse
-
 post(string $endpoint, array $data = []): ApiResponse
-
 put(string $endpoint, array $data = []): ApiResponse
-
 delete(string $endpoint, array $data = []): ApiResponse
 ```
 
-Errors
+---
 
-Throws: `RuntimeException`
+### Błędy
 
-When cURL request fails.
+Rzuca: `RuntimeException`
 
-## ApiGuzzleClient (Guzzle-based Client)
+Gdy zapytanie cURL się nie powiedzie.
 
-Advanced HTTP client using Guzzle.
+---
 
-Features
+## ApiGuzzleClient (klient Guzzle)
 
-- Requires Composer
-- Built-in logging
-- Better error handling
-- Performance metrics (request duration)
+Zaawansowany klient HTTP oparty o Guzzle.
 
-Constructor
+### Funkcje
+
+* wymaga Composer
+* wbudowane logowanie
+* lepsza obsługa błędów
+* pomiar czasu zapytania
+
+---
+
+### Konstruktor
 
 ```php
 public function __construct(string $baseUrl, ?string $jwtToken = null)
 ```
 
-Methods
+---
 
-Same interface as ApiClient:
+### Metody
 
-- request()
-- get()
-- post()
-- put()
-- delete()
+Takie same jak w ApiClient:
 
-Logging
+* request()
+* get()
+* post()
+* put()
+* delete()
 
-Each request is logged:
+---
+
+### Logowanie
+
+Każde zapytanie jest logowane:
 
 ```bash
 API Request {method} {endpoint} => {status} in {time} ms
 ```
 
-Error Handling
+---
 
-Throws: `ApiException`
+### Obsługa błędów
 
-Cases:
+Rzuca: `ApiException`
 
-- Guzzle request failure
-- Unexpected runtime errors
+W przypadkach:
 
-## Authentication
+* błędu zapytania Guzzle
+* nieoczekiwanych błędów runtime
 
-Both clients support Bearer token authentication:
+---
+
+## Autoryzacja
+
+Oba klienty obsługują Bearer Token:
 
 ```bash
 Authorization: Bearer {token}
 ```
 
-Token is passed in constructor:
+Token przekazywany jest w konstruktorze:
 
 ```php
 $client = ApiFactory::create($baseUrl, $token);
 ```
 
+---
+
 ## ApiResponse
 
-Both clients return a unified response object: `ApiResponse`
+Oba klienty zwracają wspólny obiekt: `ApiResponse`
 
-Typical structure:
+Zawiera:
 
-- HTTP status code
-- response body
-- headers
+* kod HTTP
+* body odpowiedzi
+* nagłówki
 
-Example Usage
+---
 
-Basic Example
+## Przykłady
+
+### Podstawowy przykład
 
 ```php
 $client = ApiFactory::create('https://api.example.com', 'your-jwt-token');
@@ -183,7 +202,9 @@ $response = $client->get('/users');
 $data = json_decode($response->getBody(), true);
 ```
 
-POST Example
+---
+
+### POST
 
 ```php
 $response = $client->post('/orders', [
@@ -192,7 +213,9 @@ $response = $client->post('/orders', [
 ]);
 ```
 
-Custom Headers
+---
+
+### Własne nagłówki
 
 ```php
 $response = $client->request('GET', '/secure', [
@@ -202,27 +225,37 @@ $response = $client->request('GET', '/secure', [
 ]);
 ```
 
-## Notes
+---
 
-- Use guzzle driver for production (better performance & logging)
-- Use native driver for lightweight environments (no Composer)
-- auto is recommended for most cases
+## Uwagi
 
-## Requirements
+* używaj `guzzle` w produkcji (wydajność + logowanie)
+* używaj `native` w lekkich środowiskach
+* `auto` jest zalecanym wyborem
 
-### Native Client
-PHP with cURL extension
+---
 
-### Guzzle Client
-Composer
-guzzlehttp/guzzle
+## Wymagania
 
-## Summary
+### Klient natywny
 
-This API client system provides:
+* PHP + rozszerzenie cURL
 
-- Flexible driver selection
-- Unified interface
-- JWT authentication support
-- Production-ready logging (Guzzle)
-- Zero-dependency fallback (cURL)
+### Klient Guzzle
+
+* Composer
+* guzzlehttp/guzzle
+
+---
+
+## Podsumowanie
+
+System klienta API zapewnia:
+
+* elastyczny wybór drivera
+* jednolity interfejs
+* obsługę JWT
+* logowanie produkcyjne (Guzzle)
+* fallback bez zależności (cURL)
+
+---

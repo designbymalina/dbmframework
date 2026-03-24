@@ -1,62 +1,52 @@
-# Session Management
+# Zarządzanie sesją
 
-## Overview
+## Opis
 
-The `SessionManager` provides a simple interface for handling PHP sessions.
+Klasa `SessionManager` zapewnia interfejs do obsługi sesji PHP.
 
 ---
 
-## Basic Usage
+## Podstawowe użycie
 
 ```php
 use Dbm\Infrastructure\Session\SessionManager;
+```
 
+```php
 $session = new SessionManager();
 ```
 
----
-
-## Set Session
+## Ustawienie wartości
 
 ```php
 $session->setSession('user_id', 1);
 ```
 
----
-
-## Get Session
+## Pobranie wartości
 
 ```php
 $userId = $session->getSession('user_id');
 ```
 
----
-
-## Remove Session
+## Usunięcie wartości
 
 ```php
 $session->unsetSession('user_id');
 ```
 
----
-
-## Destroy Session
+## Zniszczenie sesji
 
 ```php
 $session->destroySession();
 ```
 
----
-
-## Pop (Get & Remove)
+## Pop (pobierz i usuń)
 
 ```php
 $message = $session->pop('flash_message');
 ```
 
----
-
-## Reference Access
+## Dostęp przez referencję
 
 ```php
 $data = &$session->getSessionByReference('cart');
@@ -64,20 +54,14 @@ $data = &$session->getSessionByReference('cart');
 $data[] = 'product_id';
 ```
 
----
+## Uwagi
 
-## Notes
+- Sesja uruchamiana jest automatycznie (jeśli potrzebna)  
+- Bezpieczny fallback do null  
+- Przydatne do komunikatów flash i koszyka  
 
-* Automatically starts session if needed
-* Safe fallback to `null`
-* Useful for flash messages and carts
+## Dobre praktyki
 
----
-
-## Best Practices
-
-* Use sessions only for small data
-* Avoid storing large objects
-* Always secure session cookies
-
----
+- Przechowuj w sesji tylko małe dane  
+- Unikaj dużych obiektów  
+- Zabezpieczaj cookies sesyjne  
