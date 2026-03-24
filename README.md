@@ -264,24 +264,51 @@ When using **DBM CMS**, also ensure that the data/ directories have the appropri
 ## Documentation  
 
 ### Getting Started  
-[Introduction & Architecture](_Documents/_Docs/pl/01-getting-started/01-introduction.md)  
-[Quick Start Guide](_Documents/_Docs/pl/01-getting-started/01-quick-start.md)  
+[Introduction & Architecture](_Documents/_Docs/en/01-getting-started/01-introduction.md)  
+[Quick Start Guide](_Documents/_Docs/en/01-getting-started/02-quick-start.md)  
+
+---
 
 ### Core Concepts  
-[Controllers & Services](_Documents/_Docs/pl/01-core/02-controllers-and-services.md)  
-[Dependency Injection (services.php)](_Documents/_Docs/pl/01-core/03-dependency-injection.md)  
-[Environment Variables (.env)](_Documents/_Docs/pl/03-settings/01-environment-variables.md)  
-[Console Commands (CLI)](_Documents/_Docs/pl/02-console/01-console-commands.md)  
+[Controllers & Services](_Documents/_Docs/en/02-core-concepts/01-controllers-and-services.md)  
+[Dependency Injection](_Documents/_Docs/en/02-core-concepts/02-dependency-injection.md)  
+[Environment Variables (.env)](_Documents/_Docs/en/02-core-concepts/03-environment-variables.md)  
+[Console Commands (CLI)](_Documents/_Docs/en/02-core-concepts/04-console-commands.md)  
+[Localization](_Documents/_Docs/en/02-core-concepts/05-localization.md)  
+
+---
 
 ### HTTP & Routing  
-[Web Routing (web.php)](_Documents/_Docs/pl/04-routing/01-web-routing.md)  
-[API Routing (api.php)](_Documents/_Docs/pl/04-routing/02-api-routing.md)  
-[Request Handling](_Documents/_Docs/pl/05-http/01-request.md)  
-[Response Handling](_Documents/_Docs/pl/05-http/02-response.md)  
-[Middleware (middleware.php)](_Documents/_Docs/pl/05-http/03-middleware.md)  
+[Web Routing (web.php)](_Documents/_Docs/en/03-http-and-routing/01-web-routing.md)  
+[API Routing (api.php)](_Documents/_Docs/en/03-http-and-routing/02-api-routing.md)  
+[Request](_Documents/_Docs/en/03-http-and-routing/03-request.md)  
+[Response](_Documents/_Docs/en/03-http-and-routing/04-response.md)  
+[Middleware](_Documents/_Docs/en/03-http-and-routing/05-middleware.md)  
+[API Client](_Documents/_Docs/en/03-http-and-routing/06-api-client.md)  
+[API Endpoints & Authentication](_Documents/_Docs/en/03-http-and-routing/07-api-endpoints-and-authentication.md)  
+[Session](_Documents/_Docs/en/03-http-and-routing/08-session.md)  
+[Cookies](_Documents/_Docs/en/03-http-and-routing/09-cookies.md)  
 
-### Data & Presentation 
-[Database & Persistence](_Documents/_Docs/pl/06-database/01-database.md)  
-[Views & Templates](_Documents/_Docs/pl/07-views/01-templates.md)  
-[Template Features](_Documents/_Docs/pl/07-views/02-template-feature.md)  
-[Template Engine (globals.php)](_Documents/_Docs/pl/07-views/03-template-engine.md)  
+---
+
+### Data & Presentation  
+[Database](_Documents/_Docs/en/04-data-and-presentation/01-database.md)  
+[Templates](_Documents/_Docs/en/04-data-and-presentation/02-templates.md)  
+[Template Features](_Documents/_Docs/en/04-data-and-presentation/03-template-feature.md)  
+[Template Engine](_Documents/_Docs/en/04-data-and-presentation/04-template-engine.md)  
+[Building Your First Feature](_Documents/_Docs/en/04-data-and-presentation/05-building-first-feature.md)  
+
+---
+
+### Validation  
+[Validation System](_Documents/_Docs/en/05-validation/01-validation-system.md)  
+
+---
+
+### Infrastructure  
+[Logging](_Documents/_Docs/en/06-infrastructure/01-logging.md)  
+
+---
+
+### Modules  
+[Creating Modules](_Documents/_Docs/en/07-modules/01-creating-modules.md)  
