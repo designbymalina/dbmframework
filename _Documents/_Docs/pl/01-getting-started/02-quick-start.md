@@ -1,4 +1,4 @@
-# Instalator DbM CMS
+# Instalator modułów
 
 Witaj w instalatorze DbM CMS! Twoje lekkie i elastyczne środowisko do tworzenia nowoczesnych aplikacji internetowych.
 

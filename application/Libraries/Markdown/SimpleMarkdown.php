@@ -144,12 +144,12 @@ final class SimpleMarkdown
         foreach ($lines as $line) {
             $trim = trim($line);
 
-            $isUl = preg_match('/^\- (.*)/', $trim, $mUl);
+            $isUl = preg_match('/^([\-\*\+])\s+(.*)/', $trim, $mUl);
             $isOl = preg_match('/^\d+\.\s+(.*)/', $trim, $mOl);
 
             if ($isUl || $isOl) {
                 $newType = $isUl ? 'ul' : 'ol';
-                $content = $isUl ? $mUl[1] : $mOl[1];
+                $content = $isUl ? $mUl[2] : $mOl[1];
 
                 if ($type !== $newType) {
                     if ($type) {
@@ -176,6 +176,53 @@ final class SimpleMarkdown
 
         return $result;
     }
+
+    // private function parseLists(string $text): string
+    // {
+    //     $lines = explode(PHP_EOL, $text);
+    //     $result = '';
+    //     $currentType = null;
+
+    //     foreach ($lines as $line) {
+    //         $trimmed = trim($line);
+
+    //         // UL: -, *, +
+    //         $isUl = preg_match('/^([\-\*\+])\s+(.*)/', $trimmed, $mUl);
+
+    //         // OL: 1. 2. itd.
+    //         $isOl = preg_match('/^\d+\.\s+(.*)/', $trimmed, $mOl);
+
+    //         if ($isUl || $isOl) {
+    //             $type = $isUl ? 'ul' : 'ol';
+    //             $content = $isUl ? $mUl[2] : $mOl[1];
+
+    //             if ($currentType !== $type) {
+    //                 if ($currentType) {
+    //                     $result .= "</$currentType>\n";
+    //                 }
+    //                 $result .= "<$type>\n";
+    //                 $currentType = $type;
+    //             }
+
+    //             $result .= "<li>" . trim($content) . "</li>\n";
+    //         } elseif ($currentType && ($trimmed === '' || str_starts_with($line, '    ') || str_starts_with($line, "\t"))) {
+    //             $result .= $line . PHP_EOL;
+    //         } else {
+    //             if ($currentType) {
+    //                 $result .= "</$currentType>\n";
+    //                 $currentType = null;
+    //             }
+
+    //             $result .= $line . PHP_EOL;
+    //         }
+    //     }
+
+    //     if ($currentType) {
+    //         $result .= "</$currentType>\n";
+    //     }
+
+    //     return $result;
+    // }
 
     private function parseTables(string $text): string
     {

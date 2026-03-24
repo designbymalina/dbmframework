@@ -19,7 +19,7 @@ use Dbm\Localization\Translation;
 class IndexService
 {
     public function __construct(
-        private readonly Translation $translation,
+        private readonly Translation $translation
     ) {}
 
     /**

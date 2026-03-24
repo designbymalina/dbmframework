@@ -9,14 +9,19 @@
  * @license MIT
  * @link https://www.dbm.org.pl
  *
- * Klasa do wdrożenia zamiast BASE_DIRECTORY.
+ * Klasa do wdrożenia zamiast BASE_DIRECTORY itp..
  * - - -
+ * 
  * Przykład jak używać w kodzie
- * - - -
+ * 
  * Zamiast:
  * BASE_DIRECTORY . '/application/start.php'
  * Używaj:
- * Paths::application() . '/start.php'
+ * Paths::appPath() . '/start.php'
+ * 
+ * @INFO Będąc przy start.php - urosło do takich rozmiarów,
+ * że warto przenieść do klasy/klas o osobnej odpowiedzialności.
+ * Zmienić na 'bootstrap', może dopisać kernel.
  */
 
 declare(strict_types=1);
@@ -27,7 +32,7 @@ final class Paths
 {
     private static ?string $base = null;
 
-    public static function base(): string
+    public static function basePath(): string
     {
         if (self::$base !== null) {
             return self::$base;
@@ -47,18 +52,37 @@ final class Paths
         );
     }
 
-    public static function application(): string
+    public static function appPath(): string
     {
-        return self::base() . '/application';
+        return self::basePath() . '/application';
     }
 
-    public static function public(): string
+    public static function publicPath(): string
     {
-        return self::base() . '/public';
+        return self::basePath() . '/public';
     }
 
-    public static function storage(): string
+    public static function storagePath(): string
     {
-        return self::base() . '/storage';
+        return self::basePath() . '/storage';
+    }
+
+    public static function join(string ...$parts): string
+    {
+        $clean = [];
+
+        foreach ($parts as $i => $part) {
+            $part = str_replace('\\', '/', $part);
+
+            $part = $i === 0
+                ? rtrim($part, '/')
+                : trim($part, '/');
+
+            if ($part !== '') {
+                $clean[] = $part;
+            }
+        }
+
+        return implode('/', $clean);
     }
 }

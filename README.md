@@ -17,13 +17,13 @@ Website: [www.dbm.org.pl](http://www.dbm.org.pl)
 
 ## About the Framework
 
-**DBM Framework** do modułu monolitowego z myślą o tworzeniu dostępnych i łatwych w aplikacji PHP. Zapewnij dostęp do systemu nad architekturą, korzystając z tworzenia systemów o cyklu życia.
+**DBM Framework** is a modular monolith designed for building efficient and maintainable PHP applications. It provides full architectural control, enabling the creation of systems with a long lifecycle.
 
-W przypadku wersji, która jest stosowana na klasycznym monolicie, wersja 5 wprowadza **architekturę modułową**. Umożliwia na strukturę aplikacji z zmiennymi, odizolowanymi, które są stosowane jako spójne system.
+Unlike previous versions, which were based on a classic monolith, version 5 introduces a **modular architecture**. This allows for application structures composed of independent, isolated modules that are still implemented as a cohesive system.
 
-Rozwiązanie to łączy prostotę i wydajność **monolitu** z **skalowalnością i podziałem odpowiedzialności (Separation of Concerns) charakterystycznym dla **systemów modułowych**.
+This solution combines the simplicity and efficiency of **a monolith** with the flexibility, scalability, and clear separation of responsibilities (Separation of Concerns) characteristic of modular systems.
 
-Framework zawiera również **Platformy DBM**, w tym **DBM CMS** - gotowe rozwiązania dotyczące szybkiego uruchamiania stron i aplikacji bez konieczności tworzenia własnej infrastruktury od podstaw. CMS może być lekkim systemem opartym na plikach i szablonach lub rozszerzonym o moduły administracyjne i bazodanowe, zapewniające pełne sterowanie nad kodem i strukturą aplikacji.
+The framework also forms the foundation of the DBM Platform, including the DBM CMS—a turnkey solution enabling rapid website and application launches without the need to build your own infrastructure from scratch. The CMS can operate as a lightweight file- and template-based system or be extended with administrative and database modules, maintaining full control over the code and application structure.
 
 ## Core Idea
 
@@ -261,22 +261,27 @@ When using **DBM CMS**, also ensure that the data/ directories have the appropri
 
 **IMPORTANT!** Please retain the footer: "Created with <a href="https://dbm.org.pl/" title="DbM">DbM Framework</a>". The link should remain intact. Thank you for supporting the project! By maintaining the link in the footer, you help develop the free, open-source framework and support its development and the community of independent PHP developers.
 
-Documentation:
+## Documentation  
 
-[Introduction](_Documents/_Docs/01-introduction.md)  
-[Creating first Controller and Service](_Documents/_Docs/02-controller-and-service.md)  
-[Application Programming Interface (api.php)](_Documents/_Docs/api.md)  
-[Command console (console.php)](_Documents/_Docs/console.md)  
-[Dependency Injection - DI (services.php)](_Documents/_Docs/dependency-injection.md)  
-[Environment configuration (.env)](_Documents/_Docs/env.md)  
-[Middleware (middleware.php)](_Documents/_Docs/middleware.md)  
-[Routing (routes.php)](_Documents/_Docs/routing.md)  
-[Request](_Documents/_Docs/request.md)  
-[Response](_Documents/_Docs/response.md)  
-[TemplateEngine](_Documents/_Docs/template-engine.md)  
-[TemplateFeature](_Documents/_Docs/template-feature.md)  
-[Templates](_Documents/_Docs/templates.md)  
+### Getting Started  
+[Introduction & Architecture](_Documents/_Docs/pl/01-getting-started/01-introduction.md)  
+[Quick Start Guide](_Documents/_Docs/pl/01-getting-started/01-quick-start.md)  
 
---- DbM CMS ---  
+### Core Concepts  
+[Controllers & Services](_Documents/_Docs/pl/01-core/02-controllers-and-services.md)  
+[Dependency Injection (services.php)](_Documents/_Docs/pl/01-core/03-dependency-injection.md)  
+[Environment Variables (.env)](_Documents/_Docs/pl/03-settings/01-environment-variables.md)  
+[Console Commands (CLI)](_Documents/_Docs/pl/02-console/01-console-commands.md)  
 
-[Quick Start](_Documents/_Docs/installer.md)  
+### HTTP & Routing  
+[Web Routing (web.php)](_Documents/_Docs/pl/04-routing/01-web-routing.md)  
+[API Routing (api.php)](_Documents/_Docs/pl/04-routing/02-api-routing.md)  
+[Request Handling](_Documents/_Docs/pl/05-http/01-request.md)  
+[Response Handling](_Documents/_Docs/pl/05-http/02-response.md)  
+[Middleware (middleware.php)](_Documents/_Docs/pl/05-http/03-middleware.md)  
+
+### Data & Presentation 
+[Database & Persistence](_Documents/_Docs/pl/06-database/01-database.md)  
+[Views & Templates](_Documents/_Docs/pl/07-views/01-templates.md)  
+[Template Features](_Documents/_Docs/pl/07-views/02-template-feature.md)  
+[Template Engine (globals.php)](_Documents/_Docs/pl/07-views/03-template-engine.md)  

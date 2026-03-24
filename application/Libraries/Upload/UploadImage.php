@@ -45,7 +45,7 @@ use Exception;
 
 class UploadImage
 {
-    private string $targetDir = "upload/";
+    private string $targetDir = 'upload';
     /** @var array<int, string> */
     private array $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp"];
     private int $maxFileSize = 6291456; // 6MB (1MB = 1048576 in bytes)
@@ -80,11 +80,14 @@ class UploadImage
 
             $this->validateImageDimensions($fileTempName);
 
-            if ($this->renameIfExist && file_exists($this->targetDir . $fileName)) {
+            // INFO! Fragment - powtarzam raz po raz $targetFilePath - czy Ok?
+            $targetFilePath = $this->joinPaths($this->targetDir, $fileName);
+
+            if ($this->renameIfExist && file_exists($targetFilePath)) {
                 $fileName = $this->generateUniqueFileName($fileName);
             }
 
-            $targetFilePath = $this->targetDir . $fileName;
+            $targetFilePath = $this->joinPaths($this->targetDir, $fileName);
 
             if (!$this->renameIfExist && file_exists($targetFilePath)) {
                 throw new Exception($this->trans("A file with this name already exists."));
@@ -109,7 +112,6 @@ class UploadImage
 
     public function setTargetDir(string $targetDir): void
     {
-        $targetDir = rtrim($targetDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $this->validateDirectory($targetDir);
         $this->targetDir = $targetDir;
     }
@@ -160,8 +162,33 @@ class UploadImage
         }
     }
 
+    public function joinPaths(string ...$parts): string
+    {
+        $clean = [];
+
+        foreach ($parts as $i => $part) {
+            $part = str_replace('\\', '/', $part);
+
+            if ($i === 0) {
+                $part = rtrim($part, '/');
+            } else {
+                $part = trim($part, '/');
+            }
+
+            if ($part !== '') {
+                $clean[] = $part;
+            }
+        }
+
+        return implode('/', $clean);
+    }
+
+    // ===== Private =====
+
     private function validateDirectory(string $directory): void
     {
+        $directory = rtrim(str_replace('\\', '/', $directory), '/');
+
         if (!is_dir($directory) && !mkdir($directory, 0o755, true)) {
             throw new Exception($this->trans("Failed to create directory: $directory"));
         }

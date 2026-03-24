@@ -454,6 +454,29 @@ final class FileSystem
     }
 
     /**
+     * Usuwa katalog jeśli jest pusty.
+     *
+     * @param string $path
+     * @return void
+     */
+    public function deleteDirIfEmpty(string $path): void
+    {
+        if (!is_dir($path)) {
+            return;
+        }
+
+        $files = scandir($path);
+
+        if ($files === false) {
+            return;
+        }
+
+        if (count($files) === 2) {
+            rmdir($path);
+        }
+    }
+
+    /**
      * Zwraca listę katalogów w katalogu (tylko katalogi, bez rekursji)
      *
      * @param string $directory

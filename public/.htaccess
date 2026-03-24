@@ -14,7 +14,6 @@
   # For domain installation (e.g., https://yourdomain.com) set: RewriteBase /
   # For directory/localhost installations (e.g., "dbmframework" folder): RewriteBase /dbmframework/public/
   # RewriteBase /public/
-  RewriteBase /_dbmframework/public/
 
   # Optional: Uncomment if needed.
 

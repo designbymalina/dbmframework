@@ -44,9 +44,9 @@ use Exception;
 
 class ResizeUploadImage
 {
-    private const DIR_ORIGINAL = 'original/';
-    private const DIR_PHOTO = 'photo/';
-    private const DIR_THUMB = 'thumb/';
+    private const DIR_ORIGINAL = 'original';
+    private const DIR_PHOTO = 'photo';
+    private const DIR_THUMB = 'thumb';
     private const ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp"];
 
     private int $maxLength = 30;
@@ -64,8 +64,10 @@ class ResizeUploadImage
      * @return array<string, mixed>
      * @throws Exception
      */
-    public function createImages(array $file, string $targetDir = 'upload/'): array
+    public function createImages(array $file, string $targetDir = 'upload'): array
     {
+        $targetDir = $this->validateBasePath($targetDir);
+
         if (!isset($file['tmp_name'], $file['name'], $file['size'])) {
             return ['status' => 'danger', 'message' => $this->trans('Invalid file upload.')];
         }
@@ -89,9 +91,10 @@ class ResizeUploadImage
         }
 
         $newFilename = $imageName . '_' . uniqid() . '.' . $imageExt;
-        $targetOriginal = $targetDir . self::DIR_ORIGINAL . $newFilename;
-        $targetPhoto = $targetDir . self::DIR_PHOTO . $newFilename;
-        $targetThumb = $targetDir . self::DIR_THUMB . $newFilename;
+
+        $targetOriginal = $this->joinPaths($targetDir, self::DIR_ORIGINAL, $newFilename);
+        $targetPhoto = $this->joinPaths($targetDir, self::DIR_PHOTO, $newFilename);
+        $targetThumb = $this->joinPaths($targetDir, self::DIR_THUMB, $newFilename);
 
         try {
             if (!empty($errorCheck = $this->checkFolders($targetDir))) {
@@ -246,14 +249,21 @@ class ResizeUploadImage
     private function checkFolders(string $basePath): array
     {
         foreach ([self::DIR_ORIGINAL, self::DIR_PHOTO, self::DIR_THUMB] as $dir) {
-            if (!file_exists($basePath . $dir)) {
-                if (!mkdir($basePath . $dir, 0o777, true)) {
+            $fullPath = $this->joinPaths($basePath, $dir);
+
+            if (!file_exists($fullPath)) {
+                if (!mkdir($fullPath, 0o777, true)) {
                     return [
                         'status' => 'danger',
-                        'message' => sprintf($this->trans("RROR! Unable to create folder %s%s."), $basePath, $dir)];
+                        'message' => sprintf(
+                            $this->trans("ERROR! Unable to create folder %s."),
+                            $fullPath
+                        ),
+                    ];
                 }
             }
         }
+
         return [];
     }
 
@@ -266,5 +276,41 @@ class ResizeUploadImage
     private function trans(string $key): string
     {
         return $this->translations[$this->lang][$key] ?? $key;
+    }
+
+    private function joinPaths(string ...$parts): string
+    {
+        $clean = [];
+
+        foreach ($parts as $i => $part) {
+            $part = str_replace('\\', '/', $part);
+
+            if ($i === 0) {
+                $part = rtrim($part, '/');
+            } else {
+                $part = trim($part, '/');
+            }
+
+            if ($part !== '') {
+                $clean[] = $part;
+            }
+        }
+
+        return implode('/', $clean);
+    }
+
+    private function validateBasePath(string $path): string
+    {
+        $path = trim($path);
+
+        if ($path === '') {
+            throw new Exception('Target directory cannot be empty.');
+        }
+
+        if (str_contains($path, '..')) {
+            throw new Exception('Invalid path.');
+        }
+
+        return $path;
     }
 }

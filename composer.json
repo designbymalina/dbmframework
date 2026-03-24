@@ -1,20 +1,21 @@
 {
     "name": "designbymalina/dbmframework",
-    "description": "DbM Framework - Modułowy monolit PHP z opcjonalnym CMS",
+    "description": "DbM Framework - Micro framework with optional CMS",
     "keywords": [
-        "dbm framework",
-        "php framework",
-        "framework",
         "php",
-        "modułowy monolit",
-        "cms"
+        "framework",
+        "micro-framework",
+        "cms",
+        "modular-monolith",
+        "dbm-framework",
+        "lightweight"
     ],
     "homepage": "https://github.com/designbymalina/dbmframework",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Arthur Malinowski",
+            "name": "Artur Malinowski",
             "homepage": "https://dbm.org.pl",
             "role": "developer"
         }
@@ -34,9 +35,7 @@
         "psr-4": {
             "App\\": "src/",
             "Dbm\\": "application/",
-            "Mod\\": "modules/",
-            "Dbm\\SearchEngine\\": "libraries/designbymalina/searchengine/src/",
-            "Dbm\\DataTables\\": "libraries/designbymalina/datatables/src/"
+            "Mod\\": "modules/"
         }
     },
     "autoload-dev": {
