@@ -50,29 +50,35 @@ final class FinishStep extends AbstractInstallerStep
         $session->setSession(self::SESSION_ACTIVE, true);
 
         if ($this->isCompleted()) {
+            $actions = [
+                [
+                    'label' => 'installer.button.home_page',
+                    'class' => 'btn-light dbm-btn-gradient',
+                    'path' => 'home',
+                ],
+            ];
+
+            // Tylko jeśli NIE ma admina
+            if (!$this->isAdminInstalled()) {
+                $actions[] = [
+                    'label' => 'installer.button.add_modules',
+                    'class' => 'btn-dark',
+                    'path' => 'install_restart',
+                ];
+            }
 
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'success',
                 'text' => 'installer.alert.installation_success',
-                'actions' => [
-                    [
-                        'label' => 'installer.button.home_page',
-                        'class' => 'btn-light dbm-btn-gradient',
-                        'path' => 'home',
-                    ],
-                    [
-                        'label' => 'installer.button.add_modules',
-                        'class' => 'btn-dark',
-                        'path' => 'install_restart',
-                    ],
-                ],
+                'actions' => $actions,
             ]);
 
             $session->unsetSession(self::SESSION_ACTIVE);
             return;
         }
 
+        // @INFO Można doprecyzować "text" -> is admin installed or not.
         $this->setPayload([
             'type' => InstallerConstant::TEXT,
             'text' => 'installer.step.finish.content',
@@ -88,7 +94,6 @@ final class FinishStep extends AbstractInstallerStep
         $registry = $this->container->get(ModuleRegistry::class);
 
         if (!$this->modulesInstalledCorrectly($registry)) {
-
             $this->setPayload([
                 'type' => InstallerConstant::ALERT,
                 'class' => 'danger',
@@ -141,5 +146,18 @@ final class FinishStep extends AbstractInstallerStep
         $modules['installer']['enabled'] = false;
 
         $cache->store($modules);
+    }
+
+    private function isAdminInstalled(): bool
+    {
+        $lockFile = PathResolver::installerLock();
+
+        if (!is_file($lockFile)) {
+            return false;
+        }
+
+        $data = json_decode(file_get_contents($lockFile), true);
+
+        return ($data['admin'] ?? false) === true;
     }
 }
