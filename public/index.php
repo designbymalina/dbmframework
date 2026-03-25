@@ -18,6 +18,7 @@ use Dbm\Core\DependencyContainer;
 use Dbm\Core\DotEnv;
 use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Exceptions\ExceptionHandler;
+use Dbm\System\InstallationRequirements;
 
 // Output buffering
 ob_start();
@@ -42,11 +43,12 @@ $pathConfig = BASE_DIRECTORY . '/.env';
 $pathComposerAutoload = BASE_DIRECTORY . '/vendor/autoload.php';
 
 try {
-    // Load configuration
-    configurationSettings($pathConfig);
-
     // Autoloading with or without Composer
     autoloadingWithWithoutComposer($pathComposerAutoload);
+
+    // Check installation requirements
+    $requirements = new InstallationRequirements();
+    $requirements->check($pathConfig);
 
     // Load environment variables
     $dotenv = new DotEnv($pathConfig);

@@ -89,13 +89,6 @@ function logErrorToFile(int $errLevel, string $errMessage, string $errFile, int 
 
 ### Bootstrap / env functions ###
 
-function configurationSettings(string $pathConfig): void
-{
-    if (!file_exists($pathConfig)) {
-        die('CONFIGURATION! Configure the application to run the program, then rename the .env.example file to .env.');
-    }
-}
-
 /**
  * Autoloading with without Composer
  *

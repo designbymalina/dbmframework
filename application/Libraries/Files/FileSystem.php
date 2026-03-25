@@ -22,6 +22,9 @@ use RuntimeException;
  */
 final class FileSystem
 {
+    private int $defaultDirMode = 0o775;
+    private int $defaultFileMode = 0o644;
+
     /**
      * Sprawdza, czy plik istnieje.
      *
@@ -31,6 +34,17 @@ final class FileSystem
     public function fileExists(string $path): bool
     {
         return file_exists($path);
+    }
+
+    /**
+     * Sprawdza, czy podana ścieżka jest plikiem.
+     *
+     * @param string $path
+     * @return bool
+     */
+    public function isFile(string $path): bool
+    {
+        return is_file($path);
     }
 
     /**
@@ -66,10 +80,7 @@ final class FileSystem
             throw new RuntimeException("Source file not found: $from");
         }
 
-        $dir = dirname($to);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0o755, true);
-        }
+        $this->ensureDirectory(dirname($to));
 
         if (!copy($from, $to)) {
             throw new RuntimeException("Failed to copy file: $from → $to");
@@ -81,24 +92,21 @@ final class FileSystem
      *
      * @param string $filePath Ścieżka do pliku.
      * @param string $fileContent Treść do zapisania.
-     * @param int $chmod Uprawnienia dla pliku i katalogu.
+     * @param int $flags Tryb zapisu (np. LOCK_EX).
      * @throws RuntimeException Jeśli nie można utworzyć katalogu, zapisać lub ustawić uprawnień.
      */
-    public function saveFile(string $filePath, string $fileContent, int $chmod = 0o644, int $flags = LOCK_EX): void
-    {
-        $directory = dirname($filePath);
-
-        if (!is_dir($directory) && !mkdir($directory, $chmod, true) && !is_dir($directory)) {
-            throw new RuntimeException("Failed to create directory: $directory");
-        }
+    public function saveFile(
+        string $filePath,
+        string $fileContent,
+        int $flags = LOCK_EX
+    ): void {
+        $this->ensureDirectory(dirname($filePath));
 
         if (file_put_contents($filePath, $fileContent, $flags) === false) {
             throw new RuntimeException("Unable to write to file: $filePath");
         }
 
-        if (!chmod($filePath, $chmod)) {
-            throw new RuntimeException("Failed to set permissions for file: $filePath");
-        }
+        @chmod($filePath, $this->defaultFileMode);
     }
 
     /**
@@ -224,17 +232,13 @@ final class FileSystem
      * Zapisuje zawartość do pliku z blokadą zapisu.
      * Gwarantuje, że tylko jeden proces zapisuje w danym momencie.
      *
-     * @param string $filePath Ścieżka do pliku.
+     * @param string $filePath Ścieżka do pliku
      * @param string $content Zawartość
-     * @param string $mode Tryb odczytu (np. 'w', 'wb').
-     * @param int $chmod Uprawnienia
+     * @param string $mode Tryb odczytu (np. 'w', 'wb')
      */
-    public function writeFileStream(string $filePath, string $content, string $mode = 'w', int $chmod = 0o644): void
+    public function writeFileStream(string $filePath, string $content, string $mode = 'w'): void
     {
-        $directory = dirname($filePath);
-        if (!is_dir($directory) && !mkdir($directory, 0o755, true) && !is_dir($directory)) {
-            throw new RuntimeException("Failed to create directory: $directory");
-        }
+        $this->ensureDirectory(dirname($filePath));
 
         $handle = fopen($filePath, $mode);
         if ($handle === false) {
@@ -258,7 +262,7 @@ final class FileSystem
         flock($handle, LOCK_UN);
         fclose($handle);
 
-        chmod($filePath, $chmod);
+        @chmod($filePath, $this->defaultFileMode);
     }
 
     /**
@@ -371,20 +375,6 @@ final class FileSystem
     }
 
     /**
-     * Tworzy nowy katalog.
-     *
-     * @param string $path
-     * @param int $mode
-     * @return void
-     */
-    public function ensureDir(string $path, int $mode = 0o777): void
-    {
-        if (!is_dir($path)) {
-            mkdir($path, $mode, true);
-        }
-    }
-
-    /**
      * Kopiuje katalog rekursywnie.
      *
      * @param string $from
@@ -397,9 +387,7 @@ final class FileSystem
             return;
         }
 
-        if (!is_dir($to)) {
-            mkdir($to, 0o755, true);
-        }
+        $this->ensureDirectory($to);
 
         $files = scandir($from);
 
@@ -528,7 +516,7 @@ final class FileSystem
             throw new RuntimeException('Not an uploaded file.');
         }
 
-        $this->ensureDir(dirname($target));
+        $this->ensureDirectory(dirname($target));
 
         if (!move_uploaded_file($tmp, $target)) {
             throw new RuntimeException('Unable to move uploaded file.');
@@ -539,23 +527,25 @@ final class FileSystem
      * Tworzy katalog, jeśli nie istnieje i ustawia uprawnienia.
      *
      * @param string $path Ścieżka do katalogu.
-     * @param int $mode Uprawnienia katalogu (domyślnie 755).
      */
-    public function mkdir(string $path, int $mode = 0o755): void
+    private function ensureDirectory(string $path): void
     {
-        if (!@mkdir($path, $mode, true) && !is_dir($path)) {
-            throw new RuntimeException("Cannot create directory: {$path}");
+        if (!is_dir($path)) {
+            if (!@mkdir($path, $this->defaultDirMode, true) && !is_dir($path)) {
+                throw new RuntimeException("Cannot create directory: {$path}");
+            }
         }
     }
 
     /**
-     * Sprawdza, czy podana ścieżka jest plikiem.
-     * @param string $path
-     * @return bool
+     * Normalizuje ścieżkę do formatu zgodnego z systemem operacyjnym.
+     *
+     * @param string $path Ścieżka do normalizacji.
+     * @return string Normalizowana ścieżka.
      */
-    public function isFile(string $path): bool
+    public function normalizePath(string $path): string
     {
-        return is_file($path);
+        return rtrim(str_replace('\\', '/', $path), '/');
     }
 
     /**
@@ -576,17 +566,6 @@ final class FileSystem
             return null;
         }
 
-        return str_replace(PHP_EOL, '<br>', $content);
-    }
-
-    /**
-     * Normalizuje ścieżkę do formatu zgodnego z systemem operacyjnym.
-     *
-     * @param string $path Ścieżka do normalizacji.
-     * @return string Normalizowana ścieżka.
-     */
-    public function normalizePath(string $path): string
-    {
-        return rtrim(str_replace('\\', '/', $path), '/');
+        return str_replace(PHP_EOL, '<br />', $content);
     }
 }

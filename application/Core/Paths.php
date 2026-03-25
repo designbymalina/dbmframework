@@ -11,14 +11,14 @@
  *
  * Klasa do wdrożenia zamiast BASE_DIRECTORY itp..
  * - - -
- * 
+ *
  * Przykład jak używać w kodzie
- * 
+ *
  * Zamiast:
  * BASE_DIRECTORY . '/application/start.php'
  * Używaj:
  * Paths::appPath() . '/start.php'
- * 
+ *
  * @INFO Będąc przy start.php - urosło do takich rozmiarów,
  * że warto przenieść do klasy/klas o osobnej odpowiedzialności.
  * Zmienić na 'bootstrap', może dopisać kernel.
