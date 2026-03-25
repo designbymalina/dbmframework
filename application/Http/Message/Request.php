@@ -110,7 +110,7 @@ use SimpleXMLElement;
  * access to HTTP request data (headers, query params, POST, JSON,
  * files, and client/server information). Fully compatible with PSR-7.
  */
-class Request extends Message implements ExtendedRequestInterface
+final class Request extends Message implements ExtendedRequestInterface
 {
     /** @var UriInterface */
     private UriInterface $uri;

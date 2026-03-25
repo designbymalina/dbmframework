@@ -59,7 +59,7 @@ final class ActionArgumentResolver
         }
 
         // Request injection
-        if ($type && !$type->isBuiltin()) {
+        if ($type instanceof \ReflectionNamedType && !$type->isBuiltin()) {
             $class = $type->getName();
 
             if ($class === Request::class) {

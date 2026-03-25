@@ -21,7 +21,7 @@ use Psr\Http\Message\StreamInterface;
  * A class representing an HTTP response compliant with PSR-7 (ResponseInterface),
  * extended with DbM framework functions.
  */
-class Response extends Message implements ExtendedResponseInterface
+final class Response extends Message implements ExtendedResponseInterface
 {
     private int $statusCode;
     private string $reasonPhrase = '';

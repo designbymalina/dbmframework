@@ -80,7 +80,7 @@ final class FileSystem
             throw new RuntimeException("Source file not found: $from");
         }
 
-        $this->ensureDirectory(dirname($to));
+        $this->ensureDir(dirname($to));
 
         if (!copy($from, $to)) {
             throw new RuntimeException("Failed to copy file: $from → $to");
@@ -100,7 +100,7 @@ final class FileSystem
         string $fileContent,
         int $flags = LOCK_EX
     ): void {
-        $this->ensureDirectory(dirname($filePath));
+        $this->ensureDir(dirname($filePath));
 
         if (file_put_contents($filePath, $fileContent, $flags) === false) {
             throw new RuntimeException("Unable to write to file: $filePath");
@@ -238,7 +238,7 @@ final class FileSystem
      */
     public function writeFileStream(string $filePath, string $content, string $mode = 'w'): void
     {
-        $this->ensureDirectory(dirname($filePath));
+        $this->ensureDir(dirname($filePath));
 
         $handle = fopen($filePath, $mode);
         if ($handle === false) {
@@ -387,7 +387,7 @@ final class FileSystem
             return;
         }
 
-        $this->ensureDirectory($to);
+        $this->ensureDir($to);
 
         $files = scandir($from);
 
@@ -516,7 +516,7 @@ final class FileSystem
             throw new RuntimeException('Not an uploaded file.');
         }
 
-        $this->ensureDirectory(dirname($target));
+        $this->ensureDir(dirname($target));
 
         if (!move_uploaded_file($tmp, $target)) {
             throw new RuntimeException('Unable to move uploaded file.');
@@ -528,7 +528,7 @@ final class FileSystem
      *
      * @param string $path Ścieżka do katalogu.
      */
-    private function ensureDirectory(string $path): void
+    public function ensureDir(string $path): void
     {
         if (!is_dir($path)) {
             if (!@mkdir($path, $this->defaultDirMode, true) && !is_dir($path)) {

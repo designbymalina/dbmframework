@@ -36,14 +36,12 @@ class TemplateCompiler
     /**
      * Kompiluje wskazany szablon do kodu PHP (zwraca wynikowy tekst).
      *
-     * @param string $templateName Nazwa szablonu (np. 'main.phtml')
+     * @param string $templateFile Nazwa szablonu (np. 'main.phtml')
      * @return string Zawartość skompilowanego pliku PHP
      * @throws TemplateException Jeśli plik nie istnieje lub nie można go odczytać
      */
     public function compile(string $templateFile): string
     {
-        // dump($templateFile);
-
         if (!is_file($templateFile)) {
             throw new TemplateException("Template file not found: {$templateFile}");
         }

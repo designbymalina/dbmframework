@@ -27,8 +27,7 @@ class ApiException extends Exception
         parent::__construct($message, $code, $previous);
         (new Logger())->error(
             "API Exception: {message} ({code})",
-            ['message' => $message, 'code' => $code],
-            'api_exceptions'
+            ['message' => $message, 'code' => $code]
         );
     }
 }

@@ -203,7 +203,7 @@ abstract class TemplateFeature
     /**
      * Obsługuje meta tagi strony, korzystając z tłumaczeń i specyficznych reguł.
      */
-    public function meta(string $key, array $overwrite = [], ?array $sprint = null): string
+    public function meta(string $key, array $overwrite = []): string
     {
         $meta = $overwrite['meta'] ?? [];
 
@@ -226,7 +226,7 @@ abstract class TemplateFeature
         }
 
         // Sprawdzamy czy meta istnieje, jeśli nie – zwracamy pusty string
-        $value = $this->trans($key, $meta, $sprint);
+        $value = $this->trans($key, $meta);
         return $value !== $key ? $value : '';
     }
 
@@ -416,7 +416,7 @@ abstract class TemplateFeature
     public function replaceContent(string $content, string $space = '', string $searchReplace = '<!--REPLACE_CONTENT-->', string $replaceReplace = ''): ?string
     {
         if (!empty($content)) {
-            $space = is_numeric($space) ? str_repeat('    ', (int) $space) : $space ?? '';
+            $space = is_numeric($space) ? str_repeat('    ', (int) $space) : $space;
             $search = [PHP_EOL, '[URL]', $searchReplace];
             $replace = [PHP_EOL . $space, getenv('APP_URL'), trim($replaceReplace)];
 
@@ -576,7 +576,6 @@ abstract class TemplateFeature
      */
     public function htmlLanguage(string $asset, ?string $space = null, ?string $class = null, ?string $version = null): ?string
     {
-        /** @var \Dbm\Http\Controller\BaseController $this */
         $availableLanguages = LanguageHelper::getAvailableLanguages();
         $defaultLanguage = LanguageHelper::getDefaultLanguage();
 

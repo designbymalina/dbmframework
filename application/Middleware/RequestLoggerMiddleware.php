@@ -55,7 +55,8 @@ class RequestLoggerMiddleware
             }
         }
 
-        /** @var \Dbm\Http\Message\Request|Psr\Http\Message\RequestInterface $request */
+        // @INFO -> @var \Dbm\Http\Message\Request|\Psr\Http\Message\RequestInterface $request
+        /** @var \Dbm\Http\Message\Request $request */
         $server = $request->getServerParams();
         $ip = $request->getClientIp() ?? ($server['REMOTE_ADDR'] ?? 'unknown');
         $method = $request->getMethod() ?? 'GET';

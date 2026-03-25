@@ -29,8 +29,9 @@ class JwtAuthMiddleware
 
     public function __invoke(RequestInterface $request): ?array
     {
-        /** @var \Dbm\Http\Message\Request|RequestInterface $request */
-        $auth = $request->getAuthorizationHeader();
+        // @INFO -> @var \Dbm\Http\Message\Request|\Psr\Http\Message\RequestInterface $request
+        /** @var \Dbm\Http\Message\Request $request */
+        $auth = $request->getAuthorizationHeader(); // @INFO Można zamienić na PSR-7 -> $request->getHeaderLine('Authorization');
 
         if (!$auth || !str_starts_with($auth, 'Bearer ')) {
             Response::json(['error' => 'Missing token'], 401);

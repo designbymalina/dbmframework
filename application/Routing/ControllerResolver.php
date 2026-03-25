@@ -84,7 +84,7 @@ final class ControllerResolver
     {
         $type = $param->getType();
 
-        if ($type && !$type->isBuiltin()) {
+        if ($type instanceof \ReflectionNamedType && !$type->isBuiltin()) {
             $class = $type->getName();
 
             return $this->container->has($class)

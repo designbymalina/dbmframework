@@ -97,10 +97,8 @@ final class UrlGenerator implements UrlGeneratorInterface
         $text = preg_replace($allowedPattern, '', $text);
 
         // Remove unwanted words
-        if (!empty($arrayRemove)) {
-            $removePattern = "/\b(" . implode("|", $arrayRemove) . ")\b/";
-            $text = trim(preg_replace($removePattern, '', $text));
-        }
+        $removePattern = "/\b(" . implode("|", $arrayRemove) . ")\b/";
+        $text = trim(preg_replace($removePattern, '', $text));
 
         // Limit length of the text
         if (mb_strlen($text) > $limit) {

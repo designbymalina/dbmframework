@@ -29,7 +29,7 @@ use Psr\Http\Message\RequestInterface;
 class CorsMiddleware
 {
     /**
-     * @param \Dbm\Http\Message\Response|RequestInterface $request
+     * @param RequestInterface $request
      * @return null|mixed  // null = continue, otherwise router may short-circuit
      */
     public function __invoke(RequestInterface $request)

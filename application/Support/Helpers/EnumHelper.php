@@ -58,8 +58,11 @@ class EnumHelper
         }
 
         $result = [];
+
         foreach ($cases as $case) {
-            $result[$case->name] = $case->value;
+            $result[$case->name] = $case instanceof \BackedEnum
+                ? $case->value
+                : $case->name;
         }
 
         return self::$enumCache[$enumClass] = $result;

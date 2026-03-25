@@ -119,7 +119,7 @@ final class DependencyContainer
         foreach ($ctor->getParameters() as $param) {
             $type = $param->getType();
 
-            if ($type === null || $type->isBuiltin()) {
+            if (!$type instanceof \ReflectionNamedType || $type->isBuiltin()) {
                 if ($param->isDefaultValueAvailable()) {
                     $args[] = $param->getDefaultValue();
                     continue;

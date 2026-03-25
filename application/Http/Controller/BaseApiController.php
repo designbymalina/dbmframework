@@ -116,7 +116,7 @@ abstract class BaseApiController implements BaseApiInterface
         return new Response(
             $status,
             $headers,
-            new Stream($data ?? '')
+            new Stream($data)
         );
     }
 }

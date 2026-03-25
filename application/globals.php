@@ -21,6 +21,8 @@ use Dbm\Localization\Translation;
 use Dbm\Views\Flash\FlashBag;
 use Dbm\Views\TemplateEngine;
 
+/** @var \Dbm\Core\DependencyContainer $container */
+
 // Initializes TemplateEngine and registers global providers
 $view = $container->get(TemplateEngine::class);
 
