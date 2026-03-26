@@ -1,17 +1,9 @@
 {
     "name": "designbymalina/dbmframework",
     "description": "DbM Framework - Micro framework with optional CMS",
-    "keywords": [
-        "php",
-        "framework",
-        "micro-framework",
-        "cms",
-        "modular-monolith",
-        "dbm-framework",
-        "lightweight"
-    ],
+    "keywords": ["framework", "dbm-framework", "micro-framework", "php", "cms", "modular-monolith"],
     "homepage": "https://github.com/designbymalina/dbmframework",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
     "authors": [
         {
