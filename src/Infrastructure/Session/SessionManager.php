@@ -133,4 +133,13 @@ class SessionManager
         unset($_SESSION[$key]);
         return $value;
     }
+
+    public function regenerateId(bool $deleteOld = true): void
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        session_regenerate_id($deleteOld);
+    }
 }
