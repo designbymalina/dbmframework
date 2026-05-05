@@ -1,0 +1,269 @@
+<?php
+
+/**
+ * Library: Image Upload
+ * A class designed for the DbM Framework and for use in any PHP application.
+ *
+ * @package Dbm\Infrastructure\Upload\UploadImage
+ * @author Artur Malinowski
+ * @copyright Design by Malina (All Rights Reserved)
+ * @license MIT
+ * @link https://www.dbm.org.pl
+ *
+ * Example usage:
+ * ```php
+ * $uploadImage = new UploadImage();
+ *
+ * $uploadImage->setTargetDir('images/'); // optional
+ * $uploadImage->setAllowedTypes(['jpg', 'png', 'webp']); // optional
+ * $uploadImage->setMaxFileSize(); // optional
+ * $uploadImage->setMaxWidth(); // optional
+ * $uploadImage->setMaxHeight(); // optional
+ * $uploadImage->setRenameIfExist(); // optional
+ * $uploadImage->setTranslator([
+ *  'pl' => [
+ *   'Invalid file upload.' => 'Nieprawidłowy plik.',
+ *   // etc.
+ *  ],
+ * ], 'pl'); // optional
+ *
+ * $result = $uploadImage->uploadImage($uploadedFile);
+ *
+ * if ($result['status'] === 'success') {
+ *     echo "Uploaded file: " . $result['data'];
+ * } else {
+ *     echo "Error: " . $result['message'];
+ * }
+ * ```
+ */
+
+declare(strict_types=1);
+
+namespace Dbm\Infrastructure\Upload;
+
+use Exception;
+
+class UploadImage
+{
+    private string $targetDir = 'upload';
+    /** @var array<int, string> */
+    private array $allowedTypes = ["jpg", "jpeg", "png", "gif", "webp"];
+    private int $maxFileSize = 6291456; // 6MB (1MB = 1048576 in bytes)
+    private ?int $maxWidth = null;
+    private ?int $maxHeight = null;
+    private bool $renameIfExist = false;
+    /** @var array<string, array<string, string>> */
+    private array $translations = [];
+    private string $lang = 'en';
+
+    /**
+     * @param array<string, mixed> $file
+     * @return array<string, mixed>
+     * @throws Exception
+     */
+    public function uploadImage(array $file): array
+    {
+        try {
+            if (!isset($file['tmp_name'], $file['name'], $file['size'])) {
+                throw new Exception($this->trans('Invalid file upload.'));
+            }
+
+            $this->validateDirectory($this->targetDir);
+            $this->validateFileSize($file['size']);
+
+            $fileTempName = $file['tmp_name'];
+            $fileName = $this->sanitizeFileName(basename($file['name']));
+            $fileName = strtolower($fileName);
+
+            $imageExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            $this->validateAllowedTypes($imageExt);
+
+            $this->validateImageDimensions($fileTempName);
+
+            // INFO! Fragment - powtarzam raz po raz $targetFilePath - czy Ok?
+            $targetFilePath = $this->joinPaths($this->targetDir, $fileName);
+
+            if ($this->renameIfExist && file_exists($targetFilePath)) {
+                $fileName = $this->generateUniqueFileName($fileName);
+            }
+
+            $targetFilePath = $this->joinPaths($this->targetDir, $fileName);
+
+            if (!$this->renameIfExist && file_exists($targetFilePath)) {
+                throw new Exception($this->trans("A file with this name already exists."));
+            }
+
+            if (!move_uploaded_file($fileTempName, $targetFilePath)) {
+                throw new Exception($this->trans("Image upload failed! Try again."));
+            }
+
+            return [
+                'status' => 'success',
+                'message' => $this->trans("Image uploaded successfully."),
+                'data' => $fileName,
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 'danger',
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    public function setTargetDir(string $targetDir): void
+    {
+        $this->validateDirectory($targetDir);
+        $this->targetDir = $targetDir;
+    }
+
+    /**
+     * @param array<int, string> $allowedTypes
+     */
+    public function setAllowedTypes(array $allowedTypes): void
+    {
+        $this->allowedTypes = array_filter($allowedTypes, 'is_string');
+    }
+
+    public function setMaxFileSize(int $maxFileSize): void
+    {
+        if ($maxFileSize > 0) {
+            $this->maxFileSize = $maxFileSize;
+        }
+    }
+
+    public function setMaxWidth(?int $maxWidth): void
+    {
+        $this->maxWidth = $maxWidth;
+    }
+
+    public function setMaxHeight(?int $maxHeight): void
+    {
+        $this->maxHeight = $maxHeight;
+    }
+
+    public function setRenameIfExist(bool $rename): void
+    {
+        $this->renameIfExist = $rename;
+    }
+
+    /**
+     * @param array<string, array<string, string>> $translations
+     */
+    public function setTranslator(array $translations, ?string $lang = null): void
+    {
+        $this->translations = $translations;
+
+        if ($lang !== null) {
+            $lang = strtolower($lang);
+
+            if (array_key_exists($lang, $translations)) {
+                $this->lang = $lang;
+            }
+        }
+    }
+
+    public function joinPaths(string ...$parts): string
+    {
+        $clean = [];
+
+        foreach ($parts as $i => $part) {
+            $part = str_replace('\\', '/', $part);
+
+            if ($i === 0) {
+                $part = rtrim($part, '/');
+            } else {
+                $part = trim($part, '/');
+            }
+
+            if ($part !== '') {
+                $clean[] = $part;
+            }
+        }
+
+        return implode('/', $clean);
+    }
+
+    // ===== Private =====
+
+    private function validateDirectory(string $directory): void
+    {
+        $directory = rtrim(str_replace('\\', '/', $directory), '/');
+
+        if (!is_dir($directory) && !mkdir($directory, 0o755, true)) {
+            throw new Exception($this->trans("Failed to create directory: $directory"));
+        }
+    }
+
+    private function validateFileSize(int $size): void
+    {
+        if ($size > $this->maxFileSize) {
+            throw new Exception($this->trans('File exceeds the maximum allowed size of ' . $this->formatFileSize($this->maxFileSize)));
+        }
+    }
+
+    private function validateAllowedTypes(string $imageExt): void
+    {
+        if (!in_array($imageExt, $this->allowedTypes)) {
+            throw new Exception($this->trans('Allowed extensions are: ' . implode(', ', $this->allowedTypes)));
+        }
+    }
+
+    private function validateImageDimensions(string $filePath): void
+    {
+        $imageInfo = getimagesize($filePath);
+
+        if ($imageInfo === false) {
+            throw new Exception($this->trans("Uploaded file is not a valid image."));
+        }
+        if ($this->maxWidth && $imageInfo[0] > $this->maxWidth) {
+            throw new Exception($this->trans("Image width exceeds the maximum allowed width of {$this->maxWidth} pixels."));
+        }
+        if ($this->maxHeight && $imageInfo[1] > $this->maxHeight) {
+            throw new Exception($this->trans("Image height exceeds the maximum allowed height of {$this->maxHeight} pixels."));
+        }
+    }
+
+    private function generateUniqueFileName(string $fileName): string
+    {
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileBaseName = strtolower(pathinfo($fileName, PATHINFO_FILENAME));
+
+        if (file_exists($this->targetDir . $fileName)) {
+            return $fileBaseName . '_' . uniqid() . '.' . $fileExtension;
+        }
+
+        return $fileName;
+    }
+
+    private function sanitizeFileName(string $fileName): string
+    {
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileBaseName = strtolower(pathinfo($fileName, PATHINFO_FILENAME));
+
+        $fileBaseName = preg_replace('/[^a-z0-9-_]/', '_', $fileBaseName);
+        $fileBaseName = preg_replace('/_+/', '_', $fileBaseName);
+
+        $fileBaseName = substr($fileBaseName, 0, 100);
+
+        return $fileBaseName . '.' . $fileExtension;
+    }
+
+    private function formatFileSize(int $bytes): string
+    {
+        if ($bytes <= 0) {
+            return '0 B';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        $factor = (int) floor(log($bytes, 1024));
+        $factor = min($factor, count($units) - 1);
+
+        return sprintf('%.2f %s', $bytes / (1024 ** $factor), $units[$factor]);
+    }
+
+    private function trans(string $key): string
+    {
+        return $this->translations[$this->lang][$key] ?? $key;
+    }
+}

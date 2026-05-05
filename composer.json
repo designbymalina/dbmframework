@@ -1,0 +1,49 @@
+{
+  "name": "designbymalina/dbmframework",
+  "description": "DBM Framework",
+  "keywords": ["framework", "psr", "http", "router", "di"],
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Artur Malinowski",
+      "homepage": "https://dbm.org.pl",
+      "role": "developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Dbm\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "psr/http-message": "^2.0",
+    "psr/http-server-middleware": "^1.0",
+    "psr/http-server-handler": "^1.0",
+    "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.0",
+    "psr/log": "^1.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0",
+    "phpstan/phpstan": "^1.10",
+    "friendsofphp/php-cs-fixer": "^3.59"
+  },
+  "scripts": {
+      "test": "phpunit",
+      "stan": "phpstan analyse src",
+      "fix": "php-cs-fixer fix"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Application: DbM Framework
+ * A lightweight PHP framework for building web applications.
+ *
+ * @author Artur Malinowski
+ * @copyright Design by Malina (All Rights Reserved)
+ * @license MIT
+ * @link https://www.dbm.org.pl
+ */
+
+declare(strict_types=1);
+
+namespace Dbm\Http\Contracts;
+
+interface HttpResponseInterface
+{
+    public function statusCode(): int;
+
+    public function body(): string;
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function headers(): array;
+}
