@@ -25,10 +25,6 @@ final class UrlGenerator implements UrlGeneratorInterface
         'za', 'od', 'dla', 'ku', 'czy', 'by', 'aby', 'oraz', 'lub', 'itp.',
     ];
 
-    // private string $basePath = '';
-    private string $scheme = 'http';
-    private string $host = 'localhost';
-
     protected static ?string $currentRouteName = null;
 
     /** @var array<string, string> */
@@ -75,24 +71,27 @@ final class UrlGenerator implements UrlGeneratorInterface
 
     public function base(): string
     {
-        return rtrim($this->context()->basePath ?: '', '/');
+        $base = rtrim($this->context()->basePath ?: '', '/');
+
+        return $base !== '' ? $base : '/';
     }
 
     public function asset(string $path): string
     {
-        $base = $this->base();
-
-        return $base . '/' . ltrim($path, '/');
+        return rtrim($this->base(), '/') . '/' . ltrim($path, '/');
     }
 
     /**
+     * @INFO Można dodać $port -> RequestContext
+     *
      * @param array<string, mixed> $params
      */
     public function absolute(string $routeName, array $params = []): string
     {
-        $uri = $this->path($routeName, $params);
+        $ctx = $this->context();
 
-        return $this->scheme . '://' . $this->host . $uri;
+        return $ctx->scheme . '://' . rtrim($ctx->host, '/')
+            . $this->path($routeName, $params);
     }
 
     public function stripBasePath(string $path): string

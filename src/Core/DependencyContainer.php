@@ -9,7 +9,40 @@
  * @license MIT
  * @link https://www.dbm.org.pl
  *
- * @NOTE We consciously inject the methods available in DI manually into the bootstrap/services.php file
+ * Kontener DI w projekcie jest celowo uproszczony i półautomatyczny.
+ *
+ * - Serwisy NIE są rejestrowane automatycznie
+ * - Wszystkie zależności należy jawnie zdefiniować w:
+ *   bootstrap/services.php
+ *
+ * Oznacza to, że każda nowa klasa używana przez kontener (np. Middleware,
+ * Service, Handler) musi zostać ręcznie dodana do rejestru.
+ *
+ * W przeciwnym wypadku wystąpi błąd:
+ * "Service <ClassName> not found"
+ *
+ * Zalety:
+ * - bardzo niska narzutowość (brak refleksji i skanowania plików)
+ * - przewidywalny czas startu (O(liczby zarejestrowanych serwisów))
+ * - pełna kontrola nad instancjami i cyklem życia
+ * - mniejsze zużycie pamięci
+ * - łatwiejsze debugowanie
+ * - brak "magii" i ukrytej konfiguracji
+ *
+ * Ograniczenia:
+ * - konieczność ręcznej rejestracji serwisów
+ * - ryzyko błędów przy dodawaniu nowych klas
+ *
+ * Debug:
+ * Jeśli serwis nie jest znajdowany, sprawdź:
+ * 1. Czy klasa istnieje (namespace, autoload)
+ * 2. Czy została dodana w bootstrap/services.php
+ * 3. Czy composer dump-autoload zostało wykonane (przy autoload Composer)
+ *
+ * Możliwe kierunki rozwoju:
+ * - autowiring (kosztowne automatyczne wstrzykiwanie zależności)?
+ * - skanowanie katalogu src/ i autorejestracja (PSR-4)
+ * - konfiguracja oparta o atrybuty lub metadata
  */
 
 declare(strict_types=1);

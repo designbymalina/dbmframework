@@ -24,7 +24,6 @@ use Dbm\Infrastructure\Session\SessionManager;
 use Dbm\Routing\Contracts\UrlGeneratorInterface;
 use Dbm\Views\TemplateEngine;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 
 /**
  * Base controller for all HTTP (web) controllers..
@@ -200,7 +199,7 @@ abstract class BaseController implements BaseInterface, RequestAwareInterface
         }
 
         return new Response(302, [
-            'Location' => $this->url->absolute($route, $params),
+            'Location' => $this->url->path($route, $params),
         ]);
     }
 
