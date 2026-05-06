@@ -27,6 +27,12 @@ interface UrlGeneratorInterface
     public function base(): string;
 
     /**
+     * @param string $path
+     * @return string
+     */
+    public function asset(string $path): string;
+
+    /**
      * @param array<string, scalar> $params
      */
     public function absolute(string $routeName, array $params = []): string;

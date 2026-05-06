@@ -24,6 +24,11 @@ final class AppConfig
         return getenv('APP_ENV') ?: self::ENV_DEVELOPMENT;
     }
 
+    public static function isCacheEnabled(): bool
+    {
+        return strtolower((string) getenv('CACHE_ENABLED')) === 'true';
+    }
+
     public static function hasDatabase(): bool
     {
         return !empty(getenv('DB_HOST'))

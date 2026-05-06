@@ -34,7 +34,7 @@ class DebugToolbar
      * @var array{
      *     System?: array{Time: string, Memory: string},
      *     Request?: array{Status: int, Method: string, URI: string, Route: string},
-     *     App?: array{Environment: string, Debug: string},
+     *     App?: array{Environment: string, Cache: string},
      *     SQL?: array{
      *         queries: array<int, array{sql: string, time: float}>,
      *         total_time: float
@@ -142,11 +142,9 @@ class DebugToolbar
 
     private function collectApp(): void
     {
-        $env = AppConfig::getEnv();
-
         $this->collectors['App'] = [
-            'Environment' => $env,
-            'Debug' => $env === AppConfig::ENV_DEVELOPMENT ? 'true' : 'false',
+            'Environment' => AppConfig::getEnv(),
+            'Cache' => AppConfig::isCacheEnabled() ? 'enabled' : 'disabled',
         ];
     }
 
@@ -179,7 +177,7 @@ class DebugToolbar
 
         // ===== DATA =====
 
-        $imagesPath = $this->urlGenerator->base() . '/images';
+        $logoPath = $this->urlGenerator->asset('images/logo.png');
         $version = $this->getVersion();
 
         $system = $this->collectors['System'] ?? [];
@@ -194,7 +192,7 @@ class DebugToolbar
 
         $app = $this->collectors['App'] ?? [];
         $env = $app['Environment'] ?? '-';
-        $debug = $app['Debug'] ?? '-';
+        $cache = $app['Cache'] ?? '-';
 
         $sql = $this->collectors['SQL'] ?? [];
         $sqlCount = count($sql['queries'] ?? []);
@@ -209,7 +207,7 @@ class DebugToolbar
         // ===== HTML =====
 
         return <<<HTML
-            <!-- Debug Toolbar --><div id="dbmToolbar" class="dbm-toolbar"><div id="panel_app" class="dbm-toolbar-panel tb-w-25"><h4>Application Info</h4><div class="tb-info-grid"><div class="tb-info-col"><p>Environment: <strong>{$env}</strong></p><p>Debug: <strong>{$debug}</strong></p></div><div class="tb-info-col"><p>Method: <strong>{$method}</strong></p><p>Route: <strong>{$route}</strong></p></div></div><div class="tb-info-grid tb-mt-1"><div class="tb-info-col"><p class="tb-break-all">URI: <strong>{$uri}</strong></p></div></div></div>{$this->renderSqlPanel($sql, $sqlCount)}<div class="dbm-toolbar-main"><div class="dbm-toolbar-left"><div class="dbm-toolbar-item {$statusClass}" data-panel="panel_app"><span>{$status}</span></div><div class="dbm-toolbar-item {$timeClass}"><span>{$time}</span></div><div class="dbm-toolbar-item {$memoryClass}"><span>{$memory}</span></div>{$this->renderSqlItem($sqlCount, $sqlTime)}</div><div class="dbm-toolbar-right"><div class="dbm-toolbar-item"><img src="{$imagesPath}/logo.png" width="16" class="dbm-toolbar-img" alt="Logo"><span>{$version}</span></div><div id="dbmClose" class="dbm-toolbar-item dbm-close">&times;</div></div></div></div>
+            <!-- Debug Toolbar --><div id="dbmToolbar" class="dbm-toolbar"><div id="panel_app" class="dbm-toolbar-panel tb-w-25"><h4>Application Info</h4><div class="tb-info-grid"><div class="tb-info-col"><p>Environment: <strong>{$env}</strong></p><p>Cache: <strong>{$cache}</strong></p></div><div class="tb-info-col"><p>Method: <strong>{$method}</strong></p><p>Route: <strong>{$route}</strong></p></div></div><div class="tb-info-grid tb-mt-1"><div class="tb-info-col"><p class="tb-break-all">URI: <strong>{$uri}</strong></p></div></div></div>{$this->renderSqlPanel($sql, $sqlCount)}<div class="dbm-toolbar-main"><div class="dbm-toolbar-left"><div class="dbm-toolbar-item {$statusClass}" data-panel="panel_app"><span>{$status}</span></div><div class="dbm-toolbar-item {$timeClass}"><span>{$time}</span></div><div class="dbm-toolbar-item {$memoryClass}"><span>{$memory}</span></div>{$this->renderSqlItem($sqlCount, $sqlTime)}</div><div class="dbm-toolbar-right"><div class="dbm-toolbar-item"><img src="{$logoPath}" width="16" class="dbm-toolbar-img" alt="Logo"><span>{$version}</span></div><div id="dbmClose" class="dbm-toolbar-item dbm-close">&times;</div></div></div></div>
             HTML;
     }
 

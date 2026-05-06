@@ -204,6 +204,11 @@ class ViewExtension
             }
         }
 
+        // Normalizacja ścieżki
+        $asset = rtrim($asset, '/');
+        $imgBase = $asset . '/images/lang/';
+        $imgLang = $imgBase . strtolower($currentLang) . '.png';
+
         // Tworzymy HTML
         $html = "<!-- htmlLanguage -->" . PHP_EOL;
 
@@ -213,7 +218,7 @@ class ViewExtension
 
         $html .= $space . "    <li class=\"dropdown\">" . PHP_EOL;
         $html .= $space . "        <a href=\"#\" role=\"button\"" . ($switchOne ? "" : " class=\"dropdown-toggle link-dark\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"") . ">";
-        $html .= "<img src=\"" . $asset . "/images/lang/" . strtolower($currentLang) . ".png\" alt=\"" . $currentLang . "\">";
+        $html .= "<img src=\"" . $imgLang . "\" alt=\"" . $currentLang . "\">";
 
         if ($switchOne) {
             $html .= " <i class=\"bi bi-chevron-down toggle-dropdown\"></i>";
@@ -227,10 +232,11 @@ class ViewExtension
             $queryParams = array_merge($this->request->getQueryParams(), ['lang' => $lang]);
             $queryString = http_build_query($queryParams);
             $classActive = (strtolower($currentLang) === strtolower($lang)) ? " active" : "";
+            $imgSrc = $imgBase . strtolower($lang) . '.png';
 
             $html .= $space . "            <li class=\"dropdown-item" . $classActive . "\">";
             $html .= "<a href=\"?" . $queryString . "\" class=\"d-block\">";
-            $html .= "<img src=\"" . $asset . "/images/lang/" . strtolower($lang) . ".png\" alt=\"" . strtoupper($lang) . "\" class=\"me-2\">";
+            $html .= "<img src=\"" . $imgSrc . "\" alt=\"" . strtoupper($lang) . "\" class=\"me-2\">";
             $html .= strtoupper($lang) . "</a></li>" . PHP_EOL;
         }
 

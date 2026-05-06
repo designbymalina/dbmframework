@@ -63,7 +63,7 @@ final class UrlGenerator implements UrlGeneratorInterface
             }
         }
 
-        $base = rtrim($this->context()->basePath, '/');
+        $base = rtrim($this->context()->basePath ?: '', '/');
         $uri  = '/' . ltrim($path, '/');
 
         if ($uri === '/') {
@@ -75,7 +75,14 @@ final class UrlGenerator implements UrlGeneratorInterface
 
     public function base(): string
     {
-        return $this->context()->basePath ?: '/';
+        return rtrim($this->context()->basePath ?: '', '/');
+    }
+
+    public function asset(string $path): string
+    {
+        $base = $this->base();
+
+        return $base . '/' . ltrim($path, '/');
     }
 
     /**
