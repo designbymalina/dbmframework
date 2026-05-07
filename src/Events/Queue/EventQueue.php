@@ -8,45 +8,73 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * @INFO Kolejka async do późniejszego wykonania, klasa przydatna przy:
+ * mail queue, webhooki, retry jobs, async processing, scheduler, CLI workers.
+ *
+ * Przykład użycia:
+ *
+ * final class TestEvent
+ * {
+ *     public function __construct(
+ *         public string $message
+ *     ) {}
+ * }
+ *
+ * $queue = new EventQueue();
+ * $queue->push(
+ *     new TestEvent('Hello Queue')
+ * );
+ *
+ * $events = $queue->pullAll();
  */
 
 declare(strict_types=1);
 
 namespace Dbm\Events\Queue;
 
-class EventQueue
+use Dbm\Core\Paths;
+
+final class EventQueue
 {
-    protected string $file;
+    private const EVENT_FILE = 'dbm_event_queue.json';
+
+    private string $file;
 
     public function __construct(?string $file = null)
     {
-        $defaultPath = __DIR__ . '/../../../data/events';
+        $path = Paths::joinPaths(
+            Paths::basePath(),
+            'storage',
+            'events'
+        );
 
-        if (!is_dir($defaultPath)) {
-            mkdir($defaultPath, 0o777, true);
+        if (!is_dir($path)) {
+            mkdir($path, 0o775, true);
         }
 
-        if (!is_writable($defaultPath)) {
-            throw new \RuntimeException("Katalog {$defaultPath} nie ma uprawnień do zapisu.");
+        if (!is_writable($path)) {
+            throw new \RuntimeException(
+                "Directory '{$path}' is not writable."
+            );
         }
 
-        $this->file = $file ?? $defaultPath . '/dbm_event_queue.json';
-
-        if (!file_exists($this->file)) {
-            file_put_contents($this->file, json_encode([]));
-        }
+        $this->file = $file ?? Paths::joinPaths(
+            $path,
+            self::EVENT_FILE
+        );
     }
 
     public function push(object $event): void
     {
-        $queue = json_decode(file_get_contents($this->file), true);
+        $queue = $this->read();
 
         $queue[] = [
             'class' => $event::class,
             'data' => serialize($event),
         ];
 
-        file_put_contents($this->file, json_encode($queue));
+        $this->write($queue);
     }
 
     /**
@@ -54,9 +82,62 @@ class EventQueue
      */
     public function pullAll(): array
     {
-        $queue = json_decode(file_get_contents($this->file), true);
-        file_put_contents($this->file, json_encode([]));
+        $queue = $this->read();
 
-        return array_map(fn($e) => unserialize($e['data']), $queue);
+        // czyścimy kolejkę
+        if (is_file($this->file)) {
+            unlink($this->file);
+        }
+
+        return array_map(
+            static fn(array $event): mixed => unserialize($event['data']),
+            $queue
+        );
+    }
+
+    public function setFile(string $file): void
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * @return array<int, array{class: string, data: string}>
+     */
+    private function read(): array
+    {
+        if (!is_file($this->file)) {
+            return [];
+        }
+
+        $content = file_get_contents($this->file);
+
+        if ($content === false || trim($content) === '') {
+            return [];
+        }
+
+        $data = json_decode($content, true);
+
+        return is_array($data) ? $data : [];
+    }
+
+    /**
+     * @param array<int, array{class: string, data: string}> $queue
+     */
+    private function write(array $queue): void
+    {
+        // nie zapisujemy pustej kolejki
+        if ($queue === []) {
+            if (is_file($this->file)) {
+                unlink($this->file);
+            }
+
+            return;
+        }
+
+        file_put_contents(
+            $this->file,
+            json_encode($queue, JSON_THROW_ON_ERROR),
+            LOCK_EX
+        );
     }
 }
