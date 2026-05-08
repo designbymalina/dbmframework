@@ -47,7 +47,7 @@ final class ModuleInstaller
             $timestamp = (new \DateTimeImmutable())->format('Ymd_His');
 
             $dirs = [
-                'data', 'modules', 'public', 'storage', 'templates', 'translations',
+                'data', 'libraries', 'modules', 'public', 'storage', 'templates', 'translations',
                 'src/Shared', 'src/Infrastructure', 'src/System/Module',
             ];
 
