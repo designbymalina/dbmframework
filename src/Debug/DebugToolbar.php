@@ -319,24 +319,56 @@ class DebugToolbar
     {
         $base = Paths::basePath();
 
-        foreach ([
-            $base . '/libraries' . self::PATH_COMPOSER,
-            $base . '/vendor' . self::PATH_COMPOSER,
-        ] as $path) {
-            if (is_file($path)) {
-                $content = file_get_contents($path);
-                if ($content === false) {
-                    continue;
-                }
+        // Composer-installed package
+        $installed = $base . '/vendor/composer/installed.php';
 
+        if (is_file($installed)) {
+            $data = require $installed;
+
+            $package = $data['versions']['designbymalina/dbmframework'] ?? null;
+
+            if (is_array($package)) {
+                $version = $package['pretty_version']
+                    ?? $package['version']
+                    ?? 'dev';
+
+                return $this->normalizeVersion($version);
+            }
+        }
+
+        // Manual libraries fallback
+        $manualComposer = $base . '/libraries' . self::PATH_COMPOSER;
+
+        if (is_file($manualComposer)) {
+            $content = file_get_contents($manualComposer);
+
+            if ($content !== false) {
                 $json = json_decode($content, true);
 
-                if (is_array($json) && isset($json['version']) && is_string($json['version'])) {
-                    return $json['version'];
+                if (
+                    is_array($json)
+                    && isset($json['version'])
+                    && is_string($json['version'])
+                ) {
+                    return $this->normalizeVersion($json['version']);
                 }
             }
         }
 
         return 'dev';
+    }
+
+    private function normalizeVersion(string $version): string
+    {
+        $version = ltrim(trim($version), 'v');
+
+        if (preg_match('/^(\d+)(?:\.(\d+))?/', $version, $m)) {
+            $major = $m[1];
+            $minor = $m[2] ?? '0';
+
+            return $major . '.' . $minor;
+        }
+
+        return $version;
     }
 }
