@@ -1,4 +1,4 @@
-# DBM Framework - Lightweight PHP framework focused on performance
+# DBM Framework – Lightweight PHP Framework Focused on Performance
 
 DBM Framework is a lightweight PHP application engine designed for developers who want full architectural control without the complexity of heavyweight frameworks.
 
@@ -60,6 +60,23 @@ The framework provides the minimal set of tools needed to build applications—w
 - Minimal runtime overhead (focused on high performance)
 
 No hidden mechanisms or automatic configuration – everything works transparently and predictably.
+
+## Performance First Architecture
+
+DbM Framework was designed with one primary goal: maximum performance with minimal overhead.
+
+From routing and dependency loading to templating and API responses - every layer is optimized for speed and flexibility.
+
+⭐ If you like the project, leave a star on GitHub.
+
+![DBM Framework](https://dbm.org.pl/images/page/packages/dbmframework-benchmarkach.png)
+
+### Projects based on DBM Framework
+
+- DBM CMS
+- DBM Platform
+- API systems
+- Modular web applications
 
 ## Built-in components
 

@@ -59,6 +59,23 @@ Framework dostarcza minimalny zestaw narzędzi potrzebnych do budowy aplikacji �
 
 Brak ukrytych mechanizmów i automatycznej konfiguracji - wszystko działa jawnie i przewidywalnie.
 
+## Architektura nastawiona na wydajność
+
+DbM Framework został zaprojektowany z jednym głównym celem: maksymalną wydajnością przy minimalnym narzucie systemowym.
+
+Od routingu i ładowania zależności po szablony oraz odpowiedzi API - każda warstwa frameworka została zoptymalizowana pod kątem szybkości i elastyczności.
+
+⭐ Jeśli projekt Ci się podoba, zostaw gwiazdkę na GitHubie.
+
+![DBM Framework](https://dbm.org.pl/images/page/packages/dbmframework-benchmarkach.png)
+
+### Projekty oparte na DBM Framework
+
+- DBM CMS
+- DBM Platform
+- Systemy API
+- Modułowe aplikacje webowe
+
 ## Wbudowane komponenty
 
 Framework zawiera zestaw lekkich komponentów infrastrukturalnych potrzebnych do budowy aplikacji webowych.
