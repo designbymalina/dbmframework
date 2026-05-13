@@ -30,7 +30,7 @@ Framework został zaprojektowany z myślą o minimalnym narzucie runtime:
 Pomiar wykonany na zewnętrznym serwerze w środowisku developerskim.  
 Wyniki zależne od konfiguracji i obciążenia.
 
-> "Laravel and Symfony are powerful. DBM is fast."
+> "Laravel i Symfony są potężne i rozbudowane. DBM stawia na szybkość, lekkość i pełną kontrolę."
 
 ## Dlaczego DBM Framework?
 
@@ -68,6 +68,8 @@ Od routingu i ładowania zależności po szablony oraz odpowiedzi API - każda w
 ⭐ Jeśli projekt Ci się podoba, zostaw gwiazdkę na GitHubie.
 
 ![DBM Framework](https://dbm.org.pl/images/page/packages/dbmframework-benchmarkach.png)
+
+> Lokalne benchmarki wykazały znacznie niższy narzut wykonania aplikacji w porównaniu do wielu popularnych frameworków PHP.
 
 ### Projekty oparte na DBM Framework
 
@@ -120,13 +122,17 @@ Może zostać zastąpiony dowolnym silnikiem (np. Twig).
 
 ## Filozofia
 
-Framework DBM rozdziela obszary:
+DBM Framework rozdziela odpowiedzialności na wyraźnie oddzielone warstwy:
 
 - **Framework = silnik wykonawczy**
-- **Warstwa aplikacji = definiowana przez użytkownika**
-- **CMS / Platforma = opcjonalne rozszerzenia**
+- **Warstwa aplikacji = w pełni definiowana przez użytkownika**
+- **CMS / Platforma = opcjonalne rozszerzenia ekosystemu**
 
-Rdzeń jest szybki, przewidywalny i możliwy do ponownego wykorzystania.
+Rdzeń frameworka pozostaje lekki, przewidywalny i wielokrotnego użytku.
+
+DBM Framework unika ciężkiego autowiringu opartego na reflection i zamiast tego stawia na jawną rejestrację zależności.
+
+Serwisy są świadomie rejestrowane przy pomocy lekkiego kontenera DI, wykorzystując metody takie jak `singleton()` lub `set()`, co zapewnia przewidywalny przepływ wykonania, mniejszy narzut runtime oraz pełną kontrolę nad architekturą aplikacji.
 
 ## Historia projektu
 

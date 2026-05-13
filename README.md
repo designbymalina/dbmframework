@@ -32,7 +32,7 @@ Measured on an external server in a development environment.
 
 Results depend on configuration and load.
 
-> "Laravel and Symfony are powerful. DBM is fast."
+> "Laravel and Symfony are powerful and extensive. DBM focuses on speed, lightweight architecture, and full control."
 
 ## Why DBM Framework?
 
@@ -70,6 +70,8 @@ From routing and dependency loading to templating and API responses - every laye
 ⭐ If you like the project, leave a star on GitHub.
 
 ![DBM Framework](https://dbm.org.pl/images/page/packages/dbmframework-benchmarkach.png)
+
+> Local benchmark tests showed significantly lower runtime overhead compared to many popular PHP frameworks.
 
 ### Projects based on DBM Framework
 
@@ -122,13 +124,17 @@ Can be replaced with another engine (e.g. Twig).
 
 ## Philosophy
 
-The DBM framework separates areas:
+DBM Framework separates responsibilities into distinct layers:
 
 - **Framework = execution engine**
-- **Application Layer = user-defined**
-- **CMS / Platform = optional extensions**
+- **Application Layer = fully user-defined**
+- **CMS / Platform = optional ecosystem extensions**
 
-The core is fast, predictable, and reusable.
+The core remains lightweight, predictable, and reusable.
+
+DBM Framework avoids heavy reflection-based autowiring and instead favors explicit dependency registration.
+
+Services are intentionally registered using lightweight container methods such as `singleton()` or `set()`, providing predictable execution flow, lower runtime overhead, and full architectural control.
 
 ## Project History
 
