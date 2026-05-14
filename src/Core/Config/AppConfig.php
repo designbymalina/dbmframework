@@ -35,4 +35,10 @@ final class AppConfig
             && !empty(getenv('DB_NAME'))
             && !empty(getenv('DB_USER'));
     }
+
+    // Optional for debugging: Logging 404 (as an error). Used in ExceptionMiddleware.
+    public static function securityLogs(): bool
+    {
+        return false;
+    }
 }

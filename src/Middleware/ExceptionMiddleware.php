@@ -23,6 +23,7 @@ use Dbm\Http\Message\Response;
 use Dbm\Http\Response\ApiResponder;
 use Dbm\Infrastructure\Error\ErrorLogger;
 use Dbm\Routing\Contracts\UrlGeneratorInterface;
+use Dbm\Routing\Exceptions\RouteNotFoundException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -56,6 +57,13 @@ class ExceptionMiddleware implements MiddlewareInterface
             }
 
             return $this->redirect('home');
+        } catch (RouteNotFoundException $e) {
+            // Normal 404 routes are not application errors
+            if (AppConfig::securityLogs()) {
+                $this->errorLogger->exception($e, 'SECURITY_SCAN');
+            }
+
+            return $this->handler->handle($e, AppConfig::getEnv());
         } catch (\Throwable $e) {
             $env = AppConfig::getEnv();
 
