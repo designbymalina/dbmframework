@@ -216,9 +216,9 @@ final class HttpRequest implements ExtendedRequestInterface
         return str_contains($this->getHeaderLine('Content-Type'), 'application/x-www-form-urlencoded');
     }
 
-    public function getClientIp(): ?string
+    public function getClientIp(): string
     {
-        return null;
+        return '0.0.0.0';
     }
 
     public function getClientPort(): ?int
@@ -285,6 +285,11 @@ final class HttpRequest implements ExtendedRequestInterface
     }
 
     public function getParams(): array
+    {
+        return [];
+    }
+
+    public function getAllServerParams(): array
     {
         return [];
     }

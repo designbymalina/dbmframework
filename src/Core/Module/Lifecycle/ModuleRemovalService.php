@@ -14,56 +14,54 @@ declare(strict_types=1);
 
 namespace Dbm\Core\Module\Lifecycle;
 
+use Dbm\Core\Module\Exception\EnabledException;
 use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Service\ModulePackageService;
 use Dbm\Infrastructure\Filesystem\Filesystem;
 use Dbm\Infrastructure\Log\Logger;
+use RuntimeException;
 
-final class ModuleUninstaller
+final class ModuleRemovalService
 {
     public function __construct(
         private readonly PathResolver $paths,
         private readonly Filesystem $filesystem,
-        private readonly Logger $logger,
+        private readonly Logger $logger
     ) {}
 
     /**
-     * @return array<string, mixed>
+     * @INFO Dopisz usuwanie tabel DB utworzonych przez moduł,
+     * usunąć konfigurację modułu - jeśli opcje są dostępne.
      */
-    public function uninstall(string $key): array
+    public function uninstall(string $key): void
     {
         $manifestPath = $this->paths->manifest($key);
 
         if (!$this->filesystem->fileExists($manifestPath)) {
-            $message = "Moduł '$key' nie istnieje.";
+            $message = "Module '{$key}' does not exist.";
+
             $this->logger->warning($message);
 
-            return [
-                'status' => 'warning',
-                'message' => $message,
-            ];
+            throw new RuntimeException($message);
         }
 
-        $json = $this->filesystem->readFile($manifestPath);
-
-        $meta = json_decode($json, true);
+        $meta = json_decode(
+            $this->filesystem->readFile($manifestPath),
+            true
+        );
 
         if (!is_array($meta)) {
-            return [
-                'status' => 'error',
-                'message' => "Manifest '$key' jest pusty lub uszkodzony.",
-            ];
+            throw new RuntimeException(
+                "Manifest '{$key}' is empty or corrupted."
+            );
         }
-
-        // Core modules cannot be removed
 
         $moduleDir = $this->paths->modulePath($key);
 
-        if (!$moduleDir) {
-            return [
-                'status' => 'error',
-                'message' => "Module '{$key}' not found.",
-            ];
+        if ($moduleDir === null) {
+            throw new RuntimeException(
+                "Module directory not found: {$key}"
+            );
         }
 
         $moduleManifest = $moduleDir . '/module.json';
@@ -74,58 +72,83 @@ final class ModuleUninstaller
         );
 
         if (($module['type'] ?? '') === 'core') {
-            return [
-                'status' => 'error',
-                'message' => "Nie można odinstalować wbudowanego modułu '{$module['name']}'.",
-            ];
+            throw new RuntimeException(
+                "Core module '{$module['name']}' cannot be uninstalled."
+            );
         }
 
-        // Remove installed files
+        // Restore files
 
-        if (!empty($meta['files'])) {
-            foreach ($meta['files'] as $file) {
-                $relativePath = $file['path'];
-                $absolutePath = $this->paths->basePath($relativePath);
+        foreach ($meta['files'] ?? [] as $file) {
+            $relativePath = $file['path'];
+            $absolutePath = $this->paths->basePath($relativePath);
 
-                // Używany przez inny moduł - NIE usuwaj
-                $other = $this->getFileFromOtherModules($relativePath, $key);
+            $other = $this->getFileFromOtherModules(
+                $relativePath,
+                $key
+            );
 
-                if ($other !== null) {
-                    // jeśli hash się różni - przywróć właściwy
-                    if (is_file($absolutePath)) {
-                        $currentHash = md5_file($absolutePath);
+            if ($other !== null) {
+                if (is_file($absolutePath)) {
+                    $currentHash = md5_file($absolutePath);
 
-                        if ($currentHash !== $other['hash']) {
-                            $this->restoreFromConflicts($relativePath);
-                        }
+                    if ($currentHash !== $other['hash']) {
+                        $this->restoreFromConflicts($relativePath);
                     }
-
-                    continue;
                 }
 
-                // Spróbuj przywrócić z konfliktów
-                if ($this->restoreFromConflicts($relativePath)) {
-                    continue;
-                }
+                continue;
+            }
 
-                // Usuń jeśli istnieje
-                if ($this->filesystem->fileExists($absolutePath)) {
-                    $this->filesystem->deleteFile($absolutePath);
-                }
+            if ($this->restoreFromConflicts($relativePath)) {
+                continue;
             }
         }
 
-        // Remove install manifest
+        $meta['installed'] = false;
+        $meta['enabled'] = false;
+
+        $this->filesystem->saveFile(
+            $manifestPath,
+            json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
+        );
+    }
+
+    public function delete(string $key): bool
+    {
+        $manifestPath = $this->paths->manifest($key);
+
+        if ($this->filesystem->isFile($manifestPath)) {
+            $install = json_decode(
+                $this->filesystem->readFile($manifestPath),
+                true
+            );
+
+            if (is_array($install) && ($install['enabled'] ?? false) === true) {
+                throw new EnabledException();
+            }
+
+            $this->uninstall($key);
+        }
+
+        $moduleDir = $this->paths->modulePath($key);
+
+        if ($moduleDir !== null && $this->filesystem->isDir($moduleDir)) {
+            $this->filesystem->deleteDir($moduleDir);
+        }
+
+        $package = $this->paths->packages($key . '.zip');
+
+        if ($this->filesystem->isFile($package)) {
+            $this->filesystem->deleteFile($package);
+        }
 
         $this->filesystem->deleteFile($manifestPath);
 
-        $name = $module['name'] ?? $key;
-
-        return [
-            'status' => 'success',
-            'message' => "Moduł '$name' został odinstalowany.",
-        ];
+        return true;
     }
+
+    // ===== Private methods =====
 
     /**
      * @return array<int, array<string, mixed>>

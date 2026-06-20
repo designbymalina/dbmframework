@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Dbm\Security;
 
+use Dbm\Core\Config\AppConfig;
 use Dbm\Infrastructure\Session\SessionManager;
 
 final class AuthGuard
@@ -22,7 +23,7 @@ final class AuthGuard
         private SessionManager $session,
         private ?string $sessionKey = null
     ) {
-        $this->sessionKey = $sessionKey ?? getenv('APP_SESSION_KEY');
+        $this->sessionKey ??= AppConfig::sessionKey();
     }
 
     public function id(): int

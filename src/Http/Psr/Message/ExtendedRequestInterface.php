@@ -114,7 +114,7 @@ interface ExtendedRequestInterface extends ServerRequestInterface
     /**
      * Returns client IP address.
      */
-    public function getClientIp(): ?string;
+    public function getClientIp(): string;
 
     /**
      * Returns client port number.
@@ -243,6 +243,13 @@ interface ExtendedRequestInterface extends ServerRequestInterface
      * @return array<string, mixed>
      */
     public function getParams(): array;
+
+    /**
+     * Returns all raw server params.
+     *
+     * @return array<string, mixed>
+     */
+    public function getAllServerParams(): array;
 
     /**
      * Checks if request method matches provided one.

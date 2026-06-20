@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dbm\Middleware;
 
 use Dbm\Http\Psr\Message\ExtendedRequestInterface;
+use Dbm\Localization\LanguageResolver;
 use Dbm\Routing\RouteMatcher;
 use Dbm\Routing\UriNormalizer;
 use Dbm\Routing\Exceptions\RouteNotFoundException;
@@ -27,19 +28,30 @@ final class RouterMatchMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private RouteMatcher $matcher,
-        private UriNormalizer $normalizer
+        private UriNormalizer $normalizer,
+        private LanguageResolver $languageResolver
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         assert($request instanceof ExtendedRequestInterface);
 
+        $method = $request->getMethod();
+
+        // @INFO Kod powtarza się w Routerze, można wydzielić np. LanguageRequestResolver
         $uri = $this->normalizer->normalize(
             $request->getUri()->getPath(),
             $request
         );
 
-        $method = $request->getMethod();
+        $languageMatch = $this->languageResolver->resolve($uri);
+
+        $request = $request->withAttribute(
+            'language',
+            $languageMatch->language
+        );
+
+        $uri = $languageMatch->path;
 
         $result = $this->matcher->match($uri, $method);
 

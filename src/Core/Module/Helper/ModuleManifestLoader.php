@@ -29,7 +29,13 @@ final class ModuleManifestLoader
      */
     public function load(string $key): ?array
     {
-        $moduleFile = $this->paths->moduleManifest($key);
+        $moduleDir = $this->paths->modulePath($key);
+
+        if ($moduleDir === null) {
+            return null;
+        }
+
+        $moduleFile = $moduleDir . '/' . $this->paths->moduleFile();
 
         if (!$this->filesystem->isFile($moduleFile)) {
             return null;

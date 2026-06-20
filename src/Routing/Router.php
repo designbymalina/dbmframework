@@ -22,8 +22,12 @@ declare(strict_types=1);
 
 namespace Dbm\Routing;
 
+use Dbm\Events\EventDispatcher;
 use Dbm\Http\Message\Response;
 use Dbm\Http\Psr\Message\ExtendedRequestInterface;
+use Dbm\Localization\CurrentLanguage;
+use Dbm\Localization\Event\LocaleChangedEvent;
+use Dbm\Localization\LanguageResolver;
 use Dbm\Routing\Contracts\RouterInterface;
 use Dbm\Routing\Exceptions\MethodNotAllowedException;
 use Dbm\Routing\Exceptions\RouteNotFoundException;
@@ -35,13 +39,34 @@ final class Router implements RouterInterface
         private readonly RouteMatcher $matcher,
         private readonly ControllerResolver $resolver,
         private readonly ActionArgumentResolver $argumentResolver,
-        private readonly UriNormalizer $normalizer
+        private readonly UriNormalizer $normalizer,
+        private readonly LanguageResolver $languageResolver,
+        private readonly CurrentLanguage $currentLanguage,
+        private readonly EventDispatcher $dispatcher
     ) {}
 
     public function dispatch(ExtendedRequestInterface $request, string $uri): Response
     {
         $method = $request->getMethod();
+
         $uri = $this->normalizer->normalize($uri, $request);
+
+        $languageMatch = $this->languageResolver->resolve($uri);
+
+        // @INFO Language request setting
+        $this->currentLanguage->set($languageMatch->language);
+
+        // Notify interested modules
+        $this->dispatcher->dispatch(
+            new LocaleChangedEvent($languageMatch->language)
+        );
+
+        $request = $request->withAttribute(
+            'language',
+            $languageMatch->language
+        );
+
+        $uri = $languageMatch->path;
 
         $result = $this->matcher->match($uri, $method);
 

@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Dbm\Infrastructure\Session;
 
-use Dbm\Core\Config\AppConfig;
-
 class SessionManager
 {
     private bool $started = false;
@@ -31,15 +29,7 @@ class SessionManager
             return;
         }
 
-        $isProduction = AppConfig::getEnv() === AppConfig::ENV_PRODUCTION;
-
-        session_start([
-            'cookie_lifetime' => 0,
-            'cookie_secure' => $isProduction,
-            'cookie_httponly' => true,
-            'use_strict_mode' => true,
-            'use_only_cookies' => true,
-        ]);
+        session_start();
 
         $this->started = true;
     }
@@ -98,7 +88,22 @@ class SessionManager
      */
     public function destroySession(): void
     {
-        session_unset();
+        $_SESSION = [];
+
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+        }
+
         session_destroy();
     }
 

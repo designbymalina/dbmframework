@@ -31,16 +31,21 @@ class LanguageHelper
      */
     public static function getAvailableLanguages(): array
     {
-        return self::rawLanguages() ? explode('|', self::rawLanguages()) : [];
+        $raw = trim(self::rawLanguages());
+
+        if ($raw === '') {
+            return ['EN']; // default language
+        }
+
+        return array_map('strtoupper', explode('|', $raw));
     }
 
     /**
      * Default language = first in settings
      */
-    public static function getDefaultLanguage(): ?string
+    public static function getDefaultLanguage(): string
     {
-        $langs = self::getAvailableLanguages();
-        return $langs[0] ?? null;
+        return self::getAvailableLanguages()[0];
     }
 
     /**

@@ -49,4 +49,31 @@ interface UrlGeneratorInterface
      * @return string
      */
     public function generateSeoFriendlyUrl(string $text, int $limit = 120): string;
+
+    /**
+     * @param string $routeName
+     * @param string $language
+     * @param array<string, scalar> $params
+     * @return string
+     */
+    public function routeLanguage(string $routeName, string $language, array $params = []): string;
+
+    /**
+     * @return string
+     */
+    public function currentLanguage(): string;
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public function localizedPath(string $path): string;
+
+    /**
+     * @param string $routeName
+     * @param string $language
+     * @param array<string, mixed> $params
+     * @return string
+     */
+    public function absoluteRouteLanguage(string $routeName, string $language, array $params = []): string;
 }

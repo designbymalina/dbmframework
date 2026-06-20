@@ -20,7 +20,7 @@ use Dbm\Core\Module\Discovery\InstalledModuleScanner;
 use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Helper\ModuleManifestLoader;
 use Dbm\Core\Module\Lifecycle\ModuleLifecycleManager;
-use Dbm\Core\Module\Lifecycle\ModuleUninstaller;
+use Dbm\Core\Module\Lifecycle\ModuleRemovalService;
 use Dbm\Core\Module\Package\PackageScanner;
 use Dbm\Core\Module\Repository\InstallRepository;
 use Dbm\Core\Module\Service\DatabaseMigrationService;
@@ -108,7 +108,7 @@ final class CoreModuleServiceProvider
             fn($c) => new ModuleLifecycleManager(
                 $c->get(PackageScanner::class),
                 $c->get(ModuleInstaller::class),
-                $c->get(ModuleUninstaller::class),
+                $c->get(ModuleRemovalService::class),
                 $c->get(ModuleBootstrapper::class),
                 $c->get(InstallationGuard::class),
                 $c->get(ModuleCache::class),
@@ -131,7 +131,12 @@ final class CoreModuleServiceProvider
             )
         );
 
-        // lazy optional dependency (with null)
+        /**
+         * Returns service if registered.
+         *
+         * WARNING: This method still instantiates the service.
+         * Check! If the method is not used, it can be deleted.
+         */
         $container->singleton(
             InstallRepository::class,
             function ($c) {
@@ -153,8 +158,8 @@ final class CoreModuleServiceProvider
             fn($c) => new ModulePackageService(
                 $c->get(Filesystem::class),
                 $c->get(FileMigrationService::class),
-                $c->get(DatabaseMigrationService::class),
-                $c->get(PathResolver::class)
+                $c->get(PathResolver::class),
+                $c->get(DependencyContainer::class)
             )
         );
 
@@ -166,8 +171,8 @@ final class CoreModuleServiceProvider
         );
 
         $container->singleton(
-            ModuleUninstaller::class,
-            fn($c) => new ModuleUninstaller(
+            ModuleRemovalService::class,
+            fn($c) => new ModuleRemovalService(
                 $c->get(PathResolver::class),
                 $c->get(Filesystem::class),
                 $c->get(Logger::class)

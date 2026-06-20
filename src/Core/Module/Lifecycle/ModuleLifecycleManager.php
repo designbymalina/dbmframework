@@ -18,7 +18,6 @@ use Dbm\Core\Module\Cache\ModuleCache;
 use Dbm\Core\Module\Events\ModulesChangedEvent;
 use Dbm\Core\Module\Package\PackageScanner;
 use Dbm\Core\Module\ModuleInstaller;
-use Dbm\Core\Module\Lifecycle\ModuleUninstaller;
 use Dbm\Core\Module\ModuleBootstrapper;
 use Dbm\Core\Module\Service\InstallationGuard;
 use Dbm\Events\EventDispatcher;
@@ -28,7 +27,7 @@ final class ModuleLifecycleManager
     public function __construct(
         private readonly PackageScanner $scanner,
         private readonly ModuleInstaller $installer,
-        private readonly ModuleUninstaller $uninstaller,
+        private readonly ModuleRemovalService $removal,
         private readonly ModuleBootstrapper $bootstrapper,
         private readonly InstallationGuard $guard,
         private readonly ModuleCache $cache,
@@ -82,18 +81,26 @@ final class ModuleLifecycleManager
         }
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function uninstall(string $key): array
+    public function uninstall(string $key): void
     {
-        $result = $this->uninstaller->uninstall($key);
+        $this->removal->uninstall($key);
 
-        $this->rebuildCache(); // przebudowanie cache
+        $this->rebuildCache();
 
-        $this->events->dispatch(new ModulesChangedEvent('uninstall', $key)); // przebudowa cache system modules
+        $this->events->dispatch(
+            new ModulesChangedEvent('uninstall', $key)
+        );
+    }
 
-        return $result;
+    public function delete(string $key): void
+    {
+        $this->removal->delete($key);
+
+        $this->rebuildCache();
+
+        $this->events->dispatch(
+            new ModulesChangedEvent('delete', $key)
+        );
     }
 
     /**

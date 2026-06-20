@@ -136,6 +136,9 @@ final class Request extends Message implements ExtendedRequestInterface
     /** @var array<string, mixed> */
     private array $attributes = [];
 
+    /** @var array<string, mixed> */
+    private array $serverParams = [];
+
     /** @var UriInterface */
     private UriInterface $uri;
 
@@ -157,14 +160,24 @@ final class Request extends Message implements ExtendedRequestInterface
         $this->queryParams = $_GET;
         $this->postParams = $_POST;
         $this->filesParams = $_FILES;
+        $this->serverParams = $_SERVER;
         $this->method = $this->detectMethod();
 
-        // Build URI from globals
-        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $port = isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : null;
-        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-        $query = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_QUERY) ?? '';
+        // Build URI from server params
+        $scheme = (!empty($this->serverParams['HTTPS'])
+            && $this->serverParams['HTTPS'] !== 'off')
+                ? 'https'
+                : 'http';
+
+        $host = $this->serverParams['HTTP_HOST'] ?? 'localhost';
+
+        $port = isset($this->serverParams['SERVER_PORT'])
+            ? (int) $this->serverParams['SERVER_PORT']
+            : null;
+
+        $requestUri = $this->serverParams['REQUEST_URI'] ?? '/';
+        $path = parse_url($requestUri, PHP_URL_PATH) ?? '/';
+        $query = parse_url($requestUri, PHP_URL_QUERY) ?? '';
 
         $this->uri = new Uri($path, $scheme, $host, $port, $query);
     }
@@ -332,9 +345,28 @@ final class Request extends Message implements ExtendedRequestInterface
     }
 
     /** @inheritdoc */
-    public function getClientIp(): ?string
+    public function getClientIp(): string
     {
-        return $_SERVER['REMOTE_ADDR'] ?? null;
+        $ipKeys = [
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($ipKeys as $key) {
+            if (!empty($_SERVER[$key])) {
+
+                $ipList = explode(',', (string) $_SERVER[$key]);
+                $ip = trim($ipList[0]);
+
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    return $ip;
+                }
+            }
+        }
+
+        return '0.0.0.0';
     }
 
     /** @inheritdoc */
@@ -543,6 +575,12 @@ final class Request extends Message implements ExtendedRequestInterface
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    /** @return array<string, mixed> */
+    public function getAllServerParams(): array
+    {
+        return $this->serverParams;
     }
 
     /** @inheritdoc */

@@ -24,7 +24,7 @@ final class TranslationLoader
     private array $paths = [];
 
     public function __construct(
-        private LanguageService $languageService
+        private readonly CurrentLanguage $currentLanguage
     ) {}
 
     public function addPath(string $path): void
@@ -37,7 +37,7 @@ final class TranslationLoader
      */
     public function load(): array
     {
-        $language = $this->languageService->detectLanguage();
+        $language = $this->currentLanguage->get();
 
         if (!$language) {
             return [];

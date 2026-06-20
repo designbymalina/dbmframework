@@ -15,8 +15,11 @@ declare(strict_types=1);
 namespace Dbm\Routing;
 
 use Dbm\Core\DependencyContainer;
+use Dbm\Events\EventDispatcher;
 use Dbm\Http\Message\Request;
 use Dbm\Infrastructure\Log\Logger;
+use Dbm\Localization\CurrentLanguage;
+use Dbm\Localization\LanguageResolver;
 use Dbm\Routing\ActionArgumentResolver;
 use Dbm\Routing\Contracts\UrlGeneratorInterface;
 use Dbm\Routing\ControllerResolver;
@@ -43,6 +46,8 @@ final class RoutingServiceProvider
                 return new UrlGenerator(
                     $c,
                     $c->get(RouteCollection::class),
+                    $c->get(CurrentLanguage::class)
+                    //$c->get(ServerRequestInterface::class)
                 );
             }
         );
@@ -84,6 +89,8 @@ final class RoutingServiceProvider
             )
         );
 
+        $container->singleton(LanguageResolver::class);
+
         $container->singleton(
             Router::class,
             fn($c) => new Router(
@@ -92,6 +99,9 @@ final class RoutingServiceProvider
                 $c->get(ControllerResolver::class),
                 $c->get(ActionArgumentResolver::class),
                 $c->get(UriNormalizer::class),
+                $c->get(LanguageResolver::class),
+                $c->get(CurrentLanguage::class),
+                $c->get(EventDispatcher::class)
             )
         );
     }

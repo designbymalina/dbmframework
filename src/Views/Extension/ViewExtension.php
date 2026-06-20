@@ -15,17 +15,9 @@ declare(strict_types=1);
 namespace Dbm\Views\Extension;
 
 use Dbm\Core\Paths;
-use Dbm\Infrastructure\Cookie\CookieManager;
-use Dbm\Localization\LanguageHelper;
-use Psr\Http\Message\ServerRequestInterface;
 
 class ViewExtension
 {
-    public function __construct(
-        private readonly ServerRequestInterface $request,
-        private readonly CookieManager $cookie
-    ) {}
-
     /*
      * Visit counter
      *
@@ -165,92 +157,6 @@ class ViewExtension
     }
 
     /**
-     * Generuje menu przełącznika języka (domyślnie style Bootstrap 5).
-     *
-     * @param string $asset Ścieżka do katalogu z obrazkami języków.
-     * @param string|null $space Opcjonalne wcięcie dla czytelności HTML.
-     * @param string|null $class Opcjonalne dodanie klas szablonu
-     * @param string|null $version Opcjonalne dodanie wersji dla nietypowych szablonów
-     * @return string HTML przełącznika języka.
-     */
-    public function htmlLanguage(string $asset, ?string $space = null, ?string $class = null, ?string $version = null): ?string
-    {
-        $availableLanguages = LanguageHelper::getAvailableLanguages();
-        $defaultLanguage = LanguageHelper::getDefaultLanguage();
-
-        if ($defaultLanguage === null) {
-            return null;
-        }
-
-        $cookieLang = 'dbmLanguage';
-        $currentLang = $this->cookie->getCookie($cookieLang) ?? $defaultLanguage;
-
-        // Ustalamy wcięcie dla formatowania HTML
-        $space = is_numeric($space) ? str_repeat('    ', (int) $space) : ($space ?? '');
-        $switchOne = (!empty($version) && strtoupper($version) === 'ONE');
-
-        // Obsługa zmiany języka
-        $selectedLang = strtoupper(
-            preg_replace('/[^A-Z]/', '', $this->request->getQueryParams()['lang'] ?? '')
-        );
-
-        if ($selectedLang) {
-            if ($selectedLang === 'OFF') {
-                $this->cookie->unsetCookie($cookieLang);
-                $currentLang = $defaultLanguage;
-            } elseif (in_array($selectedLang, $availableLanguages, true)) {
-                $this->cookie->setCookie($cookieLang, $selectedLang, 365 * 24 * 60 * 60);
-                $currentLang = $selectedLang;
-            }
-        }
-
-        // Normalizacja ścieżki
-        $asset = rtrim($asset, '/');
-        $imgBase = $asset . '/images/lang/';
-        $imgLang = $imgBase . strtolower($currentLang) . '.png';
-
-        // Tworzymy HTML
-        $html = "<!-- htmlLanguage -->" . PHP_EOL;
-
-        if (!$switchOne) {
-            $html .= $space . "<ul class=\"list-unstyled " . $class . "\">" . PHP_EOL;
-        }
-
-        $html .= $space . "    <li class=\"dropdown\">" . PHP_EOL;
-        $html .= $space . "        <a href=\"#\" role=\"button\"" . ($switchOne ? "" : " class=\"dropdown-toggle link-dark\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"") . ">";
-        $html .= "<img src=\"" . $imgLang . "\" alt=\"" . $currentLang . "\">";
-
-        if ($switchOne) {
-            $html .= " <i class=\"bi bi-chevron-down toggle-dropdown\"></i>";
-        }
-
-        $html .= "</a>" . PHP_EOL;
-
-        $html .= $space . "        <ul class=\"" . ($switchOne ? "dbm-list-language-one" : "dropdown-menu dropdown-menu-end") . "\">" . PHP_EOL;
-
-        foreach ($availableLanguages as $lang) {
-            $queryParams = array_merge($this->request->getQueryParams(), ['lang' => $lang]);
-            $queryString = http_build_query($queryParams);
-            $classActive = (strtolower($currentLang) === strtolower($lang)) ? " active" : "";
-            $imgSrc = $imgBase . strtolower($lang) . '.png';
-
-            $html .= $space . "            <li class=\"dropdown-item" . $classActive . "\">";
-            $html .= "<a href=\"?" . $queryString . "\" class=\"d-block\">";
-            $html .= "<img src=\"" . $imgSrc . "\" alt=\"" . strtoupper($lang) . "\" class=\"me-2\">";
-            $html .= strtoupper($lang) . "</a></li>" . PHP_EOL;
-        }
-
-        $html .= $space . "        </ul>" . PHP_EOL;
-        $html .= $space . "    </li>" . PHP_EOL;
-
-        if (!$switchOne) {
-            $html .= $space . "</ul>" . PHP_EOL;
-        }
-
-        return $html;
-    }
-
-    /**
      * Heightlightowanie tekstu w zapytaniu
      */
     public function highlight(string $text, string $query): string
@@ -267,5 +173,56 @@ class ViewExtension
             '<mark>$0</mark>',
             $escapedText
         );
+    }
+
+    /**
+     * Element walidacji formularzy - wyświetlenie błędów walidacji
+     *
+     * @param string $field
+     * @param array<string, string>|null $errors
+     * @param string|null $defaultMessage
+     * @param string $class
+     * @param bool $alwaysRender
+     * @return string
+     */
+    public function htmlFieldError(
+        string $field,
+        ?array $errors = null,
+        ?string $defaultMessage = null,
+        string $class = 'invalid-feedback',
+        bool $alwaysRender = true
+    ): string {
+        $message = $errors[$this->validationKey($field)] ?? $defaultMessage;
+
+        if (!$alwaysRender && empty($message)) {
+            return '';
+        }
+
+        return sprintf(
+            '<div class="%s">%s</div>',
+            htmlspecialchars($class, ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars((string) $message, ENT_QUOTES, 'UTF-8')
+        );
+    }
+
+    /**
+     * Element walidacji formularzy - dodanie klasy bledu walidacji
+     *
+     * @param string $field
+     * @param array<string, string>|null $errors
+     * @return string
+     */
+    public function fieldInvalid(string $field, ?array $errors = null): string
+    {
+        return !empty($errors[$this->validationKey($field)])
+            ? ' is-invalid'
+            : '';
+    }
+
+    // ===== Private =====
+
+    private function validationKey(string $field): string
+    {
+        return 'error_' . $field;
     }
 }

@@ -8,6 +8,51 @@
  * @copyright Design by Malina (All Rights Reserved)
  * @license MIT
  * @link https://www.dbm.org.pl
+ *
+ * @TODO Framework refactor
+ *
+ * TemplateFeature currently does not operate on the same object instance
+ * that receives runtime configuration from controllers/modules.
+ *
+ * Symptoms:
+ * - custom properties set via setters may be lost during rendering
+ * - request attributes may differ from controller request
+ * - callbacks registered on TemplateEngine may be unavailable in templates
+ *
+ * Example:
+ * - setLanguageUrlResolver() called in module boot()
+ * - resolver available on TemplateEngine instance
+ * - resolver becomes NULL inside template execution context
+ *
+ * Temporary workaround:
+ * - pass data through globals:
+ *   $view->setGlobal(...)
+ *
+ * Long-term solution:
+ * - render templates on the same TemplateEngine instance
+ *   OR
+ * - copy runtime state during template compilation/render preparation
+ *   OR
+ * - inject RequestAwareTemplateInterface directly instead of globals.
+ *
+ * @INFO Problem ze sposobem przekazywania Request do warstwy widoku.
+ * Po refaktoryzacji przełącznik getLanguagesData() można ulepszyć.
+ * Zmienne globalne $this->global() muszą zostać usunięte.
+ *
+ * Alternatywny sposób użycia:
+ * @ var callable|null
+ * private $languageUrlResolver = null;
+ * W Module:
+ * $view->setLanguageUrlResolver(
+ *  fn(string $pageKey, string $toLanguage)
+ *   => CmsLiteLanguageUrlResolver::resolve($pageKey, $toLanguage)
+ * );
+ * W metodzie kontrolera:
+ * $this->view->setGlobal('cmslitePage', $page);
+ * $this->view->setGlobal('cmsliteLanguageResolver',
+ *  fn(string $pageKey, string $language)
+ *   => CmsLiteLanguageUrlResolver::resolve($pageKey, $language)
+ * );
  */
 
 declare(strict_types=1);
@@ -17,13 +62,13 @@ namespace Dbm\Views;
 use Dbm\Infrastructure\Cookie\CookieManager;
 use Dbm\Infrastructure\Session\SessionManager;
 use Dbm\Infrastructure\Log\Logger;
+use Dbm\Localization\LanguageHelper;
 use Dbm\Localization\Translation;
 use Dbm\Routing\Contracts\UrlGeneratorInterface;
 use Dbm\Routing\Route;
 use Dbm\Support\Helpers\EnumHelper;
 use Dbm\Views\Extension\ViewExtension;
 use Psr\Http\Message\ServerRequestInterface;
-use Exception;
 
 abstract class TemplateFeature
 {
@@ -38,14 +83,34 @@ abstract class TemplateFeature
 
     protected function request(): ServerRequestInterface
     {
-        return $this->global('request');
+        /*
+        * @TODO Refaktoryzacja Request w widokach.
+        *
+        * Aktualnie obiekt Request przekazywany do widoku przez:
+        * ControllerResolver -> injectDependencies()
+        * -> view->setGlobal('request', $request)
+        *
+        * W praktyce może to być inna instancja niż aktualny Request
+        * używany przez kontroler. Powoduje to problemy z:
+        *
+        * - withAttribute()
+        * - getAttribute()
+        * - danymi dodawanymi dynamicznie w kontrolerach
+        *
+        * Działa w kontrolerze, ale może być niewidoczne w widoku.
+        *
+        * Sprawdzenie spl_object_id() w kontrolerze i widoku.
+        * Docelowo widok powinien implementować
+        * RequestAwareTemplateInterface i pobierać Request
+        * bezpośrednio z aktualnego kontekstu żądania,
+        * zamiast korzystać z global('request').
+        *
+        * Do wdrożenia:
+        *
+        * return $this->getRequest();
+        */
 
-        // @INFO Docelowo zamienić na poniższe (usuń Request z globals).
-        // Patrz. do ControllerResolver -> injectDependencies() -> view->setGlobal('request', $request);
-        // if (!$this instanceof \Dbm\Http\Contracts\RequestAwareTemplateInterface) {
-        //     throw new \RuntimeException('Template does not support request');
-        // }
-        // return $this->getRequest();
+        return $this->global('request');
     }
 
     protected function route(): ?Route
@@ -334,33 +399,136 @@ abstract class TemplateFeature
     }
 
     /**
-     * Generowanie linku canonical - zalecane dla każdej podstrony
+     * Generowanie linku canonical.
      */
-    public function linkCanonical(): string
+    public function canonicalLink(): string
     {
-        // Pobierz podstawowy adres aplikacji (bez ukośnika na końcu)
-        $appUrl = getenv('APP_URL');
-        if ($appUrl === false || !filter_var($appUrl, FILTER_VALIDATE_URL)) {
-            throw new Exception('APP_URL is not set or is invalid.');
-        }
-        $appUrl = rtrim($appUrl, '/');
+        $appUrl = $this->applicationUrl();
 
-        // Pobierz ścieżkę z adresu aplikacji
-        $appUrlPath = parse_url($appUrl, PHP_URL_PATH);
-        if ($appUrlPath === null) {
-            $appUrlPath = '';
+        $path = $this->request()->getUri()->getPath();
+
+        $basePath = parse_url($appUrl, PHP_URL_PATH) ?: '';
+
+        if ($basePath !== '' && str_starts_with($path, $basePath)) {
+            $path = substr($path, strlen($basePath));
         }
 
-        // Pobierz bieżący URI strony (bez bazowego folderu aplikacji)
-        $currentUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        if ($currentUri === null) {
-            $currentUri = '/';
-        } else {
-            $currentUri = str_replace($appUrlPath, '', $currentUri);
+        return rtrim($appUrl, '/') . ($path ?: '/');
+    }
+
+    /**
+     * Generowanie linków hreflang.
+     *
+     * @return array<array{lang: string, url: string}>
+     */
+    public function hreflangLinks(): array
+    {
+        $route = $this->route();
+
+        if ($route === null) {
+            return [];
         }
 
-        // Zbuduj pełny adres URL
-        return $appUrl . $currentUri;
+        $urlGenerator = $this->urlGenerator;
+
+        if ($urlGenerator === null) {
+            return [];
+        }
+
+        $params = $this->request()->getAttribute(
+            'route_params',
+            []
+        );
+
+        $links = [];
+
+        foreach (LanguageHelper::getAvailableLanguages() as $language) {
+            $links[] = [
+                'lang' => strtolower($language),
+                'url' => $urlGenerator->absoluteRouteLanguage(
+                    $route->name,
+                    $language,
+                    $params
+                ),
+            ];
+        }
+
+        $links[] = [
+            'lang' => 'x-default',
+            'url' => $urlGenerator->absoluteRouteLanguage(
+                $route->name,
+                LanguageHelper::getDefaultLanguage(),
+                $params
+            ),
+        ];
+
+        return $links;
+    }
+
+    /**
+     * Zwraca dane przełącznika języka.
+     *
+     * @param string $asset Ścieżka do assetów.
+     * @return array<string, mixed>|null
+     */
+    public function getLanguagesData(string $asset): ?array
+    {
+        $availableLanguages = LanguageHelper::getAvailableLanguages();
+        $defaultLanguage = LanguageHelper::getDefaultLanguage();
+
+        // @TODO Patrz do dokumentacji na wstępie klasy.
+        // $pageKey = $this->global('cmslitePage')->page_key ?? null;
+        // $resolver = $this->global('cmsliteLanguageResolver');
+
+        $currentLanguage = strtoupper(
+            $this->request()->getAttribute('language', $defaultLanguage)
+        );
+
+        $asset = rtrim($asset, '/');
+        $imgBase = $asset . '/images/lang/';
+
+        $route = $this->request()->getAttribute('route');
+
+        $languages = [];
+
+        foreach ($availableLanguages as $language) {
+            $url = '/';
+
+            // @TODO
+            // if ($pageKey && is_callable($resolver)) {
+            //     $url = $resolver($pageKey, $language);
+            // }
+
+            if ($route !== null && $route->getName() !== null) {
+                $params = $this->request()->getAttribute(
+                    'route_params',
+                    []
+                );
+
+                $url = $this->urlGenerator->routeLanguage(
+                    $route->getName(),
+                    $language,
+                    $params
+                );
+            }
+
+            $languages[] = [
+                'code' => strtoupper($language),
+                'active' => strtoupper($language) === strtoupper($currentLanguage)
+                    ? 'active'
+                    : '',
+                'image' => $imgBase . strtolower($language) . '.png',
+                'url' => $url,
+            ];
+        }
+
+        return [
+            'current' => [
+                'code' => strtoupper($currentLanguage),
+                'image' => $imgBase . strtolower($currentLanguage) . '.png',
+            ],
+            'languages' => $languages,
+        ];
     }
 
     public function getCsrfToken(): string
@@ -499,7 +667,13 @@ abstract class TemplateFeature
         return trim($content) . PHP_EOL;
     }
 
-    // === Templates Code and HTML elements ===
+    // ===== Templates Code and HTML elements =====
+
+    /* @INFO Dla modułów można utwórzyć WidgetManager
+    protected function widgets(): WidgetManager
+    {
+        return $this->global('widgetManager');
+    } */
 
     protected function viewExtension(): ViewExtension
     {
@@ -507,13 +681,21 @@ abstract class TemplateFeature
             return $this->viewExtension;
         }
 
-        $request = $this->request();
-        $cookie = $this->global('cookie');
+        return $this->viewExtension = new ViewExtension();
+    }
 
-        if (!$cookie instanceof CookieManager) {
-            throw new \RuntimeException('CookieManager not available in template');
+    // ===== Private methods =====
+
+    private function applicationUrl(): string
+    {
+        $appUrl = getenv('APP_URL');
+
+        if (is_string($appUrl) && filter_var($appUrl, FILTER_VALIDATE_URL)) {
+            return rtrim($appUrl, '/');
         }
 
-        return $this->viewExtension = new ViewExtension($request, $cookie);
+        $uri = $this->request()->getUri();
+
+        return sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
     }
 }

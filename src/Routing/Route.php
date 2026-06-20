@@ -20,7 +20,7 @@
  * return $handler->handle($request);
  *
  * Przykład z użyciem $permissions:
- * $routes->get($panel . '/', [PanelController::class, 'index'], 'panel')
+ * $routes->get($admin . '/', [AdminController::class, 'index'], 'admin_index')
  *     ->permissions([
  *         PermissionEnum::ADMIN_ACCESS->value,
  *         PermissionEnum::CONTENT_EDIT->value,

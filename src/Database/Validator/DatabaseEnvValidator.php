@@ -27,7 +27,7 @@ final class DatabaseEnvValidator
         $missing = [];
 
         foreach ($required as $key) {
-            if (!getenv($key)) {
+            if (getenv($key) === false) {
                 $missing[] = $key;
             }
         }
@@ -41,7 +41,7 @@ final class DatabaseEnvValidator
 
     public static function requireDatabase(): void
     {
-        if (!getenv('DB_NAME')) {
+        if (getenv('DB_NAME') === false) {
             throw new \RuntimeException('DB_NAME is required for this operation.');
         }
     }

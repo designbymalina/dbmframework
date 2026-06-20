@@ -19,11 +19,11 @@ use Dbm\Database\ValueObject\QueryResult;
 
 abstract class AbstractRepository
 {
-    protected DatabaseInterface $database;
-    protected string $table; // Służy tylko do metod: insert(), update(), find().
+    protected string $table; // Dla metod: find(), insert(), update(), delete().
 
-    public function __construct(DatabaseInterface $database)
-    {
+    public function __construct(
+        protected DatabaseInterface $database
+    ) {
         $this->database = $database;
     }
 
@@ -69,6 +69,18 @@ abstract class AbstractRepository
         /** @var \Dbm\Database\ValueObject\QueryResult $query */
         $query = $this->database->builder()
             ->buildUpdateQuery($data, $this->table, $where, $params);
+
+        return $this->database->execute($query->sql, $query->params);
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function delete(string $where, array $params = []): bool
+    {
+        /** @var \Dbm\Database\ValueObject\QueryResult $query */
+        $query = $this->database->builder()
+            ->buildDeleteQuery($this->table, $where, $params);
 
         return $this->database->execute($query->sql, $query->params);
     }

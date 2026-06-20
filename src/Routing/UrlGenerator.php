@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Dbm\Routing;
 
 use Dbm\Core\DependencyContainer;
+use Dbm\Localization\CurrentLanguage;
+use Dbm\Localization\LanguageHelper;
 use Dbm\Routing\Contracts\UrlGeneratorInterface;
 
 final class UrlGenerator implements UrlGeneratorInterface
@@ -31,8 +33,9 @@ final class UrlGenerator implements UrlGeneratorInterface
     protected array $namedRoutes = [];
 
     public function __construct(
-        private DependencyContainer $container,
-        private RouteCollection $routes
+        private readonly DependencyContainer $container,
+        private readonly RouteCollection $routes,
+        private readonly CurrentLanguage $currentLanguage
     ) {}
 
     /**
@@ -41,6 +44,7 @@ final class UrlGenerator implements UrlGeneratorInterface
     public function path(string $routeName, array $params = []): string
     {
         $route = $this->routes->getByName($routeName);
+
         $path = $route->path;
 
         if (str_contains($path, '{')) {
@@ -60,10 +64,22 @@ final class UrlGenerator implements UrlGeneratorInterface
         }
 
         $base = rtrim($this->context()->basePath ?: '', '/');
-        $uri  = '/' . ltrim($path, '/');
 
-        if ($uri === '/') {
-            return $base !== '' ? $base : '/';
+        $uri = '/' . ltrim($path, '/');
+
+        $language = $this->currentLanguage->get();
+
+        // $language = strtoupper(
+        //     $this->request->getAttribute(
+        //         'language',
+        //         LanguageHelper::getDefaultLanguage()
+        //     )
+        // );
+
+        $default = LanguageHelper::getDefaultLanguage();
+
+        if ($language !== $default) {
+            $uri = '/' . strtolower($language) . $uri;
         }
 
         return ($base !== '' ? $base : '') . $uri;
@@ -132,6 +148,59 @@ final class UrlGenerator implements UrlGeneratorInterface
         $text = trim(preg_replace('~\s+~', $hyphen, $text));
 
         return $text;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function routeLanguage(string $routeName, string $language, array $params = []): string
+    {
+        $current = $this->currentLanguage->get();
+
+        $this->currentLanguage->set($language);
+
+        try {
+            return $this->path($routeName, $params);
+        } finally {
+            $this->currentLanguage->set($current);
+        }
+    }
+
+    public function currentLanguage(): string
+    {
+        return strtoupper($this->currentLanguage->get());
+    }
+
+    public function localizedPath(string $path): string
+    {
+        $path = '/' . trim($path, '/');
+
+        $language = $this->currentLanguage->get();
+        $default = LanguageHelper::getDefaultLanguage();
+
+        if ($language !== $default) {
+            $path = '/' . strtolower($language) . $path;
+        }
+
+        return rtrim($this->base(), '/') . $path;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function absoluteRouteLanguage(
+        string $routeName,
+        string $language,
+        array $params = []
+    ): string {
+        $ctx = $this->context();
+
+        return $ctx->scheme . '://' . rtrim($ctx->host, '/')
+            . $this->routeLanguage(
+                $routeName,
+                $language,
+                $params
+            );
     }
 
     // ===== Private =====

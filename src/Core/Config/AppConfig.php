@@ -19,6 +19,17 @@ final class AppConfig
     public const ENV_PRODUCTION = 'production';
     public const ENV_DEVELOPMENT = 'development';
 
+    public static function sessionKey(): string
+    {
+        $value = getenv('APP_SESSION_KEY');
+
+        if ($value === false || $value === '') {
+            throw new \RuntimeException('APP_SESSION_KEY is not configured.');
+        }
+
+        return $value;
+    }
+
     public static function getEnv(): string
     {
         return getenv('APP_ENV') ?: self::ENV_DEVELOPMENT;
@@ -31,9 +42,9 @@ final class AppConfig
 
     public static function hasDatabase(): bool
     {
-        return !empty(getenv('DB_HOST'))
-            && !empty(getenv('DB_NAME'))
-            && !empty(getenv('DB_USER'));
+        return getenv('DB_HOST') !== false
+            && getenv('DB_NAME') !== false
+            && getenv('DB_USER') !== false;
     }
 
     // Optional for debugging: Logging 404 (as an error). Used in ExceptionMiddleware.

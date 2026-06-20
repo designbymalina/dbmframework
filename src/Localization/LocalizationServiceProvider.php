@@ -16,10 +16,7 @@ namespace Dbm\Localization;
 
 use Dbm\Core\DependencyContainer;
 use Dbm\Core\Paths;
-use Dbm\Http\Message\Request;
-use Dbm\Infrastructure\Cookie\CookieManager;
 use Dbm\Localization\Contracts\TranslationInterface;
-use Dbm\Localization\LanguageService;
 use Dbm\Localization\Translation;
 use Dbm\Localization\TranslationLoader;
 
@@ -30,10 +27,9 @@ final class LocalizationServiceProvider
         // --- Language ---
 
         $container->singleton(
-            LanguageService::class,
-            fn($c) => new LanguageService(
-                $c->get(Request::class),
-                $c->get(CookieManager::class)
+            CurrentLanguage::class,
+            fn() => new CurrentLanguage(
+                LanguageHelper::getDefaultLanguage()
             )
         );
 
@@ -42,7 +38,7 @@ final class LocalizationServiceProvider
         $container->singleton(
             TranslationLoader::class,
             fn($c) => (function () use ($c) {
-                $loader = new TranslationLoader($c->get(LanguageService::class));
+                $loader = new TranslationLoader($c->get(CurrentLanguage::class));
                 $loader->addPath(Paths::translationsPath());
                 return $loader;
             })()

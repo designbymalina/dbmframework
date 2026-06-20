@@ -240,9 +240,12 @@ class ExceptionHandler
         if ($env === AppConfig::ENV_DEVELOPMENT) {
             $sql = $this->formatSql($e->sql ?? '');
             $params = $this->formatParams($e->params ?? []);
+            $message = $this->formatMessage($e->getMessage());
 
-            $message = '
+            $content = '
                 <div class="dbm-ex-sql-block">
+                    <div class="dbm-ex-label">Message:</div>
+                    <pre class="dbm-ex-pre">' . $message . '</pre>
                     <div class="dbm-ex-label">SQL:</div>
                     <pre class="dbm-ex-pre">' . $sql . '</pre>
                     <div class="dbm-ex-label">Params:</div>
@@ -253,7 +256,7 @@ class ExceptionHandler
                 new Exception('', 500, $e),
                 500,
                 'Database Query Error',
-                $message
+                $content
             );
         }
 
@@ -304,6 +307,34 @@ class ExceptionHandler
         }
 
         return 500;
+    }
+
+    private function formatMessage(string $message): string
+    {
+        $message = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+
+        // SQLSTATE
+        $message = preg_replace(
+            '/SQLSTATE(\[[A-Z0-9]+\])?/',
+            '<span class="sql-keyword">$0</span>',
+            $message
+        );
+
+        // Numery błędów
+        $message = preg_replace(
+            '/(?<=\s|:)\d{3,5}(?=\s|$)/',
+            '<span class="sql-number">$0</span>',
+            $message
+        );
+
+        // Nazwy tabel, kolumn itp. w apostrofach
+        $message = preg_replace(
+            '/&#039;(.*?)&#039;/',
+            '<span class="sql-string">&#039;$1&#039;</span>',
+            $message
+        );
+
+        return $message;
     }
 
     private function formatSql(string $sql): string
@@ -470,38 +501,6 @@ class ExceptionHandler
 
         return null;
     }
-
-    // private function classToFile(string $class): ?string
-    // {
-    //     // wywal stałą (ostatni segment)
-    //     if (str_contains($class, '::')) {
-    //         return null;
-    //     }
-
-    //     $parts = explode('\\', $class);
-
-    //     array_pop($parts);
-
-    //     $relativePath = implode(DIRECTORY_SEPARATOR, $parts) . '.php';
-
-    //     // szukamy w modules (Twoja struktura)
-    //     $base = realpath(dirname(__DIR__, 4));
-
-    //     $paths = [
-    //         $base . '/modules/',
-    //         $base . '/app/',
-    //     ];
-
-    //     foreach ($paths as $prefix) {
-    //         $file = $prefix . $relativePath;
-
-    //         if (is_file($file)) {
-    //             return $file;
-    //         }
-    //     }
-
-    //     return null;
-    // }
 
     private function classToFile(string $class): ?string
     {

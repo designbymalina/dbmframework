@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Dbm\Core\Module\Service;
 
+use Dbm\Core\DependencyContainer;
 use Dbm\Core\Module\Exception\InvalidModulePackageException;
 use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Package\PackageDescriptor;
@@ -25,11 +26,13 @@ final class ModulePackageService
 {
     public const DIR_CONFLICTS = '_conflicts';
 
+    private ?DatabaseMigrationService $dbMigration = null;
+
     public function __construct(
         private Filesystem $filesystem,
         private FileMigrationService $fileMigration,
-        private DatabaseMigrationService $dbMigration,
-        private PathResolver $paths
+        private PathResolver $paths,
+        private DependencyContainer $container
     ) {}
 
     public function loadPackageDescriptor(
@@ -266,6 +269,8 @@ final class ModulePackageService
         if (empty($files)) {
             return;
         }
+
+        $this->dbMigration ??= $this->container->get(DatabaseMigrationService::class);
 
         $this->dbMigration->migrate($files, $packageRoot);
     }
