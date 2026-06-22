@@ -27,14 +27,7 @@ final class DatabaseMigrationService
      */
     public function migrate(array $files, string $packageRoot): void
     {
-        if (!$this->repository->isConnected()) {
-            if (!$this->repository->connect()) {
-                throw new \RuntimeException('Database connection failed');
-            }
-        }
-
         $db = $this->repository->getDatabase();
-
         $db->beginTransaction();
 
         try {

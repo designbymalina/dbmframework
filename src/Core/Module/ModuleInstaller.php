@@ -17,11 +17,13 @@ namespace Dbm\Core\Module;
 use Dbm\Core\Module\Exception\InvalidModulePackageException;
 use Dbm\Core\Module\Package\PackageDescriptor;
 use Dbm\Core\Module\Service\ModulePackageService;
+use Psr\Log\LoggerInterface;
 
 final class ModuleInstaller
 {
     public function __construct(
         private readonly ModulePackageService $service,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -72,6 +74,8 @@ final class ModuleInstaller
             // === ENV ===
             $this->service->writeEnv($manifest);
         } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+
             throw new InvalidModulePackageException(
                 'Package error: ' . $e->getMessage(),
                 previous: $e

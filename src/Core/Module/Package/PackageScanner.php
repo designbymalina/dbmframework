@@ -17,7 +17,7 @@ namespace Dbm\Core\Module\Package;
 use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Service\ModuleState;
 use Dbm\Infrastructure\Filesystem\Filesystem;
-use Dbm\Infrastructure\Log\Logger;
+use Psr\Log\LoggerInterface;
 use ZipArchive;
 use Throwable;
 
@@ -33,7 +33,7 @@ final class PackageScanner
         private readonly ModuleState $moduleState,
         private readonly PathResolver $paths,
         private readonly Filesystem $filesystem,
-        private readonly Logger $logger
+        private readonly LoggerInterface $logger
     ) {}
 
     /**

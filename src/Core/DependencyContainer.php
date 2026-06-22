@@ -156,11 +156,6 @@ final class DependencyContainer
         return $services;
     }
 
-    public function getOptional(string $id): mixed
-    {
-        return $this->has($id) ? $this->get($id) : null;
-    }
-
     public function setInstance(string $id, object $instance): void
     {
         $this->instances[$id] = $instance;

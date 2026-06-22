@@ -266,6 +266,10 @@ final class ModulePackageService
      */
     public function databaseMigrations(array $files, string $packageRoot): void
     {
+        // dump(
+        //     spl_object_id($this->container)
+        // );
+
         if (empty($files)) {
             return;
         }

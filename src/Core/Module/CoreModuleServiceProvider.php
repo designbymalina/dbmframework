@@ -31,8 +31,8 @@ use Dbm\Core\Module\Service\ModuleState;
 use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Events\EventDispatcher;
 use Dbm\Infrastructure\Filesystem\Filesystem;
-use Dbm\Infrastructure\Log\Logger;
 use Dbm\Infrastructure\Session\SessionManager;
+use Psr\Log\LoggerInterface;
 
 final class CoreModuleServiceProvider
 {
@@ -92,7 +92,7 @@ final class CoreModuleServiceProvider
                 $c->get(ModuleState::class),
                 $c->get(PathResolver::class),
                 $c->get(Filesystem::class),
-                $c->get(Logger::class)
+                $c->get(LoggerInterface::class)
             )
         );
 
@@ -131,17 +131,11 @@ final class CoreModuleServiceProvider
             )
         );
 
-        /**
-         * Returns service if registered.
-         *
-         * WARNING: This method still instantiates the service.
-         * Check! If the method is not used, it can be deleted.
-         */
         $container->singleton(
             InstallRepository::class,
             function ($c) {
                 return new InstallRepository(
-                    $c->getOptional(DatabaseInterface::class)
+                    $c->get(DatabaseInterface::class)
                 );
             }
         );
@@ -159,7 +153,7 @@ final class CoreModuleServiceProvider
                 $c->get(Filesystem::class),
                 $c->get(FileMigrationService::class),
                 $c->get(PathResolver::class),
-                $c->get(DependencyContainer::class)
+                $c // @INFO Wstrzykiwanie kontenera?
             )
         );
 
@@ -167,6 +161,7 @@ final class CoreModuleServiceProvider
             ModuleInstaller::class,
             fn($c) => new ModuleInstaller(
                 $c->get(ModulePackageService::class),
+                $c->get(LoggerInterface::class)
             )
         );
 
@@ -175,7 +170,7 @@ final class CoreModuleServiceProvider
             fn($c) => new ModuleRemovalService(
                 $c->get(PathResolver::class),
                 $c->get(Filesystem::class),
-                $c->get(Logger::class)
+                $c->get(LoggerInterface::class)
             )
         );
     }

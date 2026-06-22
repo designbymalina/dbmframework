@@ -18,13 +18,17 @@ use Dbm\Database\Contracts\DatabaseInterface;
 
 final class InstallRepository
 {
-    public function __construct(
-        private ?DatabaseInterface $database = null
-    ) {}
+    private ?DatabaseInterface $database;
 
-    public function connect(): bool
+    public function __construct(
+        ?DatabaseInterface $database = null
+    ) {
+        $this->database = $database;
+    }
+
+    public function setDatabase(DatabaseInterface $database): void
     {
-        return true; // DB jest już wstrzyknięte w kontenerze
+        $this->database = $database;
     }
 
     public function isConnected(): bool
