@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Dbm\Core\Module\Repository;
 
 use Dbm\Database\Contracts\DatabaseInterface;
+use RuntimeException;
 
 final class InstallRepository
 {
@@ -29,6 +30,15 @@ final class InstallRepository
     public function setDatabase(DatabaseInterface $database): void
     {
         $this->database = $database;
+    }
+
+    public function getDatabase(): DatabaseInterface
+    {
+        if ($this->database === null) {
+            throw new RuntimeException('Database not connected');
+        }
+
+        return $this->database;
     }
 
     public function isConnected(): bool
@@ -52,15 +62,6 @@ final class InstallRepository
         }
 
         $this->database->selectDatabase($name);
-    }
-
-    public function getDatabase(): DatabaseInterface
-    {
-        if ($this->database === null) {
-            throw new \RuntimeException('Database not connected');
-        }
-
-        return $this->database;
     }
 
     /**

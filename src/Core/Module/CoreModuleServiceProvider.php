@@ -135,7 +135,7 @@ final class CoreModuleServiceProvider
             InstallRepository::class,
             function ($c) {
                 return new InstallRepository(
-                    $c->get(DatabaseInterface::class)
+                    $c->getOptional(DatabaseInterface::class)
                 );
             }
         );
@@ -153,7 +153,7 @@ final class CoreModuleServiceProvider
                 $c->get(Filesystem::class),
                 $c->get(FileMigrationService::class),
                 $c->get(PathResolver::class),
-                $c // @INFO Wstrzykiwanie kontenera?
+                $c->get(DatabaseMigrationService::class)
             )
         );
 

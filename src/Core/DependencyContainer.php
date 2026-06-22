@@ -138,6 +138,15 @@ final class DependencyContainer
         $this->aliases[$alias] = $target;
     }
 
+    public function getOptional(string $id): mixed
+    {
+        try {
+            return $this->get($id);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
     /**
      * @return array<object>
      */
