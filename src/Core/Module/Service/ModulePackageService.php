@@ -358,13 +358,20 @@ final class ModulePackageService
             return;
         }
 
-        try {
-            $this->filesystem->deleteDir($hashDir);
-        } catch (\Throwable $e) {
-            $this->logger->error(
-                '[ModuleInstaller] Temporary extracted directory could not be removed.',
-                ['hashDir' => $hashDir, 'message' => $e->getMessage()]
-            );
+        // @INFO Problem prawdopodobnie po stronie Windowsa, który przez moment trzyma uchwyt do pliku.
+        // Dodano pętlę do powtórzenia usunęcia zawartości katalogu.
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                $this->filesystem->deleteDir($hashDir);
+                return;
+            } catch (\Throwable $e) {
+                usleep(100000); // 100 ms
+
+                $this->logger->warning(
+                    '[ModuleInstaller] Temporary extracted directory could not be removed.',
+                    ['attempt' => $i + 1, 'hashDir' => $hashDir, 'message' => $e->getMessage()]
+                );
+            }
         }
     }
 

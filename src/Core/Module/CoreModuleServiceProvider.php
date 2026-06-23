@@ -134,6 +134,10 @@ final class CoreModuleServiceProvider
         $container->singleton(
             InstallRepository::class,
             function ($c) {
+                if (!self::hasDatabaseConfiguration()) {
+                    return new InstallRepository();
+                }
+
                 return new InstallRepository(
                     $c->getOptional(DatabaseInterface::class)
                 );
@@ -174,5 +178,13 @@ final class CoreModuleServiceProvider
                 $c->get(LoggerInterface::class)
             )
         );
+    }
+
+    // INFO! Dodatkowe zabezpiecznie
+    private static function hasDatabaseConfiguration(): bool
+    {
+        return getenv('DB_HOST') !== false && getenv('DB_HOST') !== ''
+            && getenv('DB_USER') !== false && getenv('DB_USER') !== ''
+            && getenv('DB_NAME') !== false && getenv('DB_NAME') !== '';
     }
 }
