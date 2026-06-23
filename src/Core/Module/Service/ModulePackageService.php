@@ -18,6 +18,7 @@ use Dbm\Core\Module\Exception\InvalidModulePackageException;
 use Dbm\Core\Module\Filesystem\PathResolver;
 use Dbm\Core\Module\Package\PackageDescriptor;
 use Dbm\Infrastructure\Filesystem\Filesystem;
+use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -29,7 +30,8 @@ final class ModulePackageService
         private Filesystem $filesystem,
         private FileMigrationService $fileMigration,
         private PathResolver $paths,
-        private DatabaseMigrationService $dbMigration
+        private DatabaseMigrationService $dbMigration,
+        private LoggerInterface $logger
     ) {}
 
     public function loadPackageDescriptor(
@@ -50,6 +52,19 @@ final class ModulePackageService
 
     public function extractIfNeeded(string $zipPath): string
     {
+        $extractRoot = $this->paths->documents('extracted');
+
+        foreach ($this->filesystem->listDirs($extractRoot) as $dir) {
+            try {
+                $this->filesystem->deleteDir($dir);
+            } catch (\Throwable $e) {
+                $this->logger->warning(
+                    '[ModuleInstaller] Failed to remove old extracted directory.',
+                    ['path' => $dir, 'message' => $e->getMessage()]
+                );
+            }
+        }
+
         $zipPath = $this->filesystem->normalizePath($zipPath);
 
         $hash = md5($zipPath);
@@ -74,12 +89,14 @@ final class ModulePackageService
     }
 
     /**
+     * @param array<string, array<int, string>> $excluded
      * @return array<int, string>
      */
     public function copyDirectoryFiles(
         string $prefix,
         string $packageRoot,
-        string $timestamp
+        string $timestamp,
+        array $excluded = []
     ): array {
         $from = rtrim($packageRoot, '/') . '/' . $prefix;
         $to = $this->paths->basePath($prefix);
@@ -100,6 +117,15 @@ final class ModulePackageService
             }
 
             $relative = substr($file->getPathname(), strlen($from) + 1);
+            $relative = str_replace('\\', '/', $relative);
+
+            foreach ($excluded[$prefix] ?? [] as $excludedPath) {
+                $excludedPath = trim(str_replace('\\', '/', $excludedPath), '/');
+
+                if ($relative === $excludedPath || str_starts_with($relative, $excludedPath . '/')) {
+                    continue 2;
+                }
+            }
 
             $target = $to . '/' . $relative;
 
@@ -328,8 +354,17 @@ final class ModulePackageService
             );
         }
 
-        if (is_dir($hashDir)) {
+        if (!is_dir($hashDir)) {
+            return;
+        }
+
+        try {
             $this->filesystem->deleteDir($hashDir);
+        } catch (\Throwable $e) {
+            $this->logger->error(
+                '[ModuleInstaller] Temporary extracted directory could not be removed.',
+                ['hashDir' => $hashDir, 'message' => $e->getMessage()]
+            );
         }
     }
 

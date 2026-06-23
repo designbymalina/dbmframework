@@ -153,7 +153,8 @@ final class CoreModuleServiceProvider
                 $c->get(Filesystem::class),
                 $c->get(FileMigrationService::class),
                 $c->get(PathResolver::class),
-                $c->get(DatabaseMigrationService::class)
+                $c->get(DatabaseMigrationService::class),
+                $c->get(LoggerInterface::class)
             )
         );
 

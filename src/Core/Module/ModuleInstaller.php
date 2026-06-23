@@ -53,12 +53,14 @@ final class ModuleInstaller
                 'src/Shared', 'src/Infrastructure', 'src/System/Module',
             ];
 
+            $excluded = ['data' => ['database']];
+
             $conflicts = [];
 
             foreach ($dirs as $dir) {
                 $conflicts = array_merge(
                     $conflicts,
-                    $this->service->copyDirectoryFiles($dir, $packageRoot, $timestamp)
+                    $this->service->copyDirectoryFiles($dir, $packageRoot, $timestamp, $excluded)
                 );
             }
 
@@ -82,7 +84,11 @@ final class ModuleInstaller
             );
         } finally {
             // === CLEANUP (only for package) ===
-            $this->service->cleanupExtracted($packageRoot);
+            try {
+                $this->service->cleanupExtracted($packageRoot);
+            } catch (\Throwable $e) {
+                $this->logger->warning('Cleanup failed', ['exception' => $e]);
+            }
         }
 
         return [
