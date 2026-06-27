@@ -399,73 +399,6 @@ abstract class TemplateFeature
     }
 
     /**
-     * Generowanie linku canonical.
-     */
-    public function canonicalLink(): string
-    {
-        $appUrl = $this->applicationUrl();
-
-        $path = $this->request()->getUri()->getPath();
-
-        $basePath = parse_url($appUrl, PHP_URL_PATH) ?: '';
-
-        if ($basePath !== '' && str_starts_with($path, $basePath)) {
-            $path = substr($path, strlen($basePath));
-        }
-
-        return rtrim($appUrl, '/') . ($path ?: '/');
-    }
-
-    /**
-     * Generowanie linków hreflang.
-     *
-     * @return array<array{lang: string, url: string}>
-     */
-    public function hreflangLinks(): array
-    {
-        $route = $this->route();
-
-        if ($route === null) {
-            return [];
-        }
-
-        $urlGenerator = $this->urlGenerator;
-
-        if ($urlGenerator === null) {
-            return [];
-        }
-
-        $params = $this->request()->getAttribute(
-            'route_params',
-            []
-        );
-
-        $links = [];
-
-        foreach (LanguageHelper::getAvailableLanguages() as $language) {
-            $links[] = [
-                'lang' => strtolower($language),
-                'url' => $urlGenerator->absoluteRouteLanguage(
-                    $route->name,
-                    $language,
-                    $params
-                ),
-            ];
-        }
-
-        $links[] = [
-            'lang' => 'x-default',
-            'url' => $urlGenerator->absoluteRouteLanguage(
-                $route->name,
-                LanguageHelper::getDefaultLanguage(),
-                $params
-            ),
-        ];
-
-        return $links;
-    }
-
-    /**
      * Zwraca dane przełącznika języka.
      *
      * @param string $asset Ścieżka do assetów.
@@ -682,20 +615,5 @@ abstract class TemplateFeature
         }
 
         return $this->viewExtension = new ViewExtension();
-    }
-
-    // ===== Private methods =====
-
-    private function applicationUrl(): string
-    {
-        $appUrl = getenv('APP_URL');
-
-        if (is_string($appUrl) && filter_var($appUrl, FILTER_VALIDATE_URL)) {
-            return rtrim($appUrl, '/');
-        }
-
-        $uri = $this->request()->getUri();
-
-        return sprintf('%s://%s', $uri->getScheme(), $uri->getHost());
     }
 }

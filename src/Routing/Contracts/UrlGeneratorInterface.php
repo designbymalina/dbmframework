@@ -76,4 +76,10 @@ interface UrlGeneratorInterface
      * @return string
      */
     public function absoluteRouteLanguage(string $routeName, string $language, array $params = []): string;
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public function absolutePath(string $path): string;
 }

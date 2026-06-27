@@ -203,6 +203,16 @@ final class UrlGenerator implements UrlGeneratorInterface
             );
     }
 
+    public function absolutePath(string $path): string
+    {
+        $ctx = $this->context();
+
+        return $ctx->scheme
+            . '://'
+            . rtrim($ctx->host, '/')
+            . $this->asset($path);
+    }
+
     // ===== Private =====
 
     private function context(): RequestContext
