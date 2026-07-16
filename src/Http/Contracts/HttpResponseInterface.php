@@ -16,12 +16,39 @@ namespace Dbm\Http\Contracts;
 
 interface HttpResponseInterface
 {
+    /**
+     * @return int
+     */
     public function statusCode(): int;
 
+    /**
+     * @return string
+     */
     public function body(): string;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function json(): array;
 
     /**
      * @return array<string, array<int, string>>
      */
     public function headers(): array;
+
+    /**
+     * @param string $name
+     * @return ?string
+     */
+    public function header(string $name): ?string;
+
+    /**
+     * @return bool
+     */
+    public function successful(): bool;
+
+    /**
+     * @return bool
+     */
+    public function failed(): bool;
 }

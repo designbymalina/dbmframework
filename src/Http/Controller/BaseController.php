@@ -212,4 +212,23 @@ abstract class BaseController implements BaseInterface, RequestAwareInterface
     {
         return $this->view->render($template, $data);
     }
+
+    /**
+     * Redirects to xternal URL
+     *
+     * @param string $url
+     * @return ResponseInterface
+     */
+    protected function redirectToUrl(string $url): ResponseInterface
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException(
+                'Invalid redirect URL.'
+            );
+        }
+
+        return new Response(302, [
+            'Location' => $url,
+        ]);
+    }
 }

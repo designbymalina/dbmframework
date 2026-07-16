@@ -42,7 +42,7 @@ final class HttpResponse implements HttpResponseInterface
      */
     public function json(): array
     {
-        return json_decode($this->body, true) ?? [];
+        return json_decode($this->body, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -51,5 +51,20 @@ final class HttpResponse implements HttpResponseInterface
     public function headers(): array
     {
         return $this->headers;
+    }
+
+    public function header(string $name): ?string
+    {
+        return $this->headers[$name][0] ?? null;
+    }
+
+    public function successful(): bool
+    {
+        return $this->status >= 200 && $this->status < 300;
+    }
+
+    public function failed(): bool
+    {
+        return !$this->successful();
     }
 }

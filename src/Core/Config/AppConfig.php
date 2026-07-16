@@ -52,4 +52,14 @@ final class AppConfig
     {
         return false;
     }
+
+    public static function httpClientDriver(): string
+    {
+        return getenv('HTTP_CLIENT_DRIVER') ?: 'auto';
+    }
+
+    public static function httpClientLog(): bool
+    {
+        return strtolower((string) getenv('HTTP_CLIENT_LOG')) === 'true';
+    }
 }

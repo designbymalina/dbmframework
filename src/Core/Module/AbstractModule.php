@@ -59,6 +59,11 @@ abstract class AbstractModule implements ModuleInterface
         // configure routes
     }
 
+    public function registerApiRoutes(RouteBuilder $routes): void
+    {
+        // configure api routes
+    }
+
     public function boot(): void
     {
         // runtime logic (optional)
