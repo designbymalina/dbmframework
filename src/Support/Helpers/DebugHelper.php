@@ -30,8 +30,8 @@ class DebugHelper
         // => \n NULL => NULL
         $output = preg_replace('/=>\s*\n\s*NULL/', '=> NULL', $output);
 
-        // Normalizacja => (zawsze spacja przed i po)
-        $output = preg_replace('/\s*=>\s*/', ' => ', $output);
+        // Normalizacja znaku => (spacja przed/po, i/lub usnięcie)
+        $output = preg_replace('/\s*=>\s*/', ' ', $output);
 
         // ===== HTML ESCAPE =====
 
@@ -65,20 +65,6 @@ class DebugHelper
             $output
         );
 
-        // Typy
-        $output = preg_replace(
-            '/\b(string|int|bool|float|double)\((\d+)\)/',
-            '<span class="type">$1($2)</span>',
-            $output
-        );
-
-        // NULL (po escape!)
-        $output = preg_replace(
-            '/\bNULL\b/',
-            '<span class="text">NULL</span>',
-            $output
-        );
-
         // Klucze: ["key"]
         $output = preg_replace(
             '/\[&quot;(.*?)&quot;\]/',
@@ -106,10 +92,51 @@ class DebugHelper
             $output
         );
 
+        // Typy
+        $output = preg_replace(
+            '/\bstring\((\d+)\)/',
+            '<span class="type">string($1)</span>',
+            $output
+        );
+
+        // NULL (po escape!)
+        $output = preg_replace(
+            '/\bNULL\b/',
+            '<span class="text">null</span>',
+            $output
+        );
+
         // Nawiasy
         $output = preg_replace(
             '/([{}\[\]])/',
             '<span class="special">$1</span>',
+            $output
+        );
+
+        // Integer
+        $output = preg_replace_callback(
+            '/\bint\((\-?\d+)\)/',
+            function ($m) {
+                return '<span class="type">int</span> <span class="number">' . $m[1] . '</span>';
+            },
+            $output
+        );
+
+        // Float
+        $output = preg_replace_callback(
+            '/\b(float|double)\((-?\d+(?:\.\d+)?)\)/',
+            function ($m) {
+                return '<span class="type">' . $m[1] . '</span> <span class="number">' . $m[2] . '</span>';
+            },
+            $output
+        );
+
+        // Boolean
+        $output = preg_replace_callback(
+            '/\bbool\((true|false)\)/',
+            function ($m) {
+                return '<span class="type">bool</span> <span class="text">' . $m[1] . '</span>';
+            },
             $output
         );
 
@@ -123,13 +150,6 @@ class DebugHelper
             return $key;
         }, $output);
 
-        // Float
-        $output = preg_replace_callback('/\b(float|double)\((.*?)\)/', function ($m) use (&$placeholders) {
-            $key = '__FLOAT_' . count($placeholders) . '__';
-            $placeholders[$key] = '<span class="type">' . $m[1] . '(</span><span class="number">' . $m[2] . '</span><span class="type">)</span>';
-            return $key;
-        }, $output);
-
         // Resource
         $output = preg_replace_callback('/resource\((\d+)\) of type \((.*?)\)/', function ($m) use (&$placeholders) {
             $key = '__RES_' . count($placeholders) . '__';
@@ -137,19 +157,14 @@ class DebugHelper
             return $key;
         }, $output);
 
-        // Koloruj liczby
-        $output = preg_replace('/\b(\d+)\b/', '<span class="number">$1</span>', $output);
         // Przywróć placeholdery
         $output = strtr($output, $placeholders);
-
-        // Osobny kolor dla float vs int
-        $output = str_replace('=&gt;', '<span class="text">=&gt;</span>', $output);
 
         // Czyszczenie białych znaków / spacje
 
         $output = preg_replace_callback('/^( +)/m', function ($m) {
             $level = intdiv(strlen($m[1]), 2);
-            return str_repeat(' ', $level * 4);
+            return str_repeat(' ', $level * 2);
         }, $output);
 
         // ===== WIDOK =====
@@ -159,7 +174,7 @@ class DebugHelper
             <html lang="en">
                 <head>
                 <meta charset="utf-8">
-                <title>DbM Framework - Output Debugger</title>
+                <title>DBM Framework - Output Debugger</title>
                     <style>
                         .dbm-dg-root, .dbm-dg-root * { all: revert; box-sizing: border-box; }
                         .dbm-dg-root { margin: 0; padding: 2rem; font-family: monospace; font-size: 14px; background: #23241f; color: #f8f8f2; }
@@ -179,7 +194,7 @@ class DebugHelper
                 </head>
                 <body class="dbm-dg-root">
                     <div class="dbm-dg-container">
-                        <div class="dbm-dg-header">DbM Debug</div>
+                        <div class="dbm-dg-header">DBM Debug</div>
                         <pre class="dbm-dg-output">$output</pre>
                     </div>
                 </body>

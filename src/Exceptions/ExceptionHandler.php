@@ -298,7 +298,7 @@ class ExceptionHandler
     {
         $code = $e->getCode();
 
-        if ($code >= 100 && $code <= 599) {
+        if (is_int($code) && $code >= 100 && $code <= 599) {
             return $code;
         }
 

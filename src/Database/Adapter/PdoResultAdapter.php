@@ -22,14 +22,28 @@ class PdoResultAdapter implements ResultInterface
         private \PDOStatement $stmt
     ) {}
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function fetch(): ?array
     {
         $row = $this->stmt->fetch(\PDO::FETCH_ASSOC);
         return $row ?: null;
     }
 
+    /**
+     * @return array<array<string, mixed>>
+     */
     public function fetchAll(): array
     {
         return $this->stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+    }
+
+    /**
+     * @return int
+     */
+    public function affectedRows(): int
+    {
+        return $this->stmt->rowCount();
     }
 }

@@ -35,9 +35,9 @@ final class TranslationLoader
     /**
      * @return array<string, string>
      */
-    public function load(): array
+    public function load(?string $language = null): array
     {
-        $language = $this->currentLanguage->get();
+        $language ??= $this->currentLanguage->get();
 
         if (!$language) {
             return [];

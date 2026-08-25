@@ -22,6 +22,7 @@ use Dbm\Database\Hydrator\RowHydrator;
 use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Database\Contracts\ResultInterface;
 use Dbm\Database\Contracts\SelectQueryBuilderInterface;
+use Dbm\Database\Hydrator\SmartHydrator;
 use Dbm\Debug\DebugRegistry;
 use Dbm\Infrastructure\Log\Logger;
 use PDO;
@@ -45,7 +46,10 @@ final class PdoDatabaseAdapter implements DatabaseInterface
     ) {
         $this->logger = new Logger();
         $this->builder = new CrudQueryBuilder();
-        $this->hydrator = new RowHydrator();
+
+        $this->hydrator = new RowHydrator(
+            new SmartHydrator()
+        );
 
         $dsn = match ($driver) {
             'sqlite' => "sqlite::memory:",
@@ -82,19 +86,27 @@ final class PdoDatabaseAdapter implements DatabaseInterface
     /* ========================
      * DATABASE CONTROL
      * ======================== */
-
     public function databaseExists(string $database): bool
     {
-        $stmt = $this->pdo->query(
-            "SHOW DATABASES LIKE " . $this->pdo->quote($database)
-        );
+        $sql = 'SHOW DATABASES LIKE ' . $this->pdo->quote($database);
 
-        return (bool) $stmt->fetchColumn();
+        try {
+            $stmt = $this->pdo->query($sql);
+            return (bool) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            $this->wrapQueryException($e, $sql);
+        }
     }
 
     public function selectDatabase(string $database): void
     {
-        $this->pdo->exec("USE `$database`");
+        $sql = "USE `$database`";
+
+        try {
+            $this->pdo->exec($sql);
+        } catch (PDOException $e) {
+            $this->wrapQueryException($e, $sql);
+        }
     }
 
     /* ========================
@@ -130,13 +142,8 @@ final class PdoDatabaseAdapter implements DatabaseInterface
             }
 
             return new PdoResultAdapter($stmt);
-        } catch (\Throwable $exception) {
-            $this->logger->critical('PDO query failed', [
-                'sql' => $sql,
-                'params' => $params,
-                'exception' => $exception,
-            ]);
-            throw new QueryException($sql, $params, $exception);
+        } catch (PDOException $exception) {
+            $this->wrapQueryException($exception, $sql, $params);
         }
     }
 
@@ -154,8 +161,12 @@ final class PdoDatabaseAdapter implements DatabaseInterface
 
     public function execute(string $sql, array $params = [], array $types = []): bool
     {
-        $stmt = $this->pdo->prepare($this->cleanSql($sql));
-        return $stmt->execute($params);
+        try {
+            $stmt = $this->pdo->prepare($this->cleanSql($sql));
+            return $stmt->execute($params);
+        } catch (PDOException $exception) {
+            $this->wrapQueryException($exception, $sql, $params);
+        }
     }
 
     /* ========================
@@ -186,14 +197,34 @@ final class PdoDatabaseAdapter implements DatabaseInterface
      * HYDRATION
      * ======================== */
 
+    /**
+     * Hydrate database row into an object.
+     *
+     * Hydration is provided by DBM Framework and is independent
+     * of the underlying database adapter or ORM.
+     *
+     * Database adapters must support DBM hydration regardless
+     * of whether they use PDO, Doctrine or another database layer.
+     *
+     * @param array<string,mixed>|null $row
+     */
     public function hydrate(?array $row, ?string $class = null): ?object
     {
         return $this->hydrator->hydrate($row, $class);
     }
 
-    public function hydrateAll(array $rows): array
+    /**
+     * Hydrate multiple database rows into objects.
+     *
+     * Hydration is provided by DBM Framework and is independent
+     * of the underlying database adapter or ORM.
+     *
+     * @param array<int,array<string,mixed>> $rows
+     * @return array<int,object|null>
+     */
+    public function hydrateAll(array $rows, ?string $class = null): array
     {
-        return array_map(fn($row) => $this->hydrate($row), $rows);
+        return $this->hydrator->hydrateAll($rows, $class);
     }
 
     /* ========================
@@ -222,5 +253,19 @@ final class PdoDatabaseAdapter implements DatabaseInterface
     private function cleanSql(string $sql): string
     {
         return preg_replace('/\s+/', ' ', trim($sql));
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function wrapQueryException(PDOException $e, string $sql, array $params = []): never
+    {
+        $this->logger->critical('PDO query failed', [
+            'sql' => $sql,
+            'params' => $params,
+            'exception' => $e,
+        ]);
+
+        throw new QueryException($sql, $params, $e);
     }
 }

@@ -20,17 +20,22 @@ declare(strict_types=1);
 
 namespace Dbm\Database\Hydrator;
 
-class RowHydrator
+use Dbm\Database\Model\DataObject;
+use InvalidArgumentException;
+
+final class RowHydrator
 {
+    public function __construct(
+        private readonly SmartHydrator $smartHydrator
+    ) {}
+
     /**
-     * Hydrate row to object or to given class.
+     * Hydrate associative array into object.
      *
-     * - If $class is null -> returns stdClass with public props.
-     * - If $class exists -> instantiate and set public properties (fallback: set via reflection if needed).
+     * If no class is provided, a generic DataObject is returned.
+     * If a class is provided, a new instance is created and hydrated.
      *
      * @param array<string, mixed>|null $row
-     * @param string|null $class Fully qualified class name or null
-     * @return object|null
      */
     public function hydrate(?array $row, ?string $class = null): ?object
     {
@@ -39,40 +44,39 @@ class RowHydrator
         }
 
         if ($class === null) {
-            $obj = new \stdClass();
-            foreach ($row as $k => $v) {
-                $obj->{$k} = $v;
-            }
-            return $obj;
+            return $this->hydrateDataObject($row);
         }
 
         if (!class_exists($class)) {
-            // fallback to stdClass
-            $obj = new \stdClass();
-            foreach ($row as $k => $v) {
-                $obj->{$k} = $v;
-            }
-            return $obj;
+            throw new InvalidArgumentException(
+                sprintf('Class "%s" does not exist.', $class)
+            );
         }
 
-        // If class exists, try to set public properties; if not possible, use reflection to set.
-        $instance = new $class();
+        return $this->smartHydrator->hydrate($row, $class);
+    }
 
-        // Try to set public properties directly
-        foreach ($row as $k => $v) {
-            // property exists and is public?
-            if (property_exists($instance, $k)) {
-                $refProp = new \ReflectionProperty($class, $k);
-                if ($refProp->isPublic()) {
-                    $instance->{$k} = $v;
-                    continue;
-                }
-            }
+    /**
+     * Hydrate multiple associative arrays into objects.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return array<int, object|null>
+     */
+    public function hydrateAll(array $rows, ?string $class = null): array
+    {
+        return array_map(fn(array $row) => $this->hydrate($row, $class), $rows);
+    }
 
-            // fallback: set dynamically if allowed
-            $instance->{$k} = $v;
-        }
+    /**
+     * Hydrate row into generic DataObject.
+     *
+     * @param array<string, mixed> $row
+     */
+    private function hydrateDataObject(array $row): DataObject
+    {
+        $object = new DataObject();
+        $object->fill($row);
 
-        return $instance;
+        return $object;
     }
 }

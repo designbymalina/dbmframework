@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Dbm\Localization;
 
+use Dbm\Environment\Environment;
+
 class LanguageHelper
 {
     /**
@@ -21,7 +23,7 @@ class LanguageHelper
      */
     private static function rawLanguages(): string
     {
-        return getenv('APP_LANGUAGES') ?: '';
+        return Environment::get('APP_LANGUAGES');
     }
 
     /**

@@ -33,6 +33,12 @@ interface UrlGeneratorInterface
     public function asset(string $path): string;
 
     /**
+     * @param string $routeName
+     * @return bool
+     */
+    public function hasRoute(string $routeName): bool;
+
+    /**
      * @param array<string, scalar> $params
      */
     public function absolute(string $routeName, array $params = []): string;
@@ -41,14 +47,21 @@ interface UrlGeneratorInterface
      * @param string $path
      * @return string
      */
-    public function stripBasePath(string $path): string;
+    public function absolutePath(string $path): string;
 
     /**
-     * @param string $text
-     * @param int $limit
+     * @param string $routeName
+     * @param string $language
+     * @param array<string, mixed> $params
      * @return string
      */
-    public function generateSeoFriendlyUrl(string $text, int $limit = 120): string;
+    public function absoluteRouteLanguage(string $routeName, string $language, array $params = []): string;
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public function stripBasePath(string $path): string;
 
     /**
      * @param string $routeName
@@ -70,16 +83,9 @@ interface UrlGeneratorInterface
     public function localizedPath(string $path): string;
 
     /**
-     * @param string $routeName
-     * @param string $language
-     * @param array<string, mixed> $params
+     * @param string $text
+     * @param int $limit
      * @return string
      */
-    public function absoluteRouteLanguage(string $routeName, string $language, array $params = []): string;
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    public function absolutePath(string $path): string;
+    public function generateSeoFriendlyUrl(string $text, int $limit = 120): string;
 }

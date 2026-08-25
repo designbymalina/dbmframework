@@ -21,7 +21,6 @@ interface CrudQueryBuilderInterface
     /**
      * Build INSERT query fragment or full query.
      * Returns [string $queryOrColumns, array $params, string|null $placeholdersIfPartial]
-     * Convention: if $table provided returns [$fullQuery, $params], otherwise [$columns, $placeholders, $params]
      *
      * @param array<string, mixed> $data
      */
@@ -29,7 +28,6 @@ interface CrudQueryBuilderInterface
 
     /**
      * Build UPDATE SET clause or full UPDATE query.
-     * If $table provided returns [$fullQuery, $params], otherwise [$setClause, $params]
      *
      * @param array<string, mixed> $data
      * @param array<string, mixed> $params

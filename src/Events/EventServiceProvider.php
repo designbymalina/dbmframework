@@ -30,7 +30,7 @@ class EventServiceProvider
 
         foreach ($mappings as $event => $listeners) {
             foreach ((array) $listeners as $listener) {
-                $dispatcher->listen($event, new $listener());
+                $dispatcher->listen($event, $listener);
             }
         }
     }

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dbm\Support\Sanitize;
 
-class Sanitizer
+final class Sanitizer
 {
     /**
      * Oczyszczanie tekstu przed wyświetleniem w widoku.
@@ -36,7 +36,7 @@ class Sanitizer
 
     /**
      * Sanitizacja danych przed wstawieniem do bazy danych.
-     * Usuwa znaczniki HTML, redukuje białe znaki i encoduje znaki specjalne.
+     * Usuwa znaczniki HTML, redukuje białe znaki.
      *
      * @param string $text Tekst do sanitizacji
      * @return string Zabezpieczony tekst
@@ -50,23 +50,17 @@ class Sanitizer
         $text = preg_replace('/[\x00-\x1F\x7F]/u', '', $text);
 
         // Redukcja wielokrotnych spacji i białych znaków
-        $text = preg_replace('/\s+/', ' ', trim($text));
-
-        // Zamiana potencjalnych znaków specjalnych na HTML entities
-        return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return preg_replace('/\s+/', ' ', trim($text));
     }
 
     public function sanitizeToken(?string $token): string
     {
         $token = trim((string) $token);
 
-        // Walidacja - tylko małe/duże litery, cyfry, długość 40-64 znaki
-        if (!preg_match('/^[a-f0-9]{40,64}$/i', $token)) {
+        // Walidacja - tylko małe/duże litery, cyfry, długość 32-128 znaki
+        if (!preg_match('/^[a-f0-9]{32,128}$/i', $token)) {
             return '';
         }
-
-        // Opcjonalnie: zabezpieczenie przed XSS (w razie błędów w szablonie)
-        $token = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
 
         return $token;
     }

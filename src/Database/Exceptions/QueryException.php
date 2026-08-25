@@ -29,9 +29,9 @@ class QueryException extends \RuntimeException
         \Throwable $previous
     ) {
         parent::__construct(
-            $previous->getMessage(),
-            (int) $previous->getCode(),
-            $previous
+            message: $previous->getMessage(),
+            code: is_int($previous->getCode()) ? $previous->getCode() : 0,
+            previous: $previous
         );
     }
 }

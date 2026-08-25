@@ -72,24 +72,32 @@ declare(strict_types=1);
 
 namespace Dbm\Events;
 
+use Dbm\Core\DependencyContainer;
 use Dbm\Events\Queue\EventQueue;
 
 class EventDispatcher
 {
-    /** @var array<string, array<callable|object>> */
+    /** @var array<string, array<callable|object|string>> */
     protected array $listeners = [];
 
     protected EventQueue $queue;
 
-    public function __construct(?EventQueue $queue = null)
-    {
+    public function __construct(
+        protected ?DependencyContainer $container = null, // @INFO Docelowo można usunąć null, ale to wymaga zmian w starszym kodzie.
+        ?EventQueue $queue = null
+    ) {
         $this->queue = $queue ?? new EventQueue();
     }
 
     /**
-     * Dodaje listener do zdarzenia
+     * Register a listener for an event.
+     *
+     * Supports listener objects, callables and class names.
+     *
+     * Class-name listeners are resolved through the dependency container
+     * when the event is dispatched.
      */
-    public function listen(string $event, callable|object $listener): void
+    public function listen(string $event, callable|object|string $listener): void
     {
         $this->listeners[$event][] = $listener;
     }
@@ -100,10 +108,25 @@ class EventDispatcher
     public function dispatch(object $event): void
     {
         $eventClass = $event::class;
+
         foreach ($this->listeners[$eventClass] ?? [] as $listener) {
+            if (is_string($listener)) {
+                if ($this->container === null) {
+                    throw new \RuntimeException(
+                        'DependencyContainer is required to resolve event listeners.'
+                    );
+                }
+
+                $listener = $this->container->get($listener);
+            }
+
+
             if (is_callable($listener)) {
                 $listener($event);
-            } elseif (method_exists($listener, 'handle')) {
+                continue;
+            }
+
+            if (method_exists($listener, 'handle')) {
                 $listener->handle($event);
             }
         }

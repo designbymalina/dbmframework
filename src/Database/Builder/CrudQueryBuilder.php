@@ -16,6 +16,7 @@ namespace Dbm\Database\Builder;
 
 use Dbm\Database\Contracts\CrudQueryBuilderInterface;
 use Dbm\Database\ValueObject\QueryResult;
+use Dbm\Database\ValueObject\SqlExpression;
 
 class CrudQueryBuilder implements CrudQueryBuilderInterface
 {
@@ -23,28 +24,57 @@ class CrudQueryBuilder implements CrudQueryBuilderInterface
     {
         $filtered = array_filter($data, static fn($v) => $v !== null);
 
-        $columns = implode(', ', array_keys($filtered));
-        $placeholders = ':' . implode(', :', array_keys($filtered));
+        $columns = [];
+        $values = [];
+        $params = [];
 
-        $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+        foreach ($filtered as $column => $value) {
+            $columns[] = $column;
 
-        return new QueryResult($sql, $filtered);
+            if ($value instanceof SqlExpression) {
+                $values[] = $value->sql;
+                continue;
+            }
+
+            $values[] = ':' . $column;
+            $params[$column] = $value;
+        }
+
+        $sql = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $table,
+            implode(', ', $columns),
+            implode(', ', $values)
+        );
+
+        return new QueryResult($sql, $params);
     }
 
     public function buildUpdateQuery(array $data, string $table, string $where, array $params = []): QueryResult
     {
-        $filtered = array_filter($data, static fn($v) => $v !== null);
-
-        $set = implode(
-            ', ',
-            array_map(static fn($col) => "{$col} = :{$col}", array_keys($filtered))
+        $filtered = array_filter(
+            $data,
+            static fn($v) => $v !== null
         );
 
-        $sql = "UPDATE {$table} SET {$set} WHERE {$where}";
+        $set = [];
+        $values = [];
+
+        foreach ($filtered as $column => $value) {
+            if ($value instanceof SqlExpression) {
+                $set[] = "{$column} = {$value->sql}";
+                continue;
+            }
+
+            $set[] = "{$column} = :{$column}";
+            $values[$column] = $value;
+        }
+
+        $sql = "UPDATE {$table} SET " . implode(', ', $set) . " WHERE {$where}";
 
         return new QueryResult(
             $sql,
-            array_merge($filtered, $params)
+            array_merge($values, $params)
         );
     }
 

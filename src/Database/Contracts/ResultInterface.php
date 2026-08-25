@@ -25,4 +25,12 @@ interface ResultInterface
      * @return array<array<string, mixed>>
      */
     public function fetchAll(): array;
+
+    /**
+     * Returns the number of affected rows.
+     * For UPDATE/DELETE this represents the number of rows affected by the executed statement.
+     *
+     * @return int
+     */
+    public function affectedRows(): int;
 }

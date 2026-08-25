@@ -31,6 +31,12 @@ interface SelectQueryBuilderInterface
 
     public function andWhere(string $expr): self;
 
+    /** @param list<mixed> $values */
+    public function whereIn(string $field, array $values): self;
+
+    /** @param list<mixed> $values */
+    public function andWhereIn(string $field, array $values): self;
+
     public function orderBy(string $sort, ?string $order = null): self;
 
     public function addOrderBy(string $sort, ?string $order = null): self;

@@ -82,8 +82,20 @@ final class Response extends Message implements ExtendedResponseInterface
             }
         }
 
-        if ($this->body) {
-            echo (string) $this->body;
+        if (!$this->body) {
+            return;
+        }
+
+        $this->body->rewind();
+
+        while (!$this->body->eof()) {
+            echo $this->body->read(8192);
+
+            if (function_exists('ob_flush')) {
+                @ob_flush();
+            }
+
+            flush();
         }
     }
 
@@ -109,31 +121,39 @@ final class Response extends Message implements ExtendedResponseInterface
         return new self($statusCode, ['Content-Type' => 'application/json; charset=UTF-8'], $stream);
     }
 
-    /** {@inheritdoc} */
-    public static function download(string $filePath, ?string $downloadName = null): self
-    {
+    /**
+     * Download idzie strumieniowo.
+     *
+     * Plik nie jest wczytywany do pamięci i może obsługiwać
+     * zarówno małe pliki, jak i duże pliki rzędu setek MB.
+     *
+     * {@inheritdoc}
+     */
+    public static function download(
+        string $filePath,
+        ?string $fileName = null,
+        ?string $contentType = 'application/octet-stream'
+    ): self {
         if (!is_file($filePath)) {
             return new self(404);
         }
 
-        $downloadName ??= basename($filePath);
+        $resource = fopen($filePath, 'rb');
 
-        $content = file_get_contents($filePath);
-
-        if ($content === false) {
+        if ($resource === false) {
             return new self(500);
         }
 
-        $stream = new Stream($content);
+        $fileName = self::normalizeDownloadName($filePath, $fileName);
 
         return new self(
             200,
             [
-                'Content-Type' => 'application/zip',
-                'Content-Disposition' => 'attachment; filename="' . $downloadName . '"',
+                'Content-Type' => $contentType ?? 'application/octet-stream',
+                'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
                 'Content-Length' => (string) filesize($filePath),
             ],
-            $stream
+            Stream::createFromResource($resource)
         );
     }
 
@@ -170,6 +190,17 @@ final class Response extends Message implements ExtendedResponseInterface
             503 => 'Service Unavailable',
             default => '',
         };
+    }
+
+    private static function normalizeDownloadName(string $filePath, ?string $fileName): string
+    {
+        $fileName = $fileName !== null ? trim($fileName) : '';
+
+        if ($fileName === '') {
+            $fileName = basename($filePath);
+        }
+
+        return basename($fileName);
     }
 
     /** {@inheritdoc} */

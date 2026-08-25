@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Application: DbM Framework
+ * A lightweight PHP framework for building web applications.
+ *
+ * @author Artur Malinowski
+ * @copyright Design by Malina (All Rights Reserved)
+ * @license MIT
+ * @link https://www.dbm.org.pl
+ */
+
+declare(strict_types=1);
+
+namespace Dbm\Database\Hydrator;
+
+final class NameMapper
+{
+    public static function toCamelCase(string $name): string
+    {
+        return lcfirst(str_replace('_', '', ucwords($name, '_')));
+    }
+}

@@ -20,6 +20,7 @@ use Dbm\Database\Contracts\SelectQueryBuilderInterface;
 class PdoSelectQueryBuilder implements SelectQueryBuilderInterface
 {
     private string $from = '';
+    private int $counter = 0;
     private ?int $limit = null;
     private ?int $offset = null;
 
@@ -43,7 +44,6 @@ class PdoSelectQueryBuilder implements SelectQueryBuilderInterface
 
     /**
      * @param string|array<string>|array<array<string>> ...$cols
-     * @return $this
      */
     public function select(string|array ...$cols): self
     {
@@ -91,6 +91,22 @@ class PdoSelectQueryBuilder implements SelectQueryBuilderInterface
     {
         $this->where[] = $expr;
         return $this;
+    }
+
+    /**
+     * @param list<mixed> $values
+     */
+    public function whereIn(string $field, array $values): self
+    {
+        return $this->where($this->buildInExpression($field, $values));
+    }
+
+    /**
+     * @param list<mixed> $values
+     */
+    public function andWhereIn(string $field, array $values): self
+    {
+        return $this->andWhere($this->buildInExpression($field, $values));
     }
 
     public function orderBy(string $sort, ?string $order = null): self
@@ -174,5 +190,39 @@ class PdoSelectQueryBuilder implements SelectQueryBuilderInterface
     public function expr(): ExpressionBuilderInterface
     {
         return $this->expr;
+    }
+
+    // ===== Private =====
+
+    /**
+     * Builds a portable IN() expression.
+     *
+     * The DBM DatabaseInterface is based on SQL + named parameters,
+     * therefore the expression is expanded into individual placeholders
+     * instead of relying on database-specific array binding.
+     *
+     * This implementation may be simplified in the future if the
+     * abstraction layer evolves beyond the current SQL + parameters model.
+     *
+     * @param list<mixed> $values
+     */
+    private function buildInExpression(string $field, array $values): string
+    {
+        if ($values === []) {
+            return '1 = 0';
+        }
+
+        $group = ++$this->counter;
+
+        $placeholders = [];
+
+        foreach ($values as $i => $value) {
+            $name = "in_{$group}_{$i}";
+
+            $placeholders[] = ':' . $name;
+            $this->params[$name] = $value;
+        }
+
+        return sprintf('%s IN (%s)', $field, implode(', ', $placeholders));
     }
 }

@@ -176,7 +176,7 @@ interface DatabaseInterface
      * @param array<int, array<string, mixed>> $rows
      * @return array<int, object>
      */
-    public function hydrateAll(array $rows): array;
+    public function hydrateAll(array $rows, ?string $class = null): array;
 
     public function getLastInsertId(): string;
 

@@ -14,52 +14,66 @@ declare(strict_types=1);
 
 namespace Dbm\Core\Config;
 
+use Dbm\Environment\Environment;
+
 final class AppConfig
 {
     public const ENV_PRODUCTION = 'production';
     public const ENV_DEVELOPMENT = 'development';
 
+    public static function env(string $name, string $default = ''): string
+    {
+        return Environment::get($name, $default);
+    }
+
+    public static function getEnv(): string
+    {
+        return Environment::get('APP_ENV', self::ENV_DEVELOPMENT);
+    }
+
     public static function sessionKey(): string
     {
-        $value = getenv('APP_SESSION_KEY');
+        $value = Environment::get('APP_SESSION_KEY');
 
-        if ($value === false || $value === '') {
-            throw new \RuntimeException('APP_SESSION_KEY is not configured.');
+        if ($value === '') {
+            throw new \RuntimeException(
+                'APP_SESSION_KEY is not configured.'
+            );
         }
 
         return $value;
     }
 
-    public static function getEnv(): string
-    {
-        return getenv('APP_ENV') ?: self::ENV_DEVELOPMENT;
-    }
-
     public static function isCacheEnabled(): bool
     {
-        return strtolower((string) getenv('CACHE_ENABLED')) === 'true';
+        return strtolower(Environment::get('CACHE_ENABLED')) === 'true';
     }
 
     public static function hasDatabase(): bool
     {
-        return getenv('DB_HOST') !== false
-            && getenv('DB_NAME') !== false
-            && getenv('DB_USER') !== false;
-    }
-
-    // Optional for debugging: Logging 404 (as an error). Used in ExceptionMiddleware.
-    public static function securityLogs(): bool
-    {
-        return false;
+        return Environment::get('DB_HOST') !== ''
+            && Environment::get('DB_NAME') !== ''
+            && Environment::get('DB_USER') !== '';
     }
 
     public static function httpClientDriver(): string
     {
-        return getenv('HTTP_CLIENT_DRIVER') ?: 'auto';
+        return self::env('HTTP_CLIENT_DRIVER', 'auto');
     }
 
     public static function httpClientLog(): bool
     {
-        return strtolower((string) getenv('HTTP_CLIENT_LOG')) === 'true';
+        return strtolower(self::env('HTTP_CLIENT_LOG')) === 'true';
+    }
+
+    // ===== Debugging =====
+
+    /**
+     * Optional for debugging: Logging 404 (as an error).
+     * Used in ExceptionMiddleware.
+     */
+    public static function securityLogs(): bool
+    {
+        return false;
     }
 }
