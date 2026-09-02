@@ -131,7 +131,7 @@ final class BootstrapErrorHandler
             <html lang="en">
             <head>
                 <meta charset="utf-8">
-                <title>DbM Framework - Fatal error</title>
+                <title>DBM Framework - Fatal error</title>
                 <style>
                     .dbm-ex-root, .dbm-ex-root * { all: revert; box-sizing: border-box; }
                     .dbm-ex-root { font-family: monospace; font-size: 16px; background: #f4f4f4; color: #333; padding: 2rem; }
@@ -156,8 +156,8 @@ final class BootstrapErrorHandler
                     <div class="header">
                         <div class="page">Fatal bootstrap error</div>
                         <div class="navigation">
-                            <div class="title">DbM Framework Exception</div>
-                            <div class="description"><a href="https://dbm.org.pl/">Go To Project</a></div>
+                            <div class="title">DBM Framework Exception</div>
+                            <div class="description"><a href="https://dybem.com/">Go To Project</a></div>
                         </div>
                     </div>
                     <div class="main">

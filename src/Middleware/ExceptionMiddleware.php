@@ -76,7 +76,7 @@ class ExceptionMiddleware implements MiddlewareInterface
             $response = $this->handler->handle($e, $env);
 
             if (str_contains(strtolower($response->getHeaderLine('Content-Type')), 'text/html')) {
-                $toolbar = new DebugToolbarMiddleware($this->urlGenerator);
+                $toolbar = new DebugToolbarMiddleware();
 
                 return $toolbar->process($request, new class ($response) implements RequestHandlerInterface {
                     public function __construct(private ResponseInterface $response) {}

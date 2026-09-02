@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <title>{{ $title ?? 'DBM Framework' }}</title>
+    <style>
+        :root { --dbm-primary: #0074d4; --dbm-text: #1f2937; --dbm-bg: #f3f4f6; --dbm-card-bg: #ffffff; }
+        body { font-family: system-ui, sans-serif; background-color: var(--dbm-bg); color: var(--dbm-text); margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .dbm-example-container { background-color: var(--dbm-card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); text-align: center; max-width: 450px; width: 90%; }
+        .dbm-example-container footer { margin-top: 2rem; font-size: 0.75rem; color: #9ca3af; }
+        .dbm-example-container h1 { color: var(--dbm-primary); margin-top: 0; font-size: 2.25rem; }
+        .dbm-example-container p { line-height: 1.6; color: #4b5563; }
+        .dbm-example-container .badge { display: inline-block; background-color: #dbeafe; color: var(--dbm-primary); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; }
+        .dbm-example-container .msg { background-color: #f9fafb; border-left: 4px solid var(--dbm-primary);  padding: 0.75rem 1rem; margin: 1.5rem 0; font-size: 0.95rem; color: #374151; text-align: left; border-radius: 0 8px 8px 0; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="dbm-example-container">
+        <span class="badge">Application Ready</span>
+        <h1>Hello World!</h1>
+        <p>This page is successfully rendered by <strong>DBM Framework</strong> via <code>HelloController</code>.</p>
+        {% if (!empty($message)): %}
+            <p class="msg">{{ $message }}</p>
+        {% endif; %}
+        <footer class="footer">
+            <span>Powered by DBM Framework &bull; {{ date('Y') }}</span>
+        </footer>
+    </div>
+</body>
+</html>

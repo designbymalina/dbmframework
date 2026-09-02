@@ -23,15 +23,15 @@ use Dbm\Routing\RouteBuilder;
 use Dbm\Routing\RouteCollection;
 use Dbm\Routing\RoutingServiceProvider;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 return function (DependencyContainer $container): DependencyContainer {
     // ===== CORE =====
 
     $container->singleton(
-        ExceptionHandler::class,
-        fn($c) => new ExceptionHandler(
-            $c->get(UrlGeneratorInterface::class)
-        )
+        LoggerInterface::class,
+        fn() => new NullLogger()
     );
 
     $container->singleton(
@@ -40,6 +40,13 @@ return function (DependencyContainer $container): DependencyContainer {
             $c->get(Router::class),
             $c->get(MiddlewareStack::class),
             $c->get(TemplateEngine::class),
+            $c->get(UrlGeneratorInterface::class)
+        )
+    );
+
+    $container->singleton(
+        ExceptionHandler::class,
+        fn($c) => new ExceptionHandler(
             $c->get(UrlGeneratorInterface::class)
         )
     );

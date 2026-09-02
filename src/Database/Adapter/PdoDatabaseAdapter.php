@@ -133,7 +133,10 @@ final class PdoDatabaseAdapter implements DatabaseInterface
 
         try {
             $stmt = $this->pdo->prepare($this->cleanSql($sql));
-            $stmt->execute($params);
+
+            $this->bindParameters($stmt, $params, $types);
+
+            $stmt->execute();
 
             $time = (microtime(true) - $start) * 1000;
 
@@ -163,7 +166,10 @@ final class PdoDatabaseAdapter implements DatabaseInterface
     {
         try {
             $stmt = $this->pdo->prepare($this->cleanSql($sql));
-            return $stmt->execute($params);
+
+            $this->bindParameters($stmt, $params, $types);
+
+            return $stmt->execute();
         } catch (PDOException $exception) {
             $this->wrapQueryException($exception, $sql, $params);
         }
@@ -267,5 +273,34 @@ final class PdoDatabaseAdapter implements DatabaseInterface
         ]);
 
         throw new QueryException($sql, $params, $e);
+    }
+
+    /**
+     * Bind query parameters using their native PHP types.
+     *
+     * @param array<string|int, mixed> $params
+     * @param array<string|int, int> $types
+     */
+    private function bindParameters(
+        \PDOStatement $stmt,
+        array $params,
+        array $types = []
+    ): void {
+        foreach ($params as $key => $value) {
+            $type = $types[$key] ?? match (true) {
+                $value === null => PDO::PARAM_NULL,
+                is_bool($value) => PDO::PARAM_BOOL,
+                is_int($value) => PDO::PARAM_INT,
+                default => PDO::PARAM_STR,
+            };
+
+            $parameter = is_int($key)
+                ? $key + 1
+                : (str_starts_with((string) $key, ':')
+                    ? (string) $key
+                    : ':' . $key);
+
+            $stmt->bindValue($parameter, $value, $type);
+        }
     }
 }

@@ -160,7 +160,7 @@ class ExceptionHandler
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>DbM Framework - Error {$status}</title>
+                <title>DBM Framework - Error {$status}</title>
                 <link href="data:," rel="icon">
                 <style>
                     .dbm-ex-root, .dbm-ex-root * { all: revert; box-sizing: border-box; }
@@ -201,8 +201,8 @@ class ExceptionHandler
                     <div class="dbm-ex-header">
                         <div class="dbm-ex-page">Error: {$status}</div>
                         <div class="dbm-ex-nav">
-                            <div class="dbm-ex-title">DbM Framework Exception</div>
-                            <div class="dbm-ex-description"><a href="https://dbm.org.pl/">Go To Project</a></div>
+                            <div class="dbm-ex-title">DBM Framework Exception</div>
+                            <div class="dbm-ex-description"><a href="https://dybem.com/">Go To Project</a></div>
                         </div>
                     </div>
                     <div class="dbm-ex-main">

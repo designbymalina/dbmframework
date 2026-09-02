@@ -16,7 +16,6 @@ namespace Dbm\Debug;
 
 use Dbm\Core\Config\AppConfig;
 use Dbm\Http\Message\StringStream;
-use Dbm\Routing\Contracts\UrlGeneratorInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -24,10 +23,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class DebugToolbarMiddleware implements MiddlewareInterface
 {
-    public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
-    ) {}
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $env = AppConfig::getEnv();
@@ -36,7 +31,7 @@ class DebugToolbarMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $toolbar = new DebugToolbar($this->urlGenerator);
+        $toolbar = new DebugToolbar();
         $toolbar->setRequest($request);
 
         DebugRegistry::setToolbar($toolbar);

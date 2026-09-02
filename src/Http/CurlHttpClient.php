@@ -154,16 +154,12 @@ final class CurlHttpClient implements HttpClientInterface
                 'error' => $error,
             ]);
 
-            curl_close($ch);
-
             return new HttpResponse(0, '', []);
         }
 
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $ms = round((microtime(true) - $started) * 1000, 2);
-
-        curl_close($ch);
 
         // --- Log response ---
         $context = [
