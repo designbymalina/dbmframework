@@ -9,8 +9,6 @@
 
 declare(strict_types=1);
 
-use App\Controller\HelloApiController;
-use App\Controller\HelloController;
 use Dbm\Application;
 use Dbm\Core\DependencyContainer;
 use Dbm\Routing\MiddlewareStack;
@@ -26,15 +24,7 @@ return function (): Application {
     // ===== Routes =====
     $routeBuilder = $container->get(RouteBuilder::class);
 
-    // --- Controllers (@NOTE Only for example) ---
-    require __DIR__ . '/../src/Controller/HelloController.php';
-    require __DIR__ . '/../src/Controller/HelloApiController.php';
-
-    // --- Web ---
-    $routeBuilder->get('/', [HelloController::class, 'index'], 'home');
-
-    // --- API ---
-    $routeBuilder->get('/api/hello', [HelloApiController::class, 'index'], 'api_hello');
+    (require __DIR__ . '/routes.php')($routeBuilder);
 
     // ===== Middleware (@NOTE Toolbar for example) =====
     $middleware = $container->get(MiddlewareStack::class);

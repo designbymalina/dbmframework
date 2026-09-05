@@ -14,7 +14,7 @@ namespace App\Controller;
 use Dbm\Http\Controller\BaseController;
 use Psr\Http\Message\ResponseInterface;
 
-class HelloController extends BaseController
+class WelcomeController extends BaseController
 {
     /**
      * Full View Template Rendering
@@ -28,7 +28,7 @@ class HelloController extends BaseController
     public function index(): ResponseInterface
     {
         return $this->render('base.phtml', [
-            'title' => 'DBM Framework - Hello World',
+            'title' => 'DBM Framework - Welcome',
             'message' => 'Welcome to your first minimal and modular PHP application!',
         ]);
     }

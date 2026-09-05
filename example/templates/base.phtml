@@ -3,30 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link href="favicon.svg" rel="icon" type="image/svg+xml">
     <title>{{ $title ?? 'DBM Framework' }}</title>
     <style>
-        :root { --dbm-primary: #0074d4; --dbm-text: #1f2937; --dbm-bg: #f3f4f6; --dbm-card-bg: #ffffff; }
-        body { font-family: system-ui, sans-serif; background-color: var(--dbm-bg); color: var(--dbm-text); margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .dbm-example-container { background-color: var(--dbm-card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); text-align: center; max-width: 450px; width: 90%; }
-        .dbm-example-container footer { margin-top: 2rem; font-size: 0.75rem; color: #9ca3af; }
-        .dbm-example-container h1 { color: var(--dbm-primary); margin-top: 0; font-size: 2.25rem; }
-        .dbm-example-container p { line-height: 1.6; color: #4b5563; }
-        .dbm-example-container .badge { display: inline-block; background-color: #dbeafe; color: var(--dbm-primary); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; }
-        .dbm-example-container .msg { background-color: #f9fafb; border-left: 4px solid var(--dbm-primary);  padding: 0.75rem 1rem; margin: 1.5rem 0; font-size: 0.95rem; color: #374151; text-align: left; border-radius: 0 8px 8px 0; font-style: italic; }
+        :root { --dbm-primary: #0074d4; --dbm-crimson: #e11d48; --dbm-crimson-dark: #be123c; --dbm-crimson-light: #fff1f2; --dbm-blue: #3b7ddd; --dbm-text: #1f2937; --dbm-muted: #6b7280; --dbm-border: #e5e7eb; --dbm-white: #ffffff; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; font-family: Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif; color: var(--dbm-text); background: radial-gradient(circle at 15% 20%, rgba(225, 29, 72, 0.9), transparent 42%), radial-gradient(circle at 85% 80%, rgba(59, 125, 221, 0.9), transparent 45%), linear-gradient(135deg, var(--dbm-crimson-dark) 0%, var(--dbm-crimson) 42%, var(--dbm-blue) 100%); overflow: hidden; }
+        h1 { margin: 0; color: var(--dbm-text); font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.05; letter-spacing: -0.055em; font-weight: 800; }
+        .dbm-welcome { position: relative; width: 100%; max-width: 720px; padding: 3.5rem 3.75rem; background: rgba(255, 255, 255, 0.97); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 18px; box-shadow: 0 30px 70px rgba(17, 24, 39, 0.22), 0 10px 25px rgba(17, 24, 39, 0.12); text-align: center; }
+        .dbm-mark { width: 52px; height: 52px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; border-radius: 14px; background-color: var(--dbm-primary); color: var(--dbm-white); font-size: 1rem; font-weight: 800; letter-spacing: -0.04em; box-shadow: 0 8px 20px rgba(59, 125, 221, 0.25); }
+        .dbm-badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem; padding: 0.4rem 0.85rem; border: 1px solid #fecdd3; border-radius: 999px; background: var(--dbm-crimson-light); color: var(--dbm-crimson-dark); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+        .dbm-badge::before { content: ""; width: 7px;  height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12); }
+        .dbm-lead { margin: 1.25rem auto 0; max-width: 540px; color: var(--dbm-muted); font-size: 1.15rem; line-height: 1.7; }
+        .dbm-lead strong { color: var(--dbm-text); font-weight: 700; }
+        .dbm-message { margin: 2rem 0 0; padding: 1rem 1.25rem; border-left: 3px solid var(--dbm-crimson); border-radius: 0 8px 8px 0; background: #f9fafb; color: #4b5563; font-size: 0.95rem; line-height: 1.6; text-align: left; }
+        .dbm-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--dbm-border); color: #9ca3af; font-size: 0.8rem; }
+        .dbm-footer strong { color: #6b7280; font-weight: 600; }
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            h1 { font-size: 2.7rem; }
+            .dbm-welcome { padding: 2.5rem 1.5rem; border-radius: 14px; }
+            .dbm-lead { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="dbm-example-container">
-        <span class="badge">Application Ready</span>
-        <h1>Hello World!</h1>
-        <p>This page is successfully rendered by <strong>DBM Framework</strong> via <code>HelloController</code>.</p>
+    <main class="dbm-welcome">
+        <div class="dbm-mark"><img src="favicon.svg" width="48" height="48" alt="DBM Framework"></div>
+        <div class="dbm-badge">DBM Framework</div>
+        <h1>Welcome</h1>
+        <p class="dbm-lead">Your application is <strong>ready</strong>. DBM Framework has been successfully initialized and your application is ready to run.</p>
         {% if (!empty($message)): %}
-            <p class="msg">{{ $message }}</p>
-        {% endif; %}
-        <footer class="footer">
-            <span>Powered by DBM Framework &bull; {{ date('Y') }}</span>
-        </footer>
-    </div>
+        <div class="dbm-message">
+            {{ $message }}
+        </div>
+        {% endif %}
+        <footer class="dbm-footer">Powered by <strong>DBM Framework</strong> &bull; {{ date('Y') }}</footer>
+    </main>
 </body>
 </html>

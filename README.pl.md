@@ -1,303 +1,548 @@
-# DBM Framework - Lekki framework PHP nastawiony na wydajność
+# DBM Framework - Lekki framework PHP
 
-Framework DBM to lekki silnik aplikacji PHP zaprojektowany dla programistów, którzy chcą pełnej kontroli nad architekturą bez narzuconych schematów.
+**DBM Framework to lekki silnik aplikacji PHP dla programistów, którzy chcą mieć kontrolę nad architekturą swojej aplikacji.**
 
-Framework skupiony na wydajności, prostocie i pełnej kontroli nad architekturą aplikacji.
+Dostarcza infrastrukturę potrzebną do budowy aplikacji PHP - routing, middleware, Dependency Injection, zdarzenia, dostęp do danych, szablony i komponenty infrastrukturalne - bez narzucania jednej, zamkniętej architektury aplikacyjnej.
 
-Zaprojektowany do wydajnych, modułowych aplikacji PHP.
+**Ty decydujesz, jak zbudowana jest Twoja aplikacja.**
 
-**Szybki. Elastyczny. Zgodny z PSR.**
+Szybki. Elastyczny. Modularny. Zgodny z PSR.
 
-[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.1-blue)](http://php.net)
+[![PHP](https://img.shields.io/badge/PHP-%3E%3D8.1-blue)](https://www.php.net/)
 [![PSR](https://img.shields.io/badge/PSR-1%2C%204%2C%2011%2C%2012-green)](https://www.php-fig.org/)
-[![Build](https://img.shields.io/badge/build-passing-success)]()
-[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)]()
-[![Composer](https://img.shields.io/badge/composer-ready-orange)](https://getcomposer.org/)
-[![Speed](https://img.shields.io/badge/performance-ultra%20fast-red)]()
-[![License](https://img.shields.io/badge/license-DbM-orange)](https://dbm.org.pl)
+[![Composer](https://img.shields.io/badge/Composer-ready-orange)](https://getcomposer.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Framework DBM v6 powstał jako odpowiedź na nadmiar złożoności w nowoczesnych frameworkach PHP.  
-Nie narzuca pełnej struktury aplikacji - dostarcza gotowe komponenty, które można wykorzystać lub zastąpić.
+---
+
+## Czym jest DBM Framework?
+
+DBM Framework jest **silnikiem wykonawczym aplikacji PHP**.
+
+Jego zadaniem jest dostarczenie podstawowej infrastruktury, na której można zbudować własną aplikację:
+
+* obsługę HTTP,
+* routing,
+* middleware,
+* Dependency Injection,
+* system zdarzeń,
+* dostęp do danych,
+* szablony,
+* sesje i cookies,
+* filesystem,
+* logowanie,
+* obsługę błędów,
+* tłumaczenia,
+* walidację,
+* oraz inne komponenty infrastrukturalne.
+
+DBM nie próbuje definiować całej aplikacji.
+
+Nie narzuca konkretnego CMS-a, panelu administracyjnego, modelu domenowego ani sposobu organizacji warstwy biznesowej.
+
+**Framework dostarcza silnik. Warstwa aplikacji należy do Ciebie.**
+
+---
+
+## Dlaczego DBM?
+
+Laravel i Symfony są potężnymi i rozbudowanymi ekosystemami, które świetnie sprawdzają się w wielu zastosowaniach.
+
+DBM podchodzi do problemu inaczej.
+
+Zamiast maksymalizować liczbę funkcji i automatyzacji, skupia się na:
+
+* lekkiej architekturze,
+* małym narzucie runtime,
+* jawnej konfiguracji,
+* modularności,
+* przewidywalnym przepływie wykonania,
+* oraz pełnej kontroli nad warstwą aplikacji.
+
+DBM nie jest próbą zastąpienia Laravel czy Symfony.
+
+To **innowacyjne podejście do budowy aplikacji PHP** - szczególnie dla programistów, którzy wolą świadomie definiować architekturę zamiast korzystać z rozbudowanych mechanizmów automatyzujących dużą część aplikacji.
+
+---
+
+## Architektura Dybem
+
+DBM Framework jest podstawą większego ekosystemu **Dybem**.
+
+```text
+                    DYBEM ECOSYSTEM
+
+┌──────────────────────────────────────────────┐
+│              Twoja aplikacja                 │
+│       Controllers · Services · Domain        │
+├──────────────────────────────────────────────┤
+│                DBM Platform                  │
+│        CMS · Admin · Auth · Modules          │
+│                 (opcjonalnie)                │
+├──────────────────────────────────────────────┤
+│               DBM Framework                  │
+│ HTTP · Routing · Middleware · DI · Events    │
+│ Database · Templates · Sessions · Logging    │
+└──────────────────────────────────────────────┘
+```
+
+### DBM Framework
+
+Lekki silnik wykonawczy zapewniający podstawową infrastrukturę aplikacji.
+
+### Warstwa aplikacji
+
+Warstwa definiowana przez programistę.
+
+Możesz stworzyć własną strukturę aplikacji, moduły, usługi, domenę biznesową oraz sposób organizacji kodu.
+
+### DBM Platform
+
+Opcjonalna, gotowa warstwa aplikacyjna zbudowana na DBM Framework.
+
+Dostarcza między innymi CMS, panel administracyjny, uwierzytelnianie i moduły aplikacyjne.
+
+---
 
 ## Wydajność
 
-Framework został zaprojektowany z myślą o minimalnym narzucie runtime:
+DBM Framework został zaprojektowany z myślą o **minimalnym narzucie runtime**.
 
-- ~1.9 ms czas odpowiedzi (z włączonym cache serwera)
-- ~3–4 ms bez cache
-- ~5 ms z bazą danych i templatingiem
+W przeprowadzonych pomiarach uzyskano:
 
-Pomiar wykonany na zewnętrznym serwerze w środowisku developerskim.  
-Wyniki zależne od konfiguracji i obciążenia.
+| Scenariusz                | Czas odpowiedzi |
+| ------------------------- | --------------: |
+| Z włączonym cache serwera |         ~1.9 ms |
+| Bez cache                 |         ~3–4 ms |
+| Baza danych + templating  |           ~5 ms |
 
-> "Laravel i Symfony są potężne i rozbudowane. DBM stawia na szybkość, lekkość i pełną kontrolę."
+Pomiary wykonano na zewnętrznym serwerze w środowisku developerskim.
 
-## Dlaczego DBM Framework?
+Wyniki zależą między innymi od sprzętu, konfiguracji PHP, serwera, bazy danych, cache oraz obciążenia.
 
-W przeciwieństwie do dużych frameworków:
+Dlatego powyższe wartości należy traktować jako **wyniki konkretnych testów**, a nie uniwersalny benchmark wszystkich aplikacji.
 
-- nie narzuca struktury aplikacji
-- nie ukrywa logiki za „magią”
-- nie wprowadza zbędnych warstw
+Wydajność DBM wynika przede wszystkim z założeń architektonicznych:
 
-Daje pełną kontrolę nad kodem i wydajnością.  
+* niewielkiego rdzenia,
+* ograniczenia automatyzacji,
+* jawnej rejestracji zależności,
+* braku ciężkiego autowiringu opartego na reflection,
+* oraz ograniczenia liczby warstw wykonywanych podczas obsługi żądania.
 
-DBM to framework, który nie walczy z programistą - **pozwala mu pracować tak, jak lubi**.
+---
 
 ## Funkcje
 
-Framework dostarcza minimalny zestaw narzędzi potrzebnych do budowy aplikacji — bez zbędnych warstw i narzutów.  
-
-- Modułowa architektura (zgodna z PSR-4)
-- Lekki potok middleware (przepływ żądań w stylu PSR)
-- Elastyczny system routingu (tylko na poziomie frameworka)
-- Lekki kontener Dependency Injection (bez refleksyjnej magii)
-- Rozszerzalność sterowana zdarzeniami
-- Gotowość do obsługi CLI (poprzez zewnętrzną warstwę aplikacji)
-- Tylko rdzeń Frameworka (bez CMS, bez platformy, bez warstwy interfejsu użytkownika)
-- Minimalny narzut runtime (nastawiony na wysoką wydajność)
-
-Brak ukrytych mechanizmów i automatycznej konfiguracji - wszystko działa jawnie i przewidywalnie.
-
-## Architektura nastawiona na wydajność
-
-DbM Framework został zaprojektowany z jednym głównym celem: maksymalną wydajnością przy minimalnym narzucie systemowym.
-
-Od routingu i ładowania zależności po szablony oraz odpowiedzi API - każda warstwa frameworka została zoptymalizowana pod kątem szybkości i elastyczności.
-
-⭐ Jeśli projekt Ci się podoba, zostaw gwiazdkę na GitHubie.
-
-![DBM Framework](https://dbm.org.pl/images/page/packages/dbmframework-benchmarkach.png)
-
-> Lokalne benchmarki wykazały znacznie niższy narzut wykonania aplikacji w porównaniu do wielu popularnych frameworków PHP.
-
-### Projekty oparte na DBM Framework
-
-- DBM CMS
-- DBM Platform
-- Systemy API
-- Modułowe aplikacje webowe
-
-## Wbudowane komponenty
-
-Framework zawiera zestaw lekkich komponentów infrastrukturalnych potrzebnych do budowy aplikacji webowych.
+DBM Framework dostarcza podstawowy zestaw komponentów potrzebnych do budowy aplikacji PHP.
 
 ### HTTP i aplikacja
 
-- routing HTTP
-- middleware (pipeline request/response)
-- kontener Dependency Injection
-- system zdarzeń i listenerów
-- mechanizm konsoli CLI (implementowany w warstwie aplikacji)
+* routing HTTP,
+* middleware i pipeline request/response,
+* Dependency Injection,
+* system zdarzeń i listenerów,
+* obsługa cyklu życia aplikacji,
+* możliwość rozszerzenia o warstwę CLI.
 
 ### Dane i prezentacja
 
-- system szablonów (DbM View Engine)
-- warstwa dostępu do danych (Query Builder kompatybilny z Doctrine DBAL)
-- system tłumaczeń
-- walidator formularzy
+* DBM View Engine,
+* Query Builder,
+* warstwa dostępu do danych kompatybilna z Doctrine DBAL,
+* system tłumaczeń,
+* walidator formularzy.
 
 ### Infrastruktura
 
-- system sesji i cookies
-- filesystem + upload plików i obrazów
-- logger
-- error handler
-- mailer interface
-- helpery i sanitizery
+* sesje i cookies,
+* filesystem,
+* upload plików i obrazów,
+* logger,
+* error handler,
+* mailer interface,
+* helpery,
+* sanitizery.
 
-Komponenty są lekkie, modularne i mogą zostać zastąpione własną implementacją (np. Twig zamiast wbudowanego silnika widoków).  
+Komponenty są modularne i mogą zostać zastąpione własną implementacją.
 
-Framework został zaprojektowany jako modularny monolit - komponenty mogą być rozwijane niezależnie, zachowując prostotę wdrożenia pojedynczej aplikacji.  
+Przykładowo, wbudowany silnik widoków może zostać zastąpiony przez Twig.
+
+---
+
+## Architektura modułowa
+
+DBM Framework wspiera podejście **modularnego monolitu**.
+
+Aplikacja może być podzielona na niezależne moduły z wyraźnym podziałem odpowiedzialności, zachowując jednocześnie prostotę wdrożenia pojedynczego systemu.
+
+Przykładowy przepływ obsługi żądania:
+
+```text
+HTTP Request
+     ↓
+  Routing
+     ↓
+ Middleware
+     ↓
+ Controller
+     ↓
+ Services / Domain
+     ↓
+  Response
+```
+
+Podstawowe elementy frameworka obejmują:
+
+* jądro cyklu życia żądania,
+* router,
+* pipeline middleware,
+* kontener Dependency Injection,
+* system zdarzeń,
+* komponenty infrastrukturalne.
+
+---
+
+## Jawne Dependency Injection
+
+DBM Framework świadomie unika ciężkiego autowiringu opartego na reflection.
+
+Zależności są rejestrowane jawnie przy pomocy lekkiego kontenera DI.
+
+Przykładowo:
+
+```php
+$container->singleton(MyService::class, function ($container) {
+    return new MyService(
+        $container->get(MyRepository::class)
+    );
+});
+```
+
+lub:
+
+```php
+$container->set(MyService::class, $service);
+```
+
+Takie podejście zapewnia:
+
+* przewidywalny przepływ wykonania,
+* mniejszy narzut runtime,
+* prostszą diagnostykę,
+* oraz pełną kontrolę nad sposobem tworzenia zależności.
+
+Nie oznacza to, że automatyzacja jest zła.
+
+DBM po prostu przyjmuje inne założenie:
+
+**ważne zależności powinny być widoczne i świadomie konfigurowane.**
+
+---
 
 ## Silnik szablonów
 
-Framework domyślnie korzysta z lekkiego silnika DbM View Engine.
+DBM Framework domyślnie korzysta z lekkiego **DBM View Engine**.
 
-- szybki i bez zależności
-- oparty bezpośrednio o PHP (bez DSL)
-- rozszerzalny przez callbacki
+Najważniejsze założenia:
 
-Może zostać zastąpiony dowolnym silnikiem (np. Twig).
+* brak zewnętrznych zależności,
+* bezpośrednie wykorzystanie PHP,
+* brak dodatkowego DSL,
+* możliwość rozszerzania przez callbacki.
+
+Silnik może zostać zastąpiony innym rozwiązaniem, na przykład Twig.
+
+---
+
+## Framework ≠ gotowa aplikacja
+
+DBM Framework nie jest gotowym CMS-em ani kompletną aplikacją.
+
+Jest fundamentem, na którym możesz zbudować własny system.
+
+```text
+DBM Framework
+      ↓
+Twoja warstwa aplikacji
+      ↓
+Twoja logika biznesowa
+      ↓
+Twoja aplikacja
+```
+
+Jeżeli zamiast budować warstwę aplikacji od zera potrzebujesz gotowego rozwiązania, możesz wykorzystać **DBM Platform**.
+
+---
+
+## DBM Platform
+
+**DBM Platform** jest gotową warstwą aplikacyjną zbudowaną na DBM Framework.
+
+Rozszerza framework między innymi o:
+
+* panel administracyjny,
+* uwierzytelnianie,
+* CMS,
+* zarządzanie modułami,
+* warstwę aplikacyjną,
+* gotową strukturę systemu.
+
+[DBM Platform na GitHubie](https://github.com/designbymalina/dbmplatform)
+
+Framework i Platforma odpowiadają na dwa różne sposoby pracy z ekosystemem Dybem:
+
+| DBM Framework                                | DBM Platform                              |
+| -------------------------------------------- | ----------------------------------------- |
+| silnik aplikacji                             | gotowa warstwa aplikacyjna                |
+| infrastruktura                               | infrastruktura + funkcje aplikacyjne      |
+| własna architektura                          | gotowa struktura systemu                  |
+| dla programistów budujących własną aplikację | dla projektów potrzebujących gotowej bazy |
+
+---
 
 ## Filozofia
 
-DBM Framework rozdziela odpowiedzialności na wyraźnie oddzielone warstwy:
+DBM Framework opiera się na kilku prostych zasadach:
 
-- **Framework = silnik wykonawczy**
-- **Warstwa aplikacji = w pełni definiowana przez użytkownika**
-- **CMS / Platforma = opcjonalne rozszerzenia ekosystemu**
+* **brak globalnego stanu,**
+* **brak ukrytej magii,**
+* **jawna konfiguracja,**
+* **kompozycja zamiast nadmiernego dziedziczenia,**
+* **modularność bez niepotrzebnej złożoności,**
+* **kontrola nad architekturą pozostaje po stronie programisty.**
 
-Rdzeń frameworka pozostaje lekki, przewidywalny i wielokrotnego użytku.
+Framework ma pomagać w budowaniu aplikacji, a nie decydować za programistę, jak ta aplikacja musi wyglądać.
 
-DBM Framework unika ciężkiego autowiringu opartego na reflection i zamiast tego stawia na jawną rejestrację zależności.
-
-Serwisy są świadomie rejestrowane przy pomocy lekkiego kontenera DI, wykorzystując metody takie jak `singleton()` lub `set()`, co zapewnia przewidywalny przepływ wykonania, mniejszy narzut runtime oraz pełną kontrolę nad architekturą aplikacji.
+---
 
 ## Historia projektu
 
-DBM Framework rozwijał się etapami - od prostego mikroframeworka do pełnego ekosystemu aplikacyjnego.
+DBM Framework rozwijał się etapami - od prostego mikroframeworka do obecnej architektury będącej podstawą ekosystemu Dybem.
 
-- **v1 / v2** - początki projektu i eksperymenty architektoniczne
-- **v3 / v4** - lekki monolityczny mikroframework
-- **v5** - przejście na architekturę modularnego monolitu
-- **v6** - oddzielenie silnika frameworka od warstwy aplikacyjnej i rozwój ekosystemu DBM
+* **v1 / v2** - początki projektu i eksperymenty architektoniczne,
+* **v3 / v4** - lekki monolityczny mikroframework,
+* **v5** - przejście na architekturę modularnego monolitu,
+* **v6** - oddzielenie silnika frameworka od warstwy aplikacyjnej i rozwój ekosystemu Dybem.
 
-Obecna wersja koncentruje się na wydajności, modularności i pełnej kontroli nad architekturą aplikacji.  
+Wersja v6 koncentruje się na:
+
+**lekkości · modularności · przewidywalności · kontroli**
+
+---
 
 ## Instalacja
 
-Wymagania:  
+### Wymagania
 
-- PHP 8.1 lub nowszy
-- Composer
+* PHP 8.1 lub nowszy,
+* Composer.
+
+Instalacja przez Composer:
 
 ```bash
 composer require designbymalina/dbmframework
 ```
 
-Po instalacji należy stworzyć warstwę aplikacji (bootstrap), która uruchomi framework.  
+Po instalacji należy utworzyć warstwę aplikacji, która skonfiguruje i uruchomi framework.
+
+---
 
 ## Podstawowe użycie
 
-DBM Framework nie jest samodzielną aplikacją. Musi być używany w obrębie własnej warstwy aplikacji.
+DBM Framework działa jako silnik aplikacji i wymaga własnej warstwy aplikacyjnej.
 
-**Przykład:**
-
-Poniżej minimalny przykład uruchomienia aplikacji opartej na DBM Framework.  
+Minimalny przykład:
 
 ```php
-// example/index.php
-
 declare(strict_types=1);
 
+use Dbm\Core\DotEnv;
 use Dbm\Core\Paths;
+use Dbm\Http\Emitter\ResponseEmitter;
 
 $baseDirectory = realpath(dirname(__DIR__));
 
-require_once $baseDirectory . '/vendor/autoload.php';
+require_once $baseDirectory . '/bootstrap/runtime.php';
+
+initRuntime($baseDirectory);
+
+require_once $baseDirectory . '/../vendor/autoload.php';
+
+require_once $baseDirectory . '/bootstrap/support.php';
 
 Paths::setBasePath($baseDirectory);
 
-$appFactory = require __DIR__ . '/bootstrap/app.php';
+$envPath = Paths::basePath() . '/.env';
+
+if (file_exists($envPath)) {
+    (new DotEnv($envPath))->load();
+}
+
+$appFactory = require Paths::basePath() . '/bootstrap/app.php';
 
 $app = $appFactory();
 
 $response = $app->run();
 
-$response->send();
+(new ResponseEmitter())->emit($response);
 ```
 
-**Proces:**  
+Proces uruchomienia aplikacji:
 
-1. Ustawienie ścieżki bazowej  
-2. Załadowanie autoloadera  
-3. Utworzenie aplikacji przez factory  
-4. Uruchomienie cyklu request -> response  
-
-### Minimalna struktura aplikacji
-
-- bootstrap/app.php - fabryka aplikacji
-- bootstrap/services.php - konfiguracja kontenera DI
-- bootstrap/controller.php - przykładowy kontroler
-
-```bash
-php -S localhost:8000 example/index.php
+```text
+1. Ustawienie ścieżki bazowej
+          ↓
+2. Załadowanie autoloadera
+          ↓
+3. Utworzenie aplikacji przez factory
+          ↓
+4. Uruchomienie aplikacji
+          ↓
+5. Request → Response
 ```
 
-URL: `http://localhost:8000/`
+Pełniejszy przykład aplikacji znajduje się w katalogu:
 
-### Przykład routingu
+```text
+/example
+```
+
+---
+
+## Routing
+
+Przykładowa definicja routingu:
 
 ```php
-$router->get('/path', [NameController::class, 'methodName'], 'route_name');
+$router->get(
+    '/path',
+    [NameController::class, 'methodName'],
+    'route_name'
+);
 ```
 
-Prosty przykład mapowania ścieżki URL na kontroler.  
+Mapuje ona ścieżkę URL na konkretną metodę kontrolera.
 
-Szczegóły:  
+Dokumentacja:
 
-- [Web Routing](_Docs/03_01-web-routing.md)  
-- [API Routing](_Docs/03_02-api-routing.md)  
+* [Web Routing](_Docs/03_01-web-routing.md)
+* [API Routing](_Docs/03_02-api-routing.md)
 
-## Architektura modułowa
-
-DBM Framework wspiera podejście modularnego monolitu.
-
-Aplikacja może być rozwijana jako zestaw niezależnych modułów z wyraźnym podziałem odpowiedzialności (Separation of Concerns) przy zachowaniu prostoty wdrożenia pojedynczego systemu.
-
-**Przegląd architektury**
-
-Framework działa w oparciu o cykl:  
-
-Request -> Routing -> Middleware -> Controller -> Response  
-
-Więcej: [Architecture](_Docs/01_00-1-architecture.md)  
-
-**Struktura DBM składa się z:**
-
-- jądra (cykl życia żądania)
-- routera (elastyczny routing)
-- dyspozytora middleware
-- kontenera (DI)
-
-## Zasady projektowania
-
-- brak globalnego stanu
-- brak ukrytej magii
-- jawna konfiguracja
-- kompozycja zamiast dziedziczenia
+---
 
 ## Programowanie
 
-Klonowanie repozytorium i instalowanie zależności:
+Klonowanie repozytorium:
 
 ```bash
-git clone https://github.com/designbymalina/dbmframework
+git clone https://github.com/designbymalina/dbmframework.git
+
 cd dbmframework
+
 composer install
 ```
 
-lub przez GitHub CLI.
+Możesz również korzystać z GitHub CLI.
 
-## Kiedy używać DBM Framework
+---
 
-Framework sprawdzi się gdy:
+## Kiedy używać DBM Framework?
 
-- budujesz własny system od zera
-- potrzebujesz wysokiej wydajności
-- nie chcesz narzuconej struktury (jak w Laravel/Symfony)
-- tworzysz API lub backend pod aplikację
+DBM Framework może być dobrym wyborem, jeżeli:
 
-Nie jest to framework typu "plug & play" - wymaga zbudowania własnej warstwy aplikacji.  
+* budujesz własną aplikację od podstaw,
+* potrzebujesz lekkiej warstwy wykonawczej,
+* zależy Ci na niskim narzucie runtime,
+* chcesz samodzielnie definiować architekturę aplikacji,
+* tworzysz API lub backend,
+* budujesz modułową aplikację webową,
+* potrzebujesz większej kontroli nad zależnościami i cyklem życia aplikacji.
 
-Jeśli potrzebujesz gotowego rozwiązania, zobacz DBM Platform.  
+### Kiedy DBM może nie być najlepszym wyborem?
 
-[DBM Platform - aplikacja oparta na frameworku (GitHub)](https://github.com/designbymalina/dbmplatform)  
+DBM nie jest frameworkiem typu „plug & play”.
 
-## Ekosystem DBM
+Wymaga stworzenia własnej warstwy aplikacyjnej i podjęcia części decyzji architektonicznych samodzielnie.
 
-DBM Framework jest częścią większego ekosystemu:
+Jeżeli potrzebujesz bardzo rozbudowanego ekosystemu z dużą liczbą gotowych pakietów, integracji i ustalonych konwencji, Laravel lub Symfony mogą być lepszym wyborem.
 
-- DBM Framework - silnik aplikacji
-- DBM Platform - gotowa warstwa aplikacyjna
+Jeżeli natomiast chcesz mieć **lekki fundament i samodzielnie zdecydować jak ma wyglądać aplikacja**, wówczas DBM daje Ci taką możliwość.
 
-Platforma rozszerza framework o panel administracyjny, uwierzytelnianie i moduły aplikacyjne.
+---
 
-Więcej: [Ecosystem](_Docs/01_00-2-ecosystem.md)  
+## Projekty oparte na DBM Framework
+
+DBM Framework jest wykorzystywany jako fundament dla różnych typów aplikacji:
+
+* **DBM Platform**
+* systemy API,
+* modułowe aplikacje webowe,
+* aplikacje administracyjne,
+* systemy biznesowe,
+* własne warstwy aplikacyjne.
+
+---
+
+## Ekosystem Dybem
+
+DBM Framework jest częścią większego ekosystemu **Dybem**.
+
+```text
+Dybem
+ │
+ ├── DBM Framework
+ │      └── silnik aplikacji
+ │
+ ├── DBM Platform
+ │      └── gotowa warstwa aplikacyjna
+ │
+ └── Modules / Extensions
+        └── dodatkowe komponenty ekosystemu
+```
+
+Więcej informacji:
+
+https://www.dybem.com/
+
+---
 
 ## Dokumentacja
 
-Pełna dokumentacja frameworka znajduje się w katalogu `/_Docs`.
+Dokumentacja frameworka znajduje się w katalogu `/_Docs`.
 
-Start:
+Najważniejsze materiały:
 
-- [Wprowadzenie](_Docs/01_01-introduction.md)
-- [Architektura](_Docs/01_00-1-architecture.md)
-- [Ekosystem](_Docs/01_00-2-ecosystem.md)
+* [Wprowadzenie](_Docs/01_01-introduction.md)
+* [Architektura](_Docs/01_00-1-architecture.md)
+* [Ekosystem](_Docs/01_00-2-ecosystem.md)
+* [Web Routing](_Docs/03_01-web-routing.md)
+* [API Routing](_Docs/03_02-api-routing.md)
+
+Uwaga: Dokumentacja jest w trakcie przygotowania. Sukcesywnie uzupełniamy opisy kolejnych modułów.
+
+---
+
+## Open Source
+
+DBM Framework jest projektem open source rozwijanym jako część ekosystemu Dybem.
+
+Jeżeli interesuje Cię podejście do PHP oparte na lekkiej architekturze, jawnej konfiguracji i kontroli nad warstwą aplikacji:
+
+⭐ **Zostaw Star na GitHubie.**
+
+* Sprawdź przykład aplikacji.
+
+* Przetestuj framework.
+
+* Podziel się opinią lub otwórz Issue.
+
+[DBM Framework na GitHubie](https://github.com/designbymalina/dbmframework)
+
+---
 
 ## Licencja
 
-Projekt udostępniony na licencji MIT.
+Projekt jest udostępniony na licencji MIT.
 
 Copyright (c) Design by Malina
