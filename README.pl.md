@@ -519,7 +519,7 @@ Najważniejsze materiały:
 * [Web Routing](_Docs/03_01-web-routing.md)
 * [API Routing](_Docs/03_02-api-routing.md)
 
-Uwaga: Dokumentacja jest w trakcie przygotowania. Sukcesywnie uzupełniamy opisy kolejnych modułów.
+Dokumentacja jest w trakcie przygotowania. Sukcesywnie uzupełniamy opisy kolejnych modułów.
 
 ---
 

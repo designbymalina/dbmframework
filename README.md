@@ -520,7 +520,7 @@ Key resources:
 * [Web Routing](_Docs/03_01-web-routing.md)
 * [API Routing](_Docs/03_02-api-routing.md)
 
-**Documentation is continuously being developed and will be expanded along with the project.**
+Documentation is continuously being developed and will be expanded along with the project.
 
 ---
 
