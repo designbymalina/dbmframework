@@ -29,6 +29,8 @@ initRuntime($baseDirectory);
 
 require_once $baseDirectory . '/../vendor/autoload.php';
 
+require_once $baseDirectory . '/bootstrap/autoload.php';
+
 require_once $baseDirectory . '/bootstrap/support.php';
 
 Paths::setBasePath($baseDirectory);

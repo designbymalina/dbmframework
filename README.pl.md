@@ -122,6 +122,8 @@ Wyniki zależą między innymi od sprzętu, konfiguracji PHP, serwera, bazy dany
 
 Dlatego powyższe wartości należy traktować jako **wyniki konkretnych testów**, a nie uniwersalny benchmark wszystkich aplikacji.
 
+![DBM Framework benchmark](resources/images/dbmframework-benchmark.png)
+
 Wydajność DBM wynika przede wszystkim z założeń architektonicznych:
 
 * niewielkiego rdzenia,
@@ -407,6 +409,30 @@ Pełniejszy przykład aplikacji znajduje się w katalogu:
 ```text
 /example
 ```
+
+### Konfiguracja serwera WWW
+
+Przykład zawiera pliki `.htaccess.example` dla Apache. Aby uruchomić aplikację przez Apache, skopiuj je jako `.htaccess` i dostosuj `RewriteBase` do swojej instalacji.
+
+Dla instalacji lokalnej, np.:
+
+```text
+http://localhost/dbmframework/example/
+```
+
+ustaw odpowiednio:
+
+```apache
+RewriteBase /dbmframework/example/
+```
+
+Jeżeli aplikacja jest wdrożona bezpośrednio pod domeną i katalog `public/` jest katalogiem głównym serwera WWW, zazwyczaj wystarczy:
+
+```apache
+RewriteBase /
+```
+
+Przykład zawiera konfigurację zarówno dla katalogu aplikacji, jak i katalogu `public/`.
 
 ---
 

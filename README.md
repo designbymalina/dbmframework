@@ -122,6 +122,8 @@ Results depend on hardware, PHP configuration, web server, database, cache, appl
 
 The values above should therefore be treated as **results from specific tests**, not as a universal benchmark for all applications.
 
+![DBM Framework benchmark](resources/images/dbmframework-benchmark.png)
+
 DBM's performance primarily comes from its architectural principles:
 
 * a small core,
@@ -407,6 +409,30 @@ A more complete application example can be found in:
 ```text
 /example
 ```
+
+### Web Server Configuration
+
+The example includes `.htaccess.example` files for Apache. To run the application through Apache, copy them to `.htaccess` and adjust `RewriteBase` to match your installation.
+
+For a local installation such as:
+
+```text
+http://localhost/dbmframework/example/
+```
+
+set:
+
+```apache
+RewriteBase /dbmframework/example/
+```
+
+If the application is deployed directly under a domain and the `public/` directory is configured as the web server document root, you can typically use:
+
+```apache
+RewriteBase /
+```
+
+The example includes separate configuration files for the application directory and the `public/` directory.
 
 ---
 

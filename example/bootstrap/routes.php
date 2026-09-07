@@ -14,10 +14,6 @@ use App\Controller\WelcomeController;
 use Dbm\Routing\RouteBuilder;
 
 return function (RouteBuilder $routes): void {
-    // --- Controllers (@NOTE Only for example) ---
-    require __DIR__ . '/../src/Controller/WelcomeController.php';
-    require __DIR__ . '/../src/Controller/HelloApiController.php';
-
     // --- Web ---
     $routes->get('/', [WelcomeController::class, 'index'], 'home');
 
