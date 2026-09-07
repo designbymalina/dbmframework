@@ -410,7 +410,54 @@ A more complete application example can be found in:
 /example
 ```
 
-### Web Server Configuration
+### Running the Example Application
+
+The `example/` directory contains a complete example application built with DBM Framework. You can run it directly from the repository or use it as a **starter** for your own project.
+
+#### Running the Example
+
+Enter the `example/` directory and install the dependencies:
+
+```bash
+cd example
+composer install
+```
+
+DBM Framework and its dependencies will be installed into the `vendor/` directory.
+
+Then configure your web server to route requests to the application according to the configuration described below.
+
+If you want to use `example/` as a starter for your own application, copy the contents of the `example/` directory into a new project directory.
+
+In that case, `public/index.php` should use the Composer autoloader from the project root.
+
+Change:
+
+```php
+require_once $baseDirectory . '/../vendor/autoload.php';
+```
+
+to:
+
+```php
+require_once $baseDirectory . '/vendor/autoload.php';
+```
+
+and remove the following line:
+
+```php
+require_once $baseDirectory . '/bootstrap/autoload.php';
+```
+
+Then run:
+
+```bash
+composer install
+```
+
+Composer will then automatically load both DBM Framework classes (`Dbm\`) and application classes (`App\`) according to the PSR-4 configuration in `composer.json`.
+
+#### Web Server Configuration
 
 The example includes `.htaccess.example` files for Apache. To run the application through Apache, copy them to `.htaccess` and adjust `RewriteBase` to match your installation.
 

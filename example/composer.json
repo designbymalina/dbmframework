@@ -1,0 +1,20 @@
+{
+  "name": "example/your-project-name",
+  "description": "Example application built with DBM Framework",
+  "type": "project",
+  "require": {
+    "php": "^8.1",
+    "designbymalina/dbmframework": "^6.2"
+  },
+  "autoload": {
+      "psr-4": {
+          "App\\": "src/"
+      }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/designbymalina/dbmframework"
+    }
+  ]
+}

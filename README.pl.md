@@ -410,29 +410,76 @@ Pełniejszy przykład aplikacji znajduje się w katalogu:
 /example
 ```
 
-### Konfiguracja serwera WWW
+### Uruchomienie przykładowej aplikacji
+
+Katalog `example/` zawiera kompletną przykładową aplikację zbudowaną na DBM Framework. Możesz uruchomić ją bezpośrednio z repozytorium lub wykorzystać jako **starter** dla własnego projektu.
+
+#### Uruchomienie
+
+Przejdź do katalogu `example/` i zainstaluj zależności:
+
+```bash
+cd example
+composer install
+```
+
+DBM Framework oraz jego zależności zostaną zainstalowane do katalogu `vendor/`.
+
+Następnie skonfiguruj serwer WWW tak, aby kierował żądania do aplikacji zgodnie z konfiguracją opisaną poniżej.
+
+Jeżeli chcesz wykorzystać `example/` jako starter własnej aplikacji, skopiuj zawartość katalogu `example/` do nowego katalogu projektu.
+
+W takim przypadku `public/index.php` powinien korzystać z autoloadera Composer z katalogu głównego projektu.
+
+Zmień:
+
+```php
+require_once $baseDirectory . '/../vendor/autoload.php';
+```
+
+na:
+
+```php
+require_once $baseDirectory . '/vendor/autoload.php';
+```
+
+i usuń następującą linię:
+
+```php
+require_once $baseDirectory . '/bootstrap/autoload.php';
+```
+
+Następnie uruchom:
+
+```bash
+composer install
+```
+
+Composer będzie wtedy automatycznie ładował zarówno klasy DBM Framework (`Dbm\`), jak i klasy aplikacji (`App\`) zgodnie z konfiguracją PSR-4 w `composer.json`.
+
+#### Konfiguracja serwera WWW
 
 Przykład zawiera pliki `.htaccess.example` dla Apache. Aby uruchomić aplikację przez Apache, skopiuj je jako `.htaccess` i dostosuj `RewriteBase` do swojej instalacji.
 
-Dla instalacji lokalnej, np.:
+Dla lokalnej instalacji, np.:
 
 ```text
 http://localhost/dbmframework/example/
 ```
 
-ustaw odpowiednio:
+ustaw:
 
 ```apache
 RewriteBase /dbmframework/example/
 ```
 
-Jeżeli aplikacja jest wdrożona bezpośrednio pod domeną i katalog `public/` jest katalogiem głównym serwera WWW, zazwyczaj wystarczy:
+Jeżeli aplikacja jest wdrożona bezpośrednio pod domeną i katalog `public/` jest skonfigurowany jako katalog główny serwera WWW, zazwyczaj wystarczy:
 
 ```apache
 RewriteBase /
 ```
 
-Przykład zawiera konfigurację zarówno dla katalogu aplikacji, jak i katalogu `public/`.
+Przykład zawiera osobne pliki konfiguracji dla katalogu aplikacji oraz katalogu `public/`.
 
 ---
 
