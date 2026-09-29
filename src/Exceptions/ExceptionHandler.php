@@ -110,23 +110,15 @@ class ExceptionHandler
 
     private function renderProdHtmlError(int $status): ResponseInterface
     {
-        try {
-            $base = $this->urlGenerator->base();
-        } catch (Throwable) {
-            $base = '';
-        }
-
-        if ($status === 404) {
-            return new Response(
-                302,
-                ['Location' => "{$base}/errors/error-404.html"],
-                new StringStream('')
-            );
-        }
+        $path = $status === 404
+            ? '/errors/error-404.html'
+            : '/errors/error.html?code=' . $status;
 
         return new Response(
             302,
-            ['Location' => "{$base}/errors/error.html?code={$status}"],
+            [
+                'Location' => $this->urlGenerator->absolutePath($path),
+            ],
             new StringStream('')
         );
     }
