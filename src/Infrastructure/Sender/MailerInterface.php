@@ -16,6 +16,9 @@ namespace Dbm\Infrastructure\Sender;
 
 use Dbm\Infrastructure\Sender\Dto\EmailMessageDto;
 
+/**
+ * @deprecated Use Dbm\Infrastructure\Mail\Contract\MailerInterface instead.
+ */
 interface MailerInterface
 {
     /**

@@ -11,38 +11,23 @@
  *
  * Kontener DI w projekcie jest celowo uproszczony i półautomatyczny.
  *
- * - Serwisy NIE są rejestrowane automatycznie
- * - Wszystkie zależności należy jawnie zdefiniować w:
- *   bootstrap/services.php
- *
- * Oznacza to, że każda nowa klasa używana przez kontener (np. Middleware,
- * Service, Handler) musi zostać ręcznie dodana do rejestru.
- *
- * W przeciwnym wypadku wystąpi błąd:
- * "Service <ClassName> not found"
+ * - Serwisy mogą być jawnie rejestrowane przez set() i singleton().
+ * - Klasy spełniające warunki autowiringu mogą być tworzone automatycznie.
+ * - Autowiring wykorzystuje ReflectionClass do analizy konstruktora.
+ * - Zależności typowane jako klasy są rozwiązywane rekurencyjnie przez kontener.
+ * - Interfejsy i inne nierozwiązywalne zależności wymagają jawnej rejestracji lub aliasu.
+ * - Kontener nie skanuje katalogów i nie rejestruje automatycznie wszystkich klas dostępnych przez Composer.
  *
  * Zalety:
- * - bardzo niska narzutowość (brak refleksji i skanowania plików)
- * - przewidywalny czas startu (O(liczby zarejestrowanych serwisów))
- * - pełna kontrola nad instancjami i cyklem życia
- * - mniejsze zużycie pamięci
- * - łatwiejsze debugowanie
- * - brak "magii" i ukrytej konfiguracji
+ * - jawna kontrola nad usługami i singletonami,
+ * - brak skanowania katalogów i automatycznej rejestracji,
+ * - możliwość korzystania z prostego autowiringu,
+ * - przewidywalna konfiguracja i łatwiejsze debugowanie.
  *
  * Ograniczenia:
- * - konieczność ręcznej rejestracji serwisów
- * - ryzyko błędów przy dodawaniu nowych klas
- *
- * Debug:
- * Jeśli serwis nie jest znajdowany, sprawdź:
- * 1. Czy klasa istnieje (namespace, autoload)
- * 2. Czy została dodana w bootstrap/services.php
- * 3. Czy composer dump-autoload zostało wykonane (przy autoload Composer)
- *
- * Możliwe kierunki rozwoju:
- * - autowiring (kosztowne automatyczne wstrzykiwanie zależności)?
- * - skanowanie katalogu src/ i autorejestracja (PSR-4)
- * - konfiguracja oparta o atrybuty lub metadata
+ * - interfejsy wymagają jawnego powiązania z implementacją,
+ * - parametry skalarne i zależności bez typu nie mogą być automatycznie rozwiązywane bez wartości domyślnych,
+ * - nieprawidłowe lub brakujące rejestracje mogą powodować błędy podczas rozwiązywania usług.
  */
 
 declare(strict_types=1);
