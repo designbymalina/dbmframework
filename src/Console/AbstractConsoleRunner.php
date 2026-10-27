@@ -14,8 +14,14 @@ declare(strict_types=1);
 
 namespace Dbm\Console;
 
+use Dbm\Core\Contracts\ServiceResolverInterface;
+
 abstract class AbstractConsoleRunner
 {
+    public function __construct(
+        protected readonly ServiceResolverInterface $container
+    ) {}
+
     abstract protected function getDirectory(): string;
 
     abstract protected function getNamespace(): string;
@@ -27,11 +33,12 @@ abstract class AbstractConsoleRunner
     public function run(string $name): void
     {
         $map = $this->discover();
-
         $normalized = $this->normalizeName($name);
 
         if (!isset($map[$normalized])) {
-            throw new \RuntimeException(static::class . " not found: $name");
+            throw new \RuntimeException(
+                static::class . " not found: {$name}"
+            );
         }
 
         $this->execute($map[$normalized]);
@@ -40,17 +47,20 @@ abstract class AbstractConsoleRunner
     public function list(): void
     {
         foreach ($this->discover() as $name => $class) {
+            $shortName = substr(
+                $class,
+                (strrpos($class, '\\') ?: -1) + 1
+            );
+
             printf(
                 "  %-30s %s\n",
                 $this->toKebabCase($name),
-                (new \ReflectionClass($class))->getShortName()
+                $shortName
             );
         }
     }
 
-    /**
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     public function discover(): array
     {
         $map = [];
@@ -58,7 +68,7 @@ abstract class AbstractConsoleRunner
         $suffix = $this->getSuffix();
         $namespace = $this->getNamespace();
 
-        foreach (glob($dir . "/*{$suffix}.php") as $file) {
+        foreach (glob($dir . "/*{$suffix}.php") ?: [] as $file) {
             $name = basename($file, "{$suffix}.php");
             $map[$name] = "{$namespace}\\{$name}{$suffix}";
         }
@@ -68,13 +78,17 @@ abstract class AbstractConsoleRunner
 
     private function normalizeName(string $name): string
     {
-        return str_replace(' ', '', ucwords(
-            str_replace(['-', '_'], ' ', strtolower($name))
-        ));
+        return str_replace(
+            ' ',
+            '',
+            ucwords(str_replace(['-', '_'], ' ', strtolower($name)))
+        );
     }
 
     private function toKebabCase(string $input): string
     {
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $input));
+        return strtolower(
+            preg_replace('/(?<!^)[A-Z]/', '-$0', $input) ?? $input
+        );
     }
 }

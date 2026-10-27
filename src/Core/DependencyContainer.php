@@ -34,9 +34,10 @@ declare(strict_types=1);
 
 namespace Dbm\Core;
 
+use Dbm\Core\Contracts\ServiceResolverInterface;
 use ReflectionClass;
 
-final class DependencyContainer
+final class DependencyContainer implements ServiceResolverInterface
 {
     /** @var array<string, callable> */
     private array $definitions = [];

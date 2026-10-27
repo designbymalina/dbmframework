@@ -20,7 +20,12 @@ final class CommandRunner extends AbstractConsoleRunner
 {
     protected function getDirectory(): string
     {
-        return Paths::joinPaths(Paths::basePath(), 'src', 'Console', 'Command');
+        return Paths::joinPaths(
+            Paths::basePath(),
+            'src',
+            'Console',
+            'Command'
+        );
     }
 
     protected function getNamespace(): string
@@ -35,6 +40,33 @@ final class CommandRunner extends AbstractConsoleRunner
 
     protected function execute(string $class): void
     {
-        (new $class())->execute();
+        $database = null;
+
+        try {
+            if (is_subclass_of(
+                $class,
+                \Dbm\Database\Contracts\RequiresDatabaseInterface::class
+            )) {
+                \Dbm\Database\Validator\DatabaseEnvValidator::validate(
+                    requireDatabase: true
+                );
+
+                $database = $this->container->get(
+                    \Dbm\Database\Contracts\DatabaseInterface::class
+                );
+            }
+
+            $command = $this->container->get($class);
+
+            if (!$command instanceof AbstractCommand) {
+                throw new \RuntimeException(
+                    "{$class} must extend " . AbstractCommand::class
+                );
+            }
+
+            $command->execute();
+        } finally {
+            $database?->close();
+        }
     }
 }

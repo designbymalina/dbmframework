@@ -146,15 +146,14 @@ final class CurlHttpClient implements HttpClientInterface
         $body = curl_exec($ch);
 
         if ($body === false) {
+            $errno = curl_errno($ch);
             $error = curl_error($ch);
 
-            $this->logger?->error('HTTP request failed (cURL)', [
-                'method' => $method,
-                'url' => $url,
-                'error' => $error,
-            ]);
+            // curl_close($ch); // @INFO: Is deprecated!
 
-            return new HttpResponse(0, '', []);
+            throw new \RuntimeException(
+                sprintf('HTTP cURL error (%d)! %s', $errno, $error)
+            );
         }
 
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);

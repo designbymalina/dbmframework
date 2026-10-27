@@ -18,16 +18,18 @@ use Dbm\Core\Paths;
 use Dbm\Database\Contracts\DatabaseInterface;
 use Dbm\Database\Contracts\RequiresDatabaseInterface;
 use Dbm\Database\Validator\DatabaseEnvValidator;
+use RuntimeException;
 
 final class WorkerRunner extends AbstractConsoleRunner
 {
-    public function __construct(
-        private ?DatabaseInterface $database = null
-    ) {}
-
     protected function getDirectory(): string
     {
-        return Paths::joinPaths(Paths::basePath(), 'src', 'Console', 'Worker');
+        return Paths::joinPaths(
+            Paths::basePath(),
+            'src',
+            'Console',
+            'Worker'
+        );
     }
 
     protected function getNamespace(): string
@@ -42,34 +44,36 @@ final class WorkerRunner extends AbstractConsoleRunner
 
     protected function execute(string $class): void
     {
-        $start = microtime(true);
+        $database = null;
 
         echo "==========\n";
-        echo "Worker started: " . date('Y-m-d H:i:s') . "\n";
+        echo 'Worker started: ' . date('Y-m-d H:i:s') . "\n";
         echo "----------\n";
+
+        $start = microtime(true);
+        $status = "\033[32mOK\033[0m";
 
         try {
             if (is_subclass_of($class, RequiresDatabaseInterface::class)) {
                 DatabaseEnvValidator::validate(requireDatabase: true);
 
-                if ($this->database === null) {
-                    throw new \RuntimeException(
-                        "Database is required but not provided."
-                    );
-                }
+                $database = $this->container->get(DatabaseInterface::class);
+            }
 
-                $worker = new $class($this->database);
-            } else {
-                $worker = new $class();
+            $worker = $this->container->get($class);
+
+            if (!$worker instanceof AbstractWorker) {
+                throw new RuntimeException(
+                    "{$class} must extend " . AbstractWorker::class
+                );
             }
 
             $worker->run();
-            $status = "\033[32mOK\033[0m";
         } catch (\Throwable $e) {
             $status = "\033[31mERROR: {$e->getMessage()}\033[0m";
             throw $e;
         } finally {
-            $this->database?->close();
+            $database?->close();
 
             $time = round(microtime(true) - $start, 3);
             $memory = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
